@@ -51,4 +51,12 @@ public class SpotRequest {
 
         private List<String> imageUri;
     }
+
+    @Getter
+    public static class Lists {
+
+        private int page;
+
+        private int size;
+    }
 }

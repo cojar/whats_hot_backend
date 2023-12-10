@@ -49,13 +49,54 @@ public class InitConfig {
                     "010-1234-5678",
                     List.of(hashtag1, hashtag2));
 
+            Spot spot2 = this.spotService.create(category3,
+                    "대전 서구 대덕대로 179",
+                    "010-1234-5678",
+                    List.of(hashtag1, hashtag2));
+
+            Spot spot3 = this.spotService.create(category3,
+                    "대전 서구 대덕대로 179",
+                    "010-1234-5678",
+                    List.of(hashtag1, hashtag2));
+
+            Spot spot4 = this.spotService.create(category3,
+                    "대전 서구 대덕대로 179",
+                    "010-1234-5678",
+                    List.of(hashtag1, hashtag2));
+
+            Spot spot5 = this.spotService.create(category3,
+                    "대전 서구 대덕대로 179",
+                    "010-1234-5678",
+                    List.of(hashtag1, hashtag2));
+
+            Spot spot6 = this.spotService.create(category3,
+                    "대전 서구 대덕대로 179",
+                    "010-1234-5678",
+                    List.of(hashtag1, hashtag2));
+
             MenuItem menuItem1 = this.menuItemService.create("메뉴1", "10000원", spot1);
             MenuItem menuItem2 = this.menuItemService.create("메뉴2", "20000원", spot1);
             MenuItem menuItem3 = this.menuItemService.create("메뉴3", "30000원", spot1);
 
+            MenuItem menuItem4 = this.menuItemService.create("메뉴1", "10000원", spot2);
+            MenuItem menuItem5 = this.menuItemService.create("메뉴2", "20000원", spot2);
+            MenuItem menuItem6 = this.menuItemService.create("메뉴3", "30000원", spot2);
+
+            MenuItem menuItem7 = this.menuItemService.create("메뉴1", "10000원", spot3);
+            MenuItem menuItem8 = this.menuItemService.create("메뉴2", "20000원", spot3);
+            MenuItem menuItem9 = this.menuItemService.create("메뉴3", "30000원", spot3);
+
             SaveFile image1 = this.fileService.create(spot1);
             SaveFile image2 = this.fileService.create(spot1);
             SaveFile image3 = this.fileService.create(spot1);
+
+            SaveFile image4 = this.fileService.create(spot2);
+            SaveFile image5 = this.fileService.create(spot2);
+            SaveFile image6 = this.fileService.create(spot2);
+
+            SaveFile image7 = this.fileService.create(spot3);
+            SaveFile image8 = this.fileService.create(spot3);
+            SaveFile image9 = this.fileService.create(spot3);
         };
     }
 }
