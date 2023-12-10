@@ -148,7 +148,7 @@ public @interface SpotApiResponse {
                                                         "href": "http://localhost:8080/api/spots/1"
                                                     },
                                                     "profile": {
-                                                        "href": "http://localhost:8080/swagger-ui/index.html#/Spot/create"
+                                                        "href": "http://localhost:8080/swagger-ui/index.html#/Spot/update"
                                                     }
                                                 }
                                             }
@@ -159,5 +159,41 @@ public @interface SpotApiResponse {
             }
     )
     public @interface Update {
+    }
+
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(
+            summary = "장소 삭제",
+            description = "성공 시 해당 장소를 삭제한",
+            security = @SecurityRequirement(name = "bearerAuth"),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "정상 응답",
+                            content = @Content(mediaType = MediaTypes.HAL_JSON_VALUE,
+                                    schema = @Schema(implementation = ResData.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "status": "OK",
+                                                "success": true,
+                                                "code": "S-02-03",
+                                                "message": "장소 삭제가 완료되었습니다",                                               
+                                                "_links": {
+                                                    "self": {
+                                                        "href": "http://localhost:8080/api/spots"
+                                                    },
+                                                    "profile": {
+                                                        "href": "http://localhost:8080/swagger-ui/index.html#/Spot/delete"
+                                                    }
+                                                }
+                                            }
+                                            """
+                                    )
+                            )
+                    )
+            }
+    )
+    public @interface Delete {
     }
 }

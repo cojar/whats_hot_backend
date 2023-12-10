@@ -55,9 +55,10 @@ public class SpotController {
     }
 
     @SpotApiResponse.Update
-    @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity update(@Valid @RequestPart(value = "updateReq") SpotRequest.Update updateReq, Errors errors,
-                                 @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+                                 @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                                 @PathVariable(value = "id") Long id) {
 
         Spot spot = this.spotService.getSpotById(1L);
 
@@ -69,6 +70,22 @@ public class SpotController {
                 linkTo(this.getClass()).slash(spot.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Spot/update").withRel("profile"));
+
+        return ResponseEntity.ok()
+                .body(resData);
+    }
+
+    @SpotApiResponse.Delete
+    @DeleteMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity delete(@PathVariable(value = "id") Long id) {
+
+        ResData resData = ResData.of(
+                HttpStatus.OK,
+                "S-02-03",
+                "장소 삭제가 완료되었습니다",
+                linkTo(this.getClass())
+        );
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Spot/delete").withRel("profile"));
 
         return ResponseEntity.ok()
                 .body(resData);
