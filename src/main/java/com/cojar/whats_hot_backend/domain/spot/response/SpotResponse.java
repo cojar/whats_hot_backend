@@ -14,4 +14,12 @@ public class SpotResponse {
         @JsonUnwrapped
         private final SpotDto spotDto;
     }
+
+    @Getter
+    @AllArgsConstructor
+    public static class Detail {
+
+        @JsonUnwrapped
+        private final SpotDto spotDto;
+    }
 }

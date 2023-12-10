@@ -5,6 +5,7 @@
 - [x] repository 이전 및 패키지 이름 수정
 - [x] patch:/api/spots/{id} 응답 및 api 문서 작업
 - [x] delete:/api/spots/{id} 응답 및 api 문서 작업
+- [x] get:/api/spots/{id} 응답 및 api 문서 작업
 
 ## 23-12-09
 - [x] 회원 엔티티 수정

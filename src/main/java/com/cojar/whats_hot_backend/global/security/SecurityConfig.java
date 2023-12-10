@@ -32,9 +32,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/members/username").permitAll() // post:/api/members/me/username 아무나 접속 가능
                         .requestMatchers(HttpMethod.POST, "/api/members/password").permitAll() // post:/api/members/me/username 아무나 접속 가능
                         .requestMatchers(HttpMethod.POST, "/api/spots").hasAuthority("admin") // post:/api/spots 관리자만 접속 가능
+                        .requestMatchers(HttpMethod.GET, "/api/spots").permitAll() // get:/api/spots 아무나 접속 가능
+                        .requestMatchers(HttpMethod.GET, "/api/spots/*").permitAll() // get:/api/spots/* 아무나 접속 가능
                         .requestMatchers(HttpMethod.PATCH, "/api/spots/*").hasAuthority("admin") // patch:/api/spots/* 관리자만 접속 가능
                         .requestMatchers(HttpMethod.DELETE, "/api/spots/*").hasAuthority("admin") // delete:/api/spots/* 관리자만 접속 가능
-//                        .requestMatchers(HttpMethod.GET, "/api/events/*").permitAll() // get:/api/events/# 아무나 접속 가능
                         .anyRequest().authenticated()) // 그 외는 인증된 사용자만 접속 가능
                 .cors(cors -> cors
                         .disable()) // 타 도메인에서 API 호출 가능

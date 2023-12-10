@@ -54,6 +54,25 @@ public class SpotController {
                 .body(resData);
     }
 
+    @SpotApiResponse.Detail
+    @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity detail(@PathVariable(value = "id") Long id) {
+
+        Spot spot = this.spotService.getSpotById(id);
+
+        ResData resData = ResData.of(
+                HttpStatus.OK,
+                "S-02-02",
+                "요청하신 장소 정보를 반환합니다",
+                new SpotResponse.Detail(SpotDto.of(spot)),
+                linkTo(this.getClass()).slash(spot.getId())
+        );
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Spot/detail").withRel("profile"));
+
+        return ResponseEntity.ok()
+                .body(resData);
+    }
+
     @SpotApiResponse.Update
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity update(@Valid @RequestPart(value = "updateReq") SpotRequest.Update updateReq, Errors errors,
@@ -64,7 +83,7 @@ public class SpotController {
 
         ResData resData = ResData.of(
                 HttpStatus.OK,
-                "S-02-02",
+                "S-02-04",
                 "장소 수정이 완료되었습니다",
                 new SpotResponse.Create(SpotDto.of(spot)),
                 linkTo(this.getClass()).slash(spot.getId())
@@ -81,7 +100,7 @@ public class SpotController {
 
         ResData resData = ResData.of(
                 HttpStatus.OK,
-                "S-02-03",
+                "S-02-05",
                 "장소 삭제가 완료되었습니다",
                 linkTo(this.getClass())
         );

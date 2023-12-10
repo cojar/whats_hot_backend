@@ -92,6 +92,77 @@ public @interface SpotApiResponse {
     @Target({ElementType.METHOD})
     @Retention(RetentionPolicy.RUNTIME)
     @Operation(
+            summary = "장소 단건 조회",
+            description = "성공 시 요청한 장소 정보를 반환한다",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "정상 응답",
+                            content = @Content(mediaType = MediaTypes.HAL_JSON_VALUE,
+                                    schema = @Schema(implementation = ResData.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "status": "OK",
+                                                "success": true,
+                                                "code": "S-02-02",
+                                                "message": "요청하신 장소 정보를 반환합니다",
+                                                "data": {
+                                                    "id": 1,
+                                                    "createDate": "2023-12-10T20:20:52.889114",
+                                                    "modifyDate": "2023-12-10T20:20:52.889114",
+                                                    "category": "맛집 > 2차 > 3차",
+                                                    "address": "대전 서구 대덕대로 179",
+                                                    "contact": "010-1234-5678",
+                                                    "averageScore": 0,
+                                                    "hashtags": [
+                                                        {
+                                                            "name": "해시태그1"
+                                                        },
+                                                        {
+                                                            "name": "해시태그2"
+                                                        }
+                                                    ],
+                                                    "menuItems": [
+                                                        {
+                                                            "name": "메뉴1",
+                                                            "price": "10000원"
+                                                        },
+                                                        {
+                                                            "name": "메뉴2",
+                                                            "price": "20000원"
+                                                        },
+                                                        {
+                                                            "name": "메뉴3",
+                                                            "price": "30000원"
+                                                        }
+                                                    ],
+                                                    "imageUri": [
+                                                        "image uri",
+                                                        "image uri",
+                                                        "image uri"
+                                                    ]
+                                                },
+                                                "_links": {
+                                                    "self": {
+                                                        "href": "http://localhost:8080/api/spots/1"
+                                                    },
+                                                    "profile": {
+                                                        "href": "http://localhost:8080/swagger-ui/index.html#/Spot/detail"
+                                                    }
+                                                }
+                                            }
+                                            """
+                                    )
+                            )
+                    )
+            }
+    )
+    public @interface Detail {
+    }
+
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(
             summary = "장소 수정",
             description = "성공 시 수정된 장소 정보를 반환한다",
             security = @SecurityRequirement(name = "bearerAuth"),
@@ -105,7 +176,7 @@ public @interface SpotApiResponse {
                                             {
                                                 "status": "OK",
                                                 "success": true,
-                                                "code": "S-02-02",
+                                                "code": "S-02-04",
                                                 "message": "장소 수정이 완료되었습니다",
                                                 "data": {
                                                     "id": 1,
@@ -165,7 +236,7 @@ public @interface SpotApiResponse {
     @Retention(RetentionPolicy.RUNTIME)
     @Operation(
             summary = "장소 삭제",
-            description = "성공 시 해당 장소를 삭제한",
+            description = "성공 시 해당 장소를 삭제한다",
             security = @SecurityRequirement(name = "bearerAuth"),
             responses = {
                     @ApiResponse(
@@ -177,7 +248,7 @@ public @interface SpotApiResponse {
                                             {
                                                 "status": "OK",
                                                 "success": true,
-                                                "code": "S-02-03",
+                                                "code": "S-02-05",
                                                 "message": "장소 삭제가 완료되었습니다",                                               
                                                 "_links": {
                                                     "self": {
