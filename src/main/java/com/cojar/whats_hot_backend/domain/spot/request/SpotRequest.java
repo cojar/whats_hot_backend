@@ -32,4 +32,23 @@ public class SpotRequest {
         @Valid
         private List<MenuItemDto> menuItems;
     }
+
+    @Getter
+    public static class Update {
+
+        @Valid
+        private CategoryDto category;
+
+        private String address;
+
+        private String contact;
+
+        @Valid
+        private List<HashtagDto> hashtags;
+
+        @Valid
+        private List<MenuItemDto> menuItems;
+
+        private List<String> imageUri;
+    }
 }

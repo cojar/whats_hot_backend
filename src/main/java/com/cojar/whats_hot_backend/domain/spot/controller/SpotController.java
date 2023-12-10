@@ -18,10 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -54,6 +51,26 @@ public class SpotController {
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Spot/create").withRel("profile"));
 
         return ResponseEntity.created(resData.getSelfUri())
+                .body(resData);
+    }
+
+    @SpotApiResponse.Update
+    @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity update(@Valid @RequestPart(value = "updateReq") SpotRequest.Update updateReq, Errors errors,
+                                 @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+
+        Spot spot = this.spotService.getSpotById(1L);
+
+        ResData resData = ResData.of(
+                HttpStatus.OK,
+                "S-02-02",
+                "장소 수정이 완료되었습니다",
+                new SpotResponse.Create(SpotDto.of(spot)),
+                linkTo(this.getClass()).slash(spot.getId())
+        );
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Spot/update").withRel("profile"));
+
+        return ResponseEntity.ok()
                 .body(resData);
     }
 }
