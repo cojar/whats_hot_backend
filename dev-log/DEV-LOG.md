@@ -4,6 +4,7 @@
 - [x] post:/api/reviews 응답 및 api 문서 작업
 - [x] get:/api/reviews 응답 및 api 문서 작업
 - [x] get:/api/reviews/{id} 응답 및 api 문서 작업
+- [x] patch:/api/reviews/{id} 응답 및 api 문서 작업
 
 ## 23-12-10
 - [x] post:/api/spots 응답 및 api 문서 작업

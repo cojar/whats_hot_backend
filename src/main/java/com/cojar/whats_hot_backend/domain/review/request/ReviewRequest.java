@@ -37,4 +37,25 @@ public class ReviewRequest {
         @NotNull
         private ReviewStatus status;
     }
+
+    @Getter
+    public static class UpdateReview {
+
+        @Schema(example = "1")
+        private Long spotId;
+
+        private LocalDateTime visitDate;
+
+        @Schema(example = "리뷰제목1")
+        private String title;
+
+        @Schema(example = "리뷰내용1")
+        private String content;
+
+        @Schema(example = "4.5")
+        private Double score;
+
+        @Schema(example = "PUBLIC")
+        private ReviewStatus status;
+    }
 }

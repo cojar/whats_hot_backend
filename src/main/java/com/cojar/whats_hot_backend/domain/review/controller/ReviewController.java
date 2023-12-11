@@ -101,4 +101,26 @@ public class ReviewController {
         return ResponseEntity.ok()
                 .body(resData);
     }
+
+    @ReviewApiResponse.Update
+    @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity updateReview(@Valid @RequestPart(value = "request") ReviewRequest.UpdateReview request, Errors errors,
+                                       @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                                       @PathVariable(value = "id") Long id,
+                                       @AuthenticationPrincipal User user) {
+
+        Review review = this.reviewService.getReviewById(1L);
+
+        ResData resData = ResData.of(
+                HttpStatus.OK,
+                "S-03-04",
+                "리뷰 수정이 완료되었습니다",
+                ReviewDto.of(review),
+                linkTo(this.getClass()).slash(review.getId())
+        );
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/updateReview").withRel("profile"));
+
+        return ResponseEntity.ok()
+                .body(resData);
+    }
 }
