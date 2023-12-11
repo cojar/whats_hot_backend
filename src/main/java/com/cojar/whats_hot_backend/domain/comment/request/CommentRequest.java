@@ -22,4 +22,11 @@ public class CommentRequest {
         @Schema(example = "1")
         private Long tagId;
     }
+
+    @Getter
+    public static class UpdateComment {
+
+        @Schema(example = "댓글내용1")
+        private String content;
+    }
 }

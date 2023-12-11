@@ -73,4 +73,25 @@ public class CommentController {
         return ResponseEntity.ok()
                 .body(resData);
     }
+
+    @CommentApiResponse.Update
+    @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity updateComment(@Valid @RequestPart(value = "request") CommentRequest.UpdateComment request, Errors errors,
+                                       @PathVariable(value = "id") Long id,
+                                       @AuthenticationPrincipal User user) {
+
+        Comment comment = this.commentService.getCommentById(id);
+
+        ResData resData = ResData.of(
+                HttpStatus.OK,
+                "S-04-03",
+                "댓글 수정이 완료되었습니다",
+                CommentDto.of(comment),
+                linkTo(this.getClass()).slash(comment.getId())
+        );
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/updateComment").withRel("profile"));
+
+        return ResponseEntity.ok()
+                .body(resData);
+    }
 }

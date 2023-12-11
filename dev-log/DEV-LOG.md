@@ -1,5 +1,8 @@
 # What's Hot Dev-Log
 
+## 23-12-12
+- [x] patch:/api/comments/{id} 응답 및 api 문서 작업
+
 ## 23-12-11
 - [x] post:/api/reviews 응답 및 api 문서 작업
 - [x] get:/api/reviews 응답 및 api 문서 작업
