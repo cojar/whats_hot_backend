@@ -94,4 +94,20 @@ public class CommentController {
         return ResponseEntity.ok()
                 .body(resData);
     }
+
+    @CommentApiResponse.Delete
+    @DeleteMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity deleteComment(@PathVariable(value = "id") Long id) {
+
+        ResData resData = ResData.of(
+                HttpStatus.OK,
+                "S-04-04",
+                "댓글 삭제가 완료되었습니다",
+                linkTo(this.getClass())
+        );
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/deleteComment").withRel("profile"));
+
+        return ResponseEntity.ok()
+                .body(resData);
+    }
 }

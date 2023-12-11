@@ -88,7 +88,7 @@ public @interface CommentApiResponse {
                                                         "href": "http://localhost:8080/api/comments/1"
                                                     },
                                                     "profile": {
-                                                        "href": "http://localhost:8080/swagger-ui/index.html#/Comment/createComment"
+                                                        "href": "http://localhost:8080/swagger-ui/index.html#/Comment/getComment"
                                                     }
                                                 }
                                             }
@@ -131,7 +131,7 @@ public @interface CommentApiResponse {
                                                         "href": "http://localhost:8080/api/comments/1"
                                                     },
                                                     "profile": {
-                                                        "href": "http://localhost:8080/swagger-ui/index.html#/Comment/createComment"
+                                                        "href": "http://localhost:8080/swagger-ui/index.html#/Comment/updateComment"
                                                     }
                                                 }
                                             }
@@ -142,5 +142,41 @@ public @interface CommentApiResponse {
             }
     )
     public @interface Update {
+    }
+
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(
+            summary = "댓글 삭제",
+            description = "성공 시 해당 댓글을 삭제한다",
+            security = @SecurityRequirement(name = "bearerAuth"),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "정상 응답",
+                            content = @Content(mediaType = MediaTypes.HAL_JSON_VALUE,
+                                    schema = @Schema(implementation = ResData.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "status": "OK",
+                                                "success": true,
+                                                "code": "S-04-04",
+                                                "message": "댓글 삭제가 완료되었습니다",
+                                                "_links": {
+                                                    "self": {
+                                                        "href": "http://localhost:8080/api/comments"
+                                                    },
+                                                    "profile": {
+                                                        "href": "http://localhost:8080/swagger-ui/index.html#/Comment/deleteComment"
+                                                    }
+                                                }
+                                            }
+                                            """
+                                    )
+                            )
+                    )
+            }
+    )
+    public @interface Delete {
     }
 }
