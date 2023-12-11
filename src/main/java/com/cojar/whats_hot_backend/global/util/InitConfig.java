@@ -2,6 +2,8 @@ package com.cojar.whats_hot_backend.global.util;
 
 import com.cojar.whats_hot_backend.domain.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.category.service.CategoryService;
+import com.cojar.whats_hot_backend.domain.comment.entity.Comment;
+import com.cojar.whats_hot_backend.domain.comment.service.CommentService;
 import com.cojar.whats_hot_backend.domain.file.entity.SaveFile;
 import com.cojar.whats_hot_backend.domain.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.hashtag.entity.Hashtag;
@@ -35,6 +37,7 @@ public class InitConfig {
     private final FileService fileService;
     private final SpotService spotService;
     private final ReviewService reviewService;
+    private final CommentService commentService;
 
     @Bean
     public ApplicationRunner runner() {
@@ -107,6 +110,8 @@ public class InitConfig {
             SaveFile image10 = this.fileService.create(review1);
             Review review2 = this.reviewService.create(user1, spot1, LocalDateTime.now(), "리뷰제목2", "리뷰내용2", 4.5, ReviewStatus.PUBLIC);
             SaveFile image11 = this.fileService.create(review2);
+
+            Comment comment1 = this.commentService.create(user1, review1, "댓글내용1", null);
         };
     }
 }

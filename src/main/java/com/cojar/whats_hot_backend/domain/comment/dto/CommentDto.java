@@ -1,10 +1,12 @@
 package com.cojar.whats_hot_backend.domain.comment.dto;
 
 import com.cojar.whats_hot_backend.domain.comment.entity.Comment;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 public class CommentDto {
 
@@ -29,7 +31,7 @@ public class CommentDto {
         this.author = comment.getAuthor().getUsername();
         this.content = comment.getContent();
         this.liked = comment.getLiked();
-        this.tagId = comment.getTag().getId();
+        this.tagId = comment.getTag() != null ? comment.getTag().getId() : null;
     }
 
     public static CommentDto of(Comment comment) {
