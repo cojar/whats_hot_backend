@@ -1,5 +1,6 @@
 package com.cojar.whats_hot_backend.domain.member.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
@@ -25,9 +26,11 @@ public class MemberRequest {
     @Getter
     public static class Login {
 
+        @Schema(example = "user1")
         @NotBlank
         private String username;
 
+        @Schema(example = "1234")
         @NotBlank
         private String password;
     }

@@ -2,12 +2,14 @@ package com.cojar.whats_hot_backend.domain.review.dto;
 
 import com.cojar.whats_hot_backend.domain.comment.dto.CommentDto;
 import com.cojar.whats_hot_backend.domain.review.entity.Review;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 public class ReviewDto {
 
@@ -27,7 +29,7 @@ public class ReviewDto {
 
     private final Double score;
 
-    private final List<String> images;
+    private final List<String> imageUri;
 
     private final String status;
 
@@ -46,7 +48,7 @@ public class ReviewDto {
         this.title = review.getTitle();
         this.content = review.getContent();
         this.score = review.getScore();
-        this.images = review.getImages().stream()
+        this.imageUri = review.getImages().stream()
                 .map(image -> image.toUri())
                 .collect(Collectors.toList());
         this.status = review.getStatus().getType();
@@ -55,6 +57,16 @@ public class ReviewDto {
         this.comments = review.getComments().stream()
                 .map(CommentDto::of)
                 .collect(Collectors.toList());
+    }
+
+    public List<String> getImageUri() {
+        if (this.imageUri.isEmpty()) return null;
+        else return this.imageUri;
+    }
+
+    public List<CommentDto> getComments() {
+        if (this.comments.isEmpty()) return null;
+        else return this.comments;
     }
 
     public static ReviewDto of(Review review) {

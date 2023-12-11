@@ -11,6 +11,9 @@ import com.cojar.whats_hot_backend.domain.member.entity.MemberRole;
 import com.cojar.whats_hot_backend.domain.member.service.MemberService;
 import com.cojar.whats_hot_backend.domain.menu_item.entity.MenuItem;
 import com.cojar.whats_hot_backend.domain.menu_item.service.MenuItemService;
+import com.cojar.whats_hot_backend.domain.review.entity.Review;
+import com.cojar.whats_hot_backend.domain.review.entity.ReviewStatus;
+import com.cojar.whats_hot_backend.domain.review.service.ReviewService;
 import com.cojar.whats_hot_backend.domain.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot.service.SpotService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Configuration
@@ -30,6 +34,7 @@ public class InitConfig {
     private final MenuItemService menuItemService;
     private final FileService fileService;
     private final SpotService spotService;
+    private final ReviewService reviewService;
 
     @Bean
     public ApplicationRunner runner() {
@@ -97,6 +102,9 @@ public class InitConfig {
             SaveFile image7 = this.fileService.create(spot3);
             SaveFile image8 = this.fileService.create(spot3);
             SaveFile image9 = this.fileService.create(spot3);
+
+            Review review1 = this.reviewService.create(user1, spot1, LocalDateTime.now(), "리뷰제목1", "리뷰내용1", 4.5, ReviewStatus.PUBLIC);
+            SaveFile image10 = this.fileService.create(review1);
         };
     }
 }

@@ -68,7 +68,7 @@ public class SpotController {
                 "S-02-02",
                 "요청하신 장소 목록을 반환합니다",
                 PagedDataModel.of(spotList),
-                linkTo(this.getClass()).slash("?page=%d&size=%d".formatted(page, size))
+                linkTo(this.getClass()).slash("?page=%s&size=%s".formatted(page, size))
         );
 
         // TODO: paged links with query; custom method
