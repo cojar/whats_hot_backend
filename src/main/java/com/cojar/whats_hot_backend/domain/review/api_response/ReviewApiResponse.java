@@ -153,4 +153,54 @@ public @interface ReviewApiResponse {
     )
     public @interface List {
     }
+
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(
+            summary = "리뷰 단건 조회",
+            description = "성공 시 요청한 리뷰 정보를 반환한다",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "정상 응답",
+                            content = @Content(mediaType = MediaTypes.HAL_JSON_VALUE,
+                                    schema = @Schema(implementation = ResData.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "status": "OK",
+                                                "success": true,
+                                                "code": "S-03-03",
+                                                "message": "요청하신 리뷰 정보를 반환합니다",
+                                                "data": {
+                                                    "id": 1,
+                                                    "createDate": "2023-12-11T23:09:31.343276",
+                                                    "modifyDate": "2023-12-11T23:09:31.343276",
+                                                    "author": "user1",
+                                                    "visitDate": "2023-12-11T23:09:31.342859",
+                                                    "title": "리뷰제목1",
+                                                    "content": "리뷰내용1",
+                                                    "score": 4.5,
+                                                    "imageUri": [
+                                                        "image uri"
+                                                    ],
+                                                    "status": "public",
+                                                    "validated": true
+                                                },
+                                                "_links": {
+                                                    "self": {
+                                                        "href": "http://localhost:8080/api/reviews/1"
+                                                    },
+                                                    "profile": {
+                                                        "href": "http://localhost:8080/swagger-ui/index.html#/Review/getReview"
+                                                    }
+                                                }
+                                            }
+                                            """
+                                    )
+                            )
+                    )
+            }
+    )
+    public @interface Detail {
+    }
 }

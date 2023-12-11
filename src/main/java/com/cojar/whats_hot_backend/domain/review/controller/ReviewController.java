@@ -82,4 +82,23 @@ public class ReviewController {
         return ResponseEntity.ok()
                 .body(resData);
     }
+
+    @ReviewApiResponse.Detail
+    @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity getReview(@PathVariable(value = "id") Long id) {
+
+        Review review = this.reviewService.getReviewById(id);
+
+        ResData resData = ResData.of(
+                HttpStatus.OK,
+                "S-03-03",
+                "요청하신 리뷰 정보를 반환합니다",
+                ReviewDto.of(review),
+                linkTo(this.getClass()).slash(review.getId())
+        );
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/getReview").withRel("profile"));
+
+        return ResponseEntity.ok()
+                .body(resData);
+    }
 }
