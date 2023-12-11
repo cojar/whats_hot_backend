@@ -47,7 +47,8 @@ public @interface ReviewApiResponse {
                                                         "image uri"
                                                     ],
                                                     "status": "public",
-                                                    "validated": true
+                                                    "validated": true,
+                                                    "liked": 0
                                                 },
                                                 "_links": {
                                                     "self": {
@@ -100,6 +101,17 @@ public @interface ReviewApiResponse {
                                                             ],
                                                             "status": "public",
                                                             "validated": true,
+                                                            "liked": 0,
+                                                            "comments": [
+                                                                {
+                                                                    "id": 1,
+                                                                    "createDate": "2023-12-12T00:27:10.243699",
+                                                                    "modifyDate": "2023-12-12T00:27:10.243699",
+                                                                    "author": "user1",
+                                                                    "content": "댓글내용1",
+                                                                    "liked": 0
+                                                              }
+                                                            ],
                                                             "_links": {
                                                                 "self": {
                                                                     "href": "http://localhost:8080/api/spots/1"
@@ -120,6 +132,17 @@ public @interface ReviewApiResponse {
                                                             ],
                                                             "status": "public",
                                                             "validated": true,
+                                                            "liked": 0,
+                                                            "comments": [
+                                                                {
+                                                                    "id": 2,
+                                                                    "createDate": "2023-12-12T00:27:10.243699",
+                                                                    "modifyDate": "2023-12-12T00:27:10.243699",
+                                                                    "author": "user1",
+                                                                    "content": "댓글내용2",
+                                                                    "liked": 0
+                                                              }
+                                                            ],
                                                             "_links": {
                                                                 "self": {
                                                                     "href": "http://localhost:8080/api/spots/2"
@@ -184,7 +207,18 @@ public @interface ReviewApiResponse {
                                                         "image uri"
                                                     ],
                                                     "status": "public",
-                                                    "validated": true
+                                                    "validated": true,
+                                                    "liked": 0,
+                                                    "comments": [
+                                                        {
+                                                            "id": 1,
+                                                            "createDate": "2023-12-12T00:27:10.243699",
+                                                            "modifyDate": "2023-12-12T00:27:10.243699",
+                                                            "author": "user1",
+                                                            "content": "댓글내용1",
+                                                            "liked": 0
+                                                        }
+                                                    ],
                                                 },
                                                 "_links": {
                                                     "self": {
@@ -235,7 +269,18 @@ public @interface ReviewApiResponse {
                                                         "image uri"
                                                     ],
                                                     "status": "public",
-                                                    "validated": true
+                                                    "validated": true,
+                                                    "liked": 0,
+                                                    "comments": [
+                                                        {
+                                                            "id": 1,
+                                                            "createDate": "2023-12-12T00:27:10.243699",
+                                                            "modifyDate": "2023-12-12T00:27:10.243699",
+                                                            "author": "user1",
+                                                            "content": "댓글내용1",
+                                                            "liked": 0
+                                                        }
+                                                    ],
                                                 },
                                                 "_links": {
                                                     "self": {
@@ -322,7 +367,18 @@ public @interface ReviewApiResponse {
                                                         "image uri"
                                                     ],
                                                     "status": "public",
-                                                    "validated": true
+                                                    "validated": true,
+                                                    "liked": 0,
+                                                    "comments": [
+                                                        {
+                                                            "id": 1,
+                                                            "createDate": "2023-12-12T00:27:10.243699",
+                                                            "modifyDate": "2023-12-12T00:27:10.243699",
+                                                            "author": "user1",
+                                                            "content": "댓글내용1",
+                                                            "liked": 0
+                                                        }
+                                                    ],
                                                 },
                                                 "_links": {
                                                     "self": {

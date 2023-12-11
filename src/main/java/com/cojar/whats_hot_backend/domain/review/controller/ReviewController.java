@@ -126,7 +126,8 @@ public class ReviewController {
 
     @ReviewApiResponse.Delete
     @DeleteMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity deleteReview(@PathVariable(value = "id") Long id) {
+    public ResponseEntity deleteReview(@PathVariable(value = "id") Long id,
+                                       @AuthenticationPrincipal User user) {
 
         ResData resData = ResData.of(
                 HttpStatus.OK,
@@ -142,7 +143,8 @@ public class ReviewController {
 
     @ReviewApiResponse.Like
     @PatchMapping(value = "/{id}/like", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity likeReview(@PathVariable(value = "id") Long id) {
+    public ResponseEntity likeReview(@PathVariable(value = "id") Long id,
+                                     @AuthenticationPrincipal User user) {
 
         Review review = this.reviewService.getReviewById(id);
 

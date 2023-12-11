@@ -46,7 +46,8 @@ public class Review extends BaseEntity {
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
-    private Long liked;
+    @Builder.Default
+    private Long liked = 0L;
 
     @ManyToMany
     private Set<Member> likedMember;

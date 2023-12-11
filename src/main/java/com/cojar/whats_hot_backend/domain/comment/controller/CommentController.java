@@ -97,7 +97,8 @@ public class CommentController {
 
     @CommentApiResponse.Delete
     @DeleteMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity deleteComment(@PathVariable(value = "id") Long id) {
+    public ResponseEntity deleteComment(@PathVariable(value = "id") Long id,
+                                        @AuthenticationPrincipal User user) {
 
         ResData resData = ResData.of(
                 HttpStatus.OK,
@@ -106,6 +107,26 @@ public class CommentController {
                 linkTo(this.getClass())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/deleteComment").withRel("profile"));
+
+        return ResponseEntity.ok()
+                .body(resData);
+    }
+
+    @CommentApiResponse.Like
+    @PatchMapping(value = "/{id}/like", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity likeComment(@PathVariable(value = "id") Long id,
+                                      @AuthenticationPrincipal User user) {
+
+        Comment comment = this.commentService.getCommentById(id);
+
+        ResData resData = ResData.of(
+                HttpStatus.OK,
+                "S-04-05",
+                "댓글 좋아요 상태가 변경되었습니다",
+                CommentDto.of(comment),
+                linkTo(this.getClass()).slash(comment.getId())
+        );
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/likeComment").withRel("profile"));
 
         return ResponseEntity.ok()
                 .body(resData);

@@ -39,7 +39,8 @@ public @interface CommentApiResponse {
                                                     "createDate": "2023-12-11T23:51:54.839192",
                                                     "modifyDate": "2023-12-11T23:51:54.839192",
                                                     "author": "user1",
-                                                    "content": "댓글내용1"
+                                                    "content": "댓글내용1",
+                                                    "liked": 0
                                                 },
                                                 "_links": {
                                                     "self": {
@@ -81,7 +82,8 @@ public @interface CommentApiResponse {
                                                     "createDate": "2023-12-11T23:51:54.839192",
                                                     "modifyDate": "2023-12-11T23:51:54.839192",
                                                     "author": "user1",
-                                                    "content": "댓글내용1"
+                                                    "content": "댓글내용1",
+                                                    "liked": 0
                                                 },
                                                 "_links": {
                                                     "self": {
@@ -124,7 +126,8 @@ public @interface CommentApiResponse {
                                                     "createDate": "2023-12-11T23:51:54.839192",
                                                     "modifyDate": "2023-12-11T23:51:54.839192",
                                                     "author": "user1",
-                                                    "content": "댓글내용1"
+                                                    "content": "댓글내용1",
+                                                    "liked": 0
                                                 },
                                                 "_links": {
                                                     "self": {
@@ -178,5 +181,49 @@ public @interface CommentApiResponse {
             }
     )
     public @interface Delete {
+    }
+
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(
+            summary = "댓글 좋아요",
+            description = "성공 시 해당 댓글에 대한 요청 유처의 좋아요 상태를 변경한다",
+            security = @SecurityRequirement(name = "bearerAuth"),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "정상 응답",
+                            content = @Content(mediaType = MediaTypes.HAL_JSON_VALUE,
+                                    schema = @Schema(implementation = ResData.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "status": "OK",
+                                                "success": true,
+                                                "code": "S-04-05",
+                                                "message": "댓글 좋아요 상태가 변경되었습니다",
+                                                "data": {
+                                                    "id": 1,
+                                                    "createDate": "2023-12-11T23:51:54.839192",
+                                                    "modifyDate": "2023-12-11T23:51:54.839192",
+                                                    "author": "user1",
+                                                    "content": "댓글내용1",
+                                                    "liked": 0
+                                                },
+                                                "_links": {
+                                                    "self": {
+                                                        "href": "http://localhost:8080/api/comments/1"
+                                                    },
+                                                    "profile": {
+                                                        "href": "http://localhost:8080/swagger-ui/index.html#/Comment/likeComment"
+                                                    }
+                                                }
+                                            }
+                                            """
+                                    )
+                            )
+                    )
+            }
+    )
+    public @interface Like {
     }
 }

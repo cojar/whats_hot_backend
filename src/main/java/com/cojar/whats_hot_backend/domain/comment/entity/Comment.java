@@ -26,7 +26,8 @@ public class Comment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Review review;
 
-    private Long liked;
+    @Builder.Default
+    private Long liked = 0L;
 
     @ManyToMany
     private Set<Member> likedMember;
