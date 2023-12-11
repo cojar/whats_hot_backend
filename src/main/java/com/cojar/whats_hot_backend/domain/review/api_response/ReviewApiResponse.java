@@ -51,7 +51,7 @@ public @interface ReviewApiResponse {
                                                 },
                                                 "_links": {
                                                     "self": {
-                                                        "href": "http://localhost:8080/api/spots/1"
+                                                        "href": "http://localhost:8080/api/reviews/1"
                                                     },
                                                     "profile": {
                                                         "href": "http://localhost:8080/swagger-ui/index.html#/Review/createReview"
@@ -65,5 +65,92 @@ public @interface ReviewApiResponse {
             }
     )
     public @interface Create {
+    }
+
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(
+            summary = "리뷰 목록 조회",
+            description = "성공 시 요청한 리뷰 목록을 반환한다",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "정상 응답",
+                            content = @Content(mediaType = MediaTypes.HAL_JSON_VALUE,
+                                    schema = @Schema(implementation = ResData.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "status": "OK",
+                                                "success": true,
+                                                "code": "S-03-02",
+                                                "message": "요청하신 리뷰 목록을 반환합니다",
+                                                "data": {
+                                                    "list": [
+                                                        {
+                                                            "id": 1,
+                                                            "createDate": "2023-12-11T22:56:23.991229",
+                                                            "modifyDate": "2023-12-11T22:56:23.991229",
+                                                            "author": "user1",
+                                                            "visitDate": "2023-12-11T22:56:23.990797",
+                                                            "title": "리뷰제목1",
+                                                            "content": "리뷰내용1",
+                                                            "score": 4.5,
+                                                            "imageUri": [
+                                                                "image uri"
+                                                            ],
+                                                            "status": "public",
+                                                            "validated": true,
+                                                            "_links": {
+                                                                "self": {
+                                                                    "href": "http://localhost:8080/api/spots/1"
+                                                                }
+                                                            }
+                                                        },
+                                                        {
+                                                            "id": 2,
+                                                            "createDate": "2023-12-11T22:56:23.994093",
+                                                            "modifyDate": "2023-12-11T22:56:23.994093",
+                                                            "author": "user1",
+                                                            "visitDate": "2023-12-11T22:56:23.993971",
+                                                            "title": "리뷰제목2",
+                                                            "content": "리뷰내용2",
+                                                            "score": 4.5,
+                                                            "imageUri": [
+                                                                "image uri"
+                                                            ],
+                                                            "status": "public",
+                                                            "validated": true,
+                                                            "_links": {
+                                                                "self": {
+                                                                    "href": "http://localhost:8080/api/spots/2"
+                                                                }
+                                                            }
+                                                        }
+                                                    ],
+                                                    "page": 1,
+                                                    "size": 2,
+                                                    "firstPage": 1,
+                                                    "lastPage": 1,
+                                                    "first": true,
+                                                    "last": true,
+                                                    "totalPages": 1,
+                                                    "totalElements": 2
+                                                },
+                                                "_links": {
+                                                    "self": {
+                                                        "href": "http://localhost:8080/api/reviews?page=1&size=2"
+                                                    },
+                                                    "profile": {
+                                                        "href": "http://localhost:8080/swagger-ui/index.html#/Review/getReviewList"
+                                                    }
+                                                }
+                                            }
+                                            """
+                                    )
+                            )
+                    )
+            }
+    )
+    public @interface List {
     }
 }

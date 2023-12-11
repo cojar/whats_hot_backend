@@ -8,11 +8,14 @@ import com.cojar.whats_hot_backend.domain.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.review.request.ReviewRequest;
 import com.cojar.whats_hot_backend.domain.review.service.ReviewService;
 import com.cojar.whats_hot_backend.domain.spot.controller.SpotController;
+import com.cojar.whats_hot_backend.global.response.DataModel;
+import com.cojar.whats_hot_backend.global.response.PagedDataModel;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
@@ -21,10 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -55,10 +55,31 @@ public class ReviewController {
                 "S-03-01",
                 "리뷰 등록이 완료되었습니다",
                 ReviewDto.of(review),
-                linkTo(SpotController.class).slash(review.getSpot().getId())
+                linkTo(SpotController.class).slash(review.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/createReview").withRel("profile"));
         return ResponseEntity.created(resData.getSelfUri())
+                .body(resData);
+    }
+
+    @ReviewApiResponse.List
+    @GetMapping(consumes = MediaType.ALL_VALUE)
+    public ResponseEntity getReviewList(@RequestParam(value = "page", defaultValue = "1") int page,
+                                        @RequestParam(value = "size", defaultValue = "2") int size) {
+
+        Page<DataModel> reviewList = this.reviewService.getReviewList(page, size);
+
+        ResData resData = ResData.of(
+                HttpStatus.OK,
+                "S-03-02",
+                "요청하신 리뷰 목록을 반환합니다",
+                PagedDataModel.of(reviewList),
+                linkTo(this.getClass()).slash("?page=%s&size=%s".formatted(page, size))
+        );
+
+        // TODO: paged links with query; custom method
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/getReviewList").withRel("profile"));
+        return ResponseEntity.ok()
                 .body(resData);
     }
 }

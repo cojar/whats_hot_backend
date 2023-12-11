@@ -105,6 +105,8 @@ public class InitConfig {
 
             Review review1 = this.reviewService.create(user1, spot1, LocalDateTime.now(), "리뷰제목1", "리뷰내용1", 4.5, ReviewStatus.PUBLIC);
             SaveFile image10 = this.fileService.create(review1);
+            Review review2 = this.reviewService.create(user1, spot1, LocalDateTime.now(), "리뷰제목2", "리뷰내용2", 4.5, ReviewStatus.PUBLIC);
+            SaveFile image11 = this.fileService.create(review2);
         };
     }
 }
