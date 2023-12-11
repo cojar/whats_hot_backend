@@ -43,7 +43,7 @@ public @interface CommentApiResponse {
                                                 },
                                                 "_links": {
                                                     "self": {
-                                                        "href": "http://localhost:8080/api/spots/1"
+                                                        "href": "http://localhost:8080/api/comments/1"
                                                     },
                                                     "profile": {
                                                         "href": "http://localhost:8080/swagger-ui/index.html#/Comment/createComment"
@@ -57,5 +57,47 @@ public @interface CommentApiResponse {
             }
     )
     public @interface Create {
+    }
+
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(
+            summary = "댓글 단건 조회",
+            description = "성공 시 요청한 댓글 정보를 반환한다",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "정상 응답",
+                            content = @Content(mediaType = MediaTypes.HAL_JSON_VALUE,
+                                    schema = @Schema(implementation = ResData.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "status": "OK",
+                                                "success": true,
+                                                "code": "S-04-02",
+                                                "message": "요청하신 댓글 정보를 반환합니다",
+                                                "data": {
+                                                    "id": 1,
+                                                    "createDate": "2023-12-11T23:51:54.839192",
+                                                    "modifyDate": "2023-12-11T23:51:54.839192",
+                                                    "author": "user1",
+                                                    "content": "댓글내용1"
+                                                },
+                                                "_links": {
+                                                    "self": {
+                                                        "href": "http://localhost:8080/api/comments/1"
+                                                    },
+                                                    "profile": {
+                                                        "href": "http://localhost:8080/swagger-ui/index.html#/Comment/createComment"
+                                                    }
+                                                }
+                                            }
+                                            """
+                                    )
+                            )
+                    )
+            }
+    )
+    public @interface Detail {
     }
 }

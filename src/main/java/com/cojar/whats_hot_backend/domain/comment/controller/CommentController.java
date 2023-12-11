@@ -21,10 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -55,6 +52,25 @@ public class CommentController {
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/createComment").withRel("profile"));
         return ResponseEntity.created(resData.getSelfUri())
+                .body(resData);
+    }
+
+    @CommentApiResponse.Detail
+    @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity getComment(@PathVariable(value = "id") Long id) {
+
+        Comment comment = this.commentService.getCommentById(id);
+
+        ResData resData = ResData.of(
+                HttpStatus.OK,
+                "S-04-02",
+                "요청하신 댓글 정보를 반환합니다",
+                CommentDto.of(comment),
+                linkTo(this.getClass()).slash(comment.getId())
+        );
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/getComment").withRel("profile"));
+
+        return ResponseEntity.ok()
                 .body(resData);
     }
 }
