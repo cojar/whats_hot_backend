@@ -109,7 +109,7 @@ public class ReviewController {
                                        @PathVariable(value = "id") Long id,
                                        @AuthenticationPrincipal User user) {
 
-        Review review = this.reviewService.getReviewById(1L);
+        Review review = this.reviewService.getReviewById(id);
 
         ResData resData = ResData.of(
                 HttpStatus.OK,
@@ -119,6 +119,41 @@ public class ReviewController {
                 linkTo(this.getClass()).slash(review.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/updateReview").withRel("profile"));
+
+        return ResponseEntity.ok()
+                .body(resData);
+    }
+
+    @ReviewApiResponse.Delete
+    @DeleteMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity deleteReview(@PathVariable(value = "id") Long id) {
+
+        ResData resData = ResData.of(
+                HttpStatus.OK,
+                "S-03-05",
+                "리뷰 삭제가 완료되었습니다",
+                linkTo(this.getClass())
+        );
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/deleteReview").withRel("profile"));
+
+        return ResponseEntity.ok()
+                .body(resData);
+    }
+
+    @ReviewApiResponse.Like
+    @PatchMapping(value = "/{id}/like", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity likeReview(@PathVariable(value = "id") Long id) {
+
+        Review review = this.reviewService.getReviewById(id);
+
+        ResData resData = ResData.of(
+                HttpStatus.OK,
+                "S-03-06",
+                "리뷰 좋아요 상태가 변경되었습니다",
+                ReviewDto.of(review),
+                linkTo(this.getClass()).slash(review.getId())
+        );
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/likeReview").withRel("profile"));
 
         return ResponseEntity.ok()
                 .body(resData);
