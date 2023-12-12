@@ -12,21 +12,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class SpotService {
 
     private final SpotRepository spotRepository;
 
-    public boolean hasNoSpot() {
-        return this.spotRepository.count() == 0;
-    }
-
+    @Transactional
     public Spot create(Category category, String address, String contact, List<Hashtag> hashtags) {
 
         Spot spot = Spot.builder()

@@ -13,11 +13,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class ReviewService {
@@ -29,6 +31,7 @@ public class ReviewService {
                 .orElse(null);
     }
 
+    @Transactional
     public Review create(Member author, Spot spot, LocalDateTime visitDate, String title, String content, Double score, ReviewStatus status) {
 
         Review review = Review.builder()

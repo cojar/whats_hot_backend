@@ -5,13 +5,16 @@ import com.cojar.whats_hot_backend.domain.spot_module.menu_item.repository.MenuI
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class MenuItemService {
 
     private final MenuItemRepository menuItemRepository;
 
+    @Transactional
     public MenuItem create(String name, String price, Spot spot) {
 
         MenuItem menuItem = MenuItem.builder()

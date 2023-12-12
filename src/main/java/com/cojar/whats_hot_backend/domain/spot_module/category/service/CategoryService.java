@@ -4,17 +4,16 @@ import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.category.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public boolean hasNoCategory() {
-        return this.categoryRepository.count() == 0;
-    }
-
+    @Transactional
     public Category create(String name, Integer depth, Long parent_Id) {
 
         Category parent = this.categoryRepository.findById(parent_Id)

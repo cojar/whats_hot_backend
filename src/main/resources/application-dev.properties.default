@@ -1,6 +1,6 @@
 # JPA
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MariaDBDialect
-spring.jpa.hibernate.ddl-auto=create
+spring.jpa.hibernate.ddl-auto=update
 
 # DATABASE
 spring.datasource.url=jdbc:mariadb://127.0.0.1:3306/whats_hot?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimeZone=Asia/Seoul

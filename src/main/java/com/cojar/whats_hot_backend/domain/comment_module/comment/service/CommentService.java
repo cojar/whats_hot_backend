@@ -6,7 +6,9 @@ import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class CommentService {
@@ -18,6 +20,7 @@ public class CommentService {
                 .orElse(null);
     }
 
+    @Transactional
     public Comment create(Member author, Review review, String content, Comment tag) {
 
         Comment comment = Comment.builder()

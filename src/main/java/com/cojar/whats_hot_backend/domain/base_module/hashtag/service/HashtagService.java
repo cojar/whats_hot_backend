@@ -4,13 +4,16 @@ import com.cojar.whats_hot_backend.domain.base_module.hashtag.entity.Hashtag;
 import com.cojar.whats_hot_backend.domain.base_module.hashtag.repository.HashtagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class HashtagService {
 
     private final HashtagRepository hashtagRepository;
 
+    @Transactional
     public Hashtag create(String name) {
 
         Hashtag hashtag = Hashtag.builder()
@@ -20,9 +23,5 @@ public class HashtagService {
         this.hashtagRepository.save(hashtag);
 
         return hashtag;
-    }
-
-    public boolean hasNoHashtag() {
-        return this.hashtagRepository.count() == 0;
     }
 }

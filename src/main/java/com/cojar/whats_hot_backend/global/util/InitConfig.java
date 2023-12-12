@@ -19,6 +19,7 @@ import com.cojar.whats_hot_backend.domain.spot_module.menu_item.service.MenuItem
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,7 @@ import org.springframework.context.annotation.Configuration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class InitConfig {
@@ -42,6 +44,14 @@ public class InitConfig {
     @Bean
     public ApplicationRunner runner() {
         return args -> {
+
+            if (!this.memberService.hasNoMember()) {
+                log.info("데이터 초기화 미실행");
+                return;
+            }
+
+            log.info("데이터 초기화 실행");
+
             Member admin = this.memberService.signup("admin", "1234", "admin@test.com", List.of(MemberRole.ADMIN, MemberRole.USER));
             Member user1 = this.memberService.signup("user1", "1234", "user1@test.com", List.of(MemberRole.USER));
 

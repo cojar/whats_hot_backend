@@ -10,10 +10,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 
 import java.util.List;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class MemberService {
@@ -21,6 +23,10 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+
+    public boolean hasNoMember() {
+        return this.memberRepository.count() == 0;
+    }
 
     public Member getUserByUsername(String username) {
         return this.memberRepository.findByUsername(username)
@@ -63,10 +69,7 @@ public class MemberService {
         return null;
     }
 
-    public boolean hasNoMember() {
-        return this.memberRepository.count() == 0;
-    }
-
+    @Transactional
     public Member signup(String username, String password, String email, List<MemberRole> authorities) {
 
         Member member = Member.builder()
@@ -81,6 +84,7 @@ public class MemberService {
         return member;
     }
 
+    @Transactional
     public String getAccessToken(MemberRequest.Login loginReq) {
 
         Member member = this.memberRepository.findByUsername(loginReq.getUsername())
@@ -95,6 +99,7 @@ public class MemberService {
         return this.jwtProvider.genToken(member.toClaims(), 60 * 60 * 24 * 365); // 1년 유효 토큰 생성
     }
 
+    @Transactional
     public void logout(Member member) {
 
         member = member.toBuilder()
