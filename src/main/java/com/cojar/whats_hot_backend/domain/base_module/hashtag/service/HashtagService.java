@@ -21,4 +21,8 @@ public class HashtagService {
 
         return hashtag;
     }
+
+    public boolean hasNoHashtag() {
+        return this.hashtagRepository.count() == 0;
+    }
 }
