@@ -1,7 +1,7 @@
 package com.cojar.whats_hot_backend.global.security;
 
-import com.cojar.whats_hot_backend.domain.member.entity.Member;
-import com.cojar.whats_hot_backend.domain.member.repository.MemberRepository;
+import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
+import com.cojar.whats_hot_backend.domain.member_module.member.repository.MemberRepository;
 import com.cojar.whats_hot_backend.global.errors.exception.DataNotFoundException;
 import com.cojar.whats_hot_backend.global.jwt.JwtProvider;
 import jakarta.servlet.FilterChain;

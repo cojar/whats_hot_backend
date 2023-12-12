@@ -1,6 +1,6 @@
 package com.cojar.whats_hot_backend.global.response;
 
-import com.cojar.whats_hot_backend.domain.index.controller.IndexController;
+import com.cojar.whats_hot_backend.domain.index_module.index.controller.IndexController;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
