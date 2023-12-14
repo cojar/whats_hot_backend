@@ -7,11 +7,16 @@ import com.cojar.whats_hot_backend.domain.comment_module.comment.request.Comment
 import com.cojar.whats_hot_backend.domain.comment_module.comment.service.CommentService;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
+import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
+import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.controller.SpotController;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
@@ -33,15 +38,26 @@ public class CommentController {
 
     private final CommentService commentService;
     private final MemberService memberService;
+    private final ReviewService reviewService;
 
     @CommentApiResponse.Create
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity createComment(@Valid @RequestPart(value = "request") CommentRequest.CreateComment request, Errors errors,
+    @PostMapping(value = "",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "등록", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity createComment(@Valid @RequestBody CommentRequest.CreateComment request,
+                                        Errors errors,
                                         @AuthenticationPrincipal User user) {
 
         Member author = this.memberService.getUserByUsername(user.getUsername());
 
-        Comment comment = this.commentService.getCommentById(1L);
+        Review review = this.reviewService.getReviewById(request.getReviewId());
+
+        Comment tag = null;
+
+        if (request.getTagId() != null){
+            tag = this.commentService.getCommentById(request.getTagId());
+        }
+
+        Comment comment = this.commentService.create(author, review, request.getContent(), tag);
 
         ResData resData = ResData.of(
                 HttpStatus.CREATED,
