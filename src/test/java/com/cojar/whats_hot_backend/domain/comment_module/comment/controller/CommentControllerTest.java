@@ -1,6 +1,7 @@
 package com.cojar.whats_hot_backend.domain.comment_module.comment.controller;
 
 import com.cojar.whats_hot_backend.domain.comment_module.comment.entity.Comment;
+import com.cojar.whats_hot_backend.domain.comment_module.comment.service.CommentService;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,28 +34,29 @@ class CommentControllerTest extends BaseControllerTest {
   private ReviewService reviewService;
 
   @Autowired
+  private CommentService commentService;
+
+  @Autowired
   private JwtProvider jwtProvider;
 
   @Test
+  @Transactional
   @DisplayName("POST /api/comments")
   void createComment() throws Exception {
 
     // given
     Member member = memberService.getUserByUsername("user1");
 
-    Review review = reviewService.getReviewById(2L);
-
-    Comment comment = Comment.builder()
-        .author(member)
-        .review(review)
-        .content("댓글3")
-        .tag(null)
-        .build();
+    Review review = reviewService.getReviewById(1L);
 
     Map<String, Object> claims = new HashMap<>();
     claims.put("id", member.getId());
 
     String jwtToken = jwtProvider.genToken(claims, 1000);
+
+    Comment comment = commentService.create(member, review, "댓글내용2", null);
+
+    System.out.println("Created Comment ID: " + comment.getId());
 
     // when
     ResultActions resultActions = mockMvc
@@ -63,8 +66,8 @@ class CommentControllerTest extends BaseControllerTest {
                 .header("Authorization", "Bearer " + jwtToken)
                 .content("""
                         {
-                        "reviewId": 3,
-                        "content": "댓글3",
+                        "reviewId": 1,
+                        "content": "댓글내용2",
                         "tagId": null
                         }
                         """
@@ -81,7 +84,7 @@ class CommentControllerTest extends BaseControllerTest {
             .andExpect(jsonPath("$.data.createDate").exists())
             .andExpect(jsonPath("$.data.modifyDate").exists())
             .andExpect(jsonPath("$.data.author", is("user1")))
-            .andExpect(jsonPath("$.data.content", is("댓글3")))
+            .andExpect(jsonPath("$.data.content", is("댓글내용2")))
             .andExpect(jsonPath("$.data.liked", is(0)));
 
         boolean tokenValid = jwtProvider.verify(jwtToken);
