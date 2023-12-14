@@ -47,16 +47,10 @@ class CommentControllerTest extends BaseControllerTest {
     // given
     Member member = memberService.getUserByUsername("user1");
 
-    Review review = reviewService.getReviewById(1L);
-
     Map<String, Object> claims = new HashMap<>();
     claims.put("id", member.getId());
 
     String jwtToken = jwtProvider.genToken(claims, 1000);
-
-    Comment comment = commentService.create(member, review, "댓글내용2", null);
-
-    System.out.println("Created Comment ID: " + comment.getId());
 
     // when
     ResultActions resultActions = mockMvc
@@ -75,7 +69,7 @@ class CommentControllerTest extends BaseControllerTest {
         )
         .andDo(print());
 
-      // then
+    // then
         resultActions
             .andExpect(status().isCreated())
             .andExpect(handler().handlerType(CommentController.class))
