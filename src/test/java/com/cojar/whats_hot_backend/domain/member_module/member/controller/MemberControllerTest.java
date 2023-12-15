@@ -20,8 +20,8 @@ class MemberControllerTest extends BaseControllerTest {
     MemberService memberService;
 
     @Test
-    @DisplayName("get:/api/members/me - ok")
-    public void me_ok() throws Exception {
+    @DisplayName("get:/api/members/me - ok, S-01-04")
+    public void me_OK() throws Exception {
 
         // given
         String username = "user1";
@@ -54,5 +54,4 @@ class MemberControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.profile").exists())
         ;
     }
-
 }

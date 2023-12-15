@@ -3,6 +3,7 @@
 ## 23-12-15
 ### feature/get-api-members-me
 - [x] S-01-04 TC 작성
+- [x] README.md 개발로그 링크 dev tree로 변경
 
 ## 23-12-13
 - [x] 컨트롤러 묘듈 패키징
