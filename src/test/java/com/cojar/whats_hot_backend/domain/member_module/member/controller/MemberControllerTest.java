@@ -1,10 +1,8 @@
 package com.cojar.whats_hot_backend.domain.member_module.member.controller;
 
-import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
@@ -15,9 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class MemberControllerTest extends BaseControllerTest {
-
-    @Autowired
-    MemberService memberService;
 
     @Test
     @DisplayName("get:/api/members/me - ok, S-01-04")
