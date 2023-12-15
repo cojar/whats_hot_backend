@@ -1,25 +1,35 @@
 package com.cojar.whats_hot_backend.domain.member_module.member.controller;
 
+import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+<<<<<<< HEAD
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+=======
+import org.springframework.beans.factory.annotation.Autowired;
+>>>>>>> 6b6d16e (S-01-04 TC 작성)
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
+<<<<<<< HEAD
 import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+=======
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+>>>>>>> 6b6d16e (S-01-04 TC 작성)
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class MemberControllerTest extends BaseControllerTest {
 
+<<<<<<< HEAD
     @Test
     @DisplayName("post:/api/members/login - ok, S-01-02")
     public void login_OK() throws Exception {
@@ -179,6 +189,14 @@ class MemberControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("get:/api/members/me - ok, S-01-04")
     public void me_OK() throws Exception {
+=======
+    @Autowired
+    MemberService memberService;
+
+    @Test
+    @DisplayName("get:/api/members/me - ok")
+    public void me_ok() throws Exception {
+>>>>>>> 6b6d16e (S-01-04 TC 작성)
 
         // given
         String username = "user1";
@@ -211,4 +229,8 @@ class MemberControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.profile").exists())
         ;
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6b6d16e (S-01-04 TC 작성)
 }
