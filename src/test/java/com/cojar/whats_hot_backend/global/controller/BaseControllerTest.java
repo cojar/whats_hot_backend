@@ -1,8 +1,8 @@
 package com.cojar.whats_hot_backend.global.controller;
 
+import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Disabled;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,5 +24,5 @@ public class BaseControllerTest {
     protected ObjectMapper objectMapper;
 
     @Autowired
-    protected ModelMapper modelMapper;
+    protected MemberRequest.Login loginReq;
 }
