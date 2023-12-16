@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 23-12-16
+### feature/post-api-members-login
+- [x] S-01-02 TC 작성
+
 ## 23-12-15
 ### feature/get-api-members-me
 - [x] S-01-04 TC 작성
