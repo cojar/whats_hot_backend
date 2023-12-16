@@ -5,6 +5,7 @@
 - [x] S-01-02 TC 작성
 - [x] F-01-02-01 TC 작성
 - [x] F-01-02-02 TC 작성
+- [x] F-01-02-03 TC 작성
 
 ## 23-12-15
 ### feature/get-api-members-me
