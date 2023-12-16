@@ -3,6 +3,7 @@ package com.cojar.whats_hot_backend.domain.member_module.member.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import org.springframework.stereotype.Component;
 
 @Getter
 public class MemberRequest {
@@ -24,6 +25,7 @@ public class MemberRequest {
     }
 
     @Getter
+    @Component
     public static class Login {
 
         @Schema(example = "user1")
@@ -33,6 +35,13 @@ public class MemberRequest {
         @Schema(example = "1234")
         @NotBlank
         private String password;
+
+        public Login of(String username, String password) {
+            this.username = username;
+            this.password = password;
+
+            return this;
+        }
     }
 
     @Getter

@@ -1,5 +1,11 @@
 # What's Hot Dev-Log
 
+## 23-12-15
+### feature/get-api-members-me
+- [x] S-01-04 TC 작성
+- [x] README.md 개발로그 링크 dev tree로 변경
+- [x] 테스트 코드 MemberService 의존성 주입 부분 BaseControllerTest로 이전
+
 ## 23-12-13
 - [x] 컨트롤러 묘듈 패키징
 - [x] 컨트롤러 테스트 파일 생성
