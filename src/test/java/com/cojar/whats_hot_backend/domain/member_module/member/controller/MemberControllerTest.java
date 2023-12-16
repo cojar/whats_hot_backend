@@ -103,8 +103,8 @@ class MemberControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("post:/api/members/login - bad request user not exist, F-01-02-02")
-    public void login_BadRequest_UserNotExist() throws Exception {
+    @DisplayName("post:/api/members/login - bad request member not exist, F-01-02-02")
+    public void login_BadRequest_MemberNotExist() throws Exception {
 
         // given
         String username = "abcde";
@@ -135,7 +135,7 @@ class MemberControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].objectName").exists())
                 .andExpect(jsonPath("data[0].code").exists())
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
-                .andExpect(jsonPath("data[0].rejectedValue").value(""))
+                .andExpect(jsonPath("data[0].rejectedValue").value(username))
                 .andExpect(jsonPath("_links.index").exists())
         ;
     }
