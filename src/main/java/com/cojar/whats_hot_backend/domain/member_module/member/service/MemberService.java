@@ -49,7 +49,7 @@ public class MemberService {
         if (member == null) {
             return ResData.of(
                     HttpStatus.BAD_REQUEST,
-                    "F-01-02",
+                    "F-01-02-02",
                     "존재하지 않는 회원입니다"
             );
         }
