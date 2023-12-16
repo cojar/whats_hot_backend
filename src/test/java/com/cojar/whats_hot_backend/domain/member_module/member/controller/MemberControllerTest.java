@@ -176,6 +176,53 @@ class MemberControllerTest extends BaseControllerTest {
         ;
     }
 
+    @ParameterizedTest
+    @MethodSource("argsFor_login_BadRequest_InputValidation")
+    @DisplayName("post:/api/members/login - bad request input validation, F-01-02-01")
+    public void login_BadRequest_InputValidation() throws Exception {
+
+        // given
+        String username = "";
+        String password = "";
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(post("/api/members/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "username": "%s",
+                                    "password": "%s"
+                                }
+                                """.formatted(username, password).stripIndent())
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-01-02-01"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(""))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    private static Stream<Arguments> argsFor_login_BadRequest_InputValidation() {
+        return Stream.of(
+                Arguments.of("", ""),
+                Arguments.of("user1", ""),
+                Arguments.of("", "1234")
+        );
+    }
+
     @Test
     @DisplayName("get:/api/members/me - ok, S-01-04")
     public void me_OK() throws Exception {
