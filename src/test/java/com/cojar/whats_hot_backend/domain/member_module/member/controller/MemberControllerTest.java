@@ -30,28 +30,28 @@ class MemberControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = this.mockMvc
-                .perform(post("/api/members/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
+            .perform(post("/api/members/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
                                 {
                                     "username": "%s",
                                     "password": "%s"
                                 }
                                 """.formatted(username, password).stripIndent())
-                        .accept(MediaTypes.HAL_JSON)
-                )
-                .andDo(print());
+                .accept(MediaTypes.HAL_JSON)
+            )
+            .andDo(print());
 
         // then
         resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value("OK"))
-                .andExpect(jsonPath("success").value("true"))
-                .andExpect(jsonPath("code").value("S-01-02"))
-                .andExpect(jsonPath("message").exists())
-                .andExpect(jsonPath("data.accessToken").exists())
-                .andExpect(jsonPath("_links.self").exists())
-                .andExpect(jsonPath("_links.profile").exists())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("status").value("OK"))
+            .andExpect(jsonPath("success").value("true"))
+            .andExpect(jsonPath("code").value("S-01-02"))
+            .andExpect(jsonPath("message").exists())
+            .andExpect(jsonPath("data.accessToken").exists())
+            .andExpect(jsonPath("_links.self").exists())
+            .andExpect(jsonPath("_links.profile").exists())
         ;
     }
 
@@ -64,39 +64,39 @@ class MemberControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = this.mockMvc
-                .perform(post("/api/members/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
+            .perform(post("/api/members/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
                                 {
                                     "username": "%s",
                                     "password": "%s"
                                 }
                                 """.formatted(username, password).stripIndent())
-                        .accept(MediaTypes.HAL_JSON)
-                )
-                .andDo(print());
+                .accept(MediaTypes.HAL_JSON)
+            )
+            .andDo(print());
 
         // then
         resultActions
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("success").value("false"))
-                .andExpect(jsonPath("code").value("F-01-02-01"))
-                .andExpect(jsonPath("message").exists())
-                .andExpect(jsonPath("data[0].field").exists())
-                .andExpect(jsonPath("data[0].objectName").exists())
-                .andExpect(jsonPath("data[0].code").exists())
-                .andExpect(jsonPath("data[0].defaultMessage").exists())
-                .andExpect(jsonPath("data[0].rejectedValue").value(""))
-                .andExpect(jsonPath("_links.index").exists())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("status").value("BAD_REQUEST"))
+            .andExpect(jsonPath("success").value("false"))
+            .andExpect(jsonPath("code").value("F-01-02-01"))
+            .andExpect(jsonPath("message").exists())
+            .andExpect(jsonPath("data[0].field").exists())
+            .andExpect(jsonPath("data[0].objectName").exists())
+            .andExpect(jsonPath("data[0].code").exists())
+            .andExpect(jsonPath("data[0].defaultMessage").exists())
+            .andExpect(jsonPath("data[0].rejectedValue").value(""))
+            .andExpect(jsonPath("_links.index").exists())
         ;
     }
 
     private static Stream<Arguments> argsFor_login_BadRequest_InputValidation() {
         return Stream.of(
-                Arguments.of("", ""),
-                Arguments.of("user1", ""),
-                Arguments.of("", "1234")
+            Arguments.of("", ""),
+            Arguments.of("user1", ""),
+            Arguments.of("", "1234")
         );
     }
 
@@ -110,31 +110,31 @@ class MemberControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = this.mockMvc
-                .perform(post("/api/members/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
+            .perform(post("/api/members/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
                                 {
                                     "username": "%s",
                                     "password": "%s"
                                 }
                                 """.formatted(username, password).stripIndent())
-                        .accept(MediaTypes.HAL_JSON)
-                )
-                .andDo(print());
+                .accept(MediaTypes.HAL_JSON)
+            )
+            .andDo(print());
 
         // then
         resultActions
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("success").value("false"))
-                .andExpect(jsonPath("code").value("F-01-02-02"))
-                .andExpect(jsonPath("message").exists())
-                .andExpect(jsonPath("data[0].field").exists())
-                .andExpect(jsonPath("data[0].objectName").exists())
-                .andExpect(jsonPath("data[0].code").exists())
-                .andExpect(jsonPath("data[0].defaultMessage").exists())
-                .andExpect(jsonPath("data[0].rejectedValue").value(username))
-                .andExpect(jsonPath("_links.index").exists())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("status").value("BAD_REQUEST"))
+            .andExpect(jsonPath("success").value("false"))
+            .andExpect(jsonPath("code").value("F-01-02-02"))
+            .andExpect(jsonPath("message").exists())
+            .andExpect(jsonPath("data[0].field").exists())
+            .andExpect(jsonPath("data[0].objectName").exists())
+            .andExpect(jsonPath("data[0].code").exists())
+            .andExpect(jsonPath("data[0].defaultMessage").exists())
+            .andExpect(jsonPath("data[0].rejectedValue").value(username))
+            .andExpect(jsonPath("_links.index").exists())
         ;
     }
 
@@ -148,31 +148,31 @@ class MemberControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = this.mockMvc
-                .perform(post("/api/members/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
+            .perform(post("/api/members/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
                                 {
                                     "username": "%s",
                                     "password": "%s"
                                 }
                                 """.formatted(username, password).stripIndent())
-                        .accept(MediaTypes.HAL_JSON)
-                )
-                .andDo(print());
+                .accept(MediaTypes.HAL_JSON)
+            )
+            .andDo(print());
 
         // then
         resultActions
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("success").value("false"))
-                .andExpect(jsonPath("code").value("F-01-02-03"))
-                .andExpect(jsonPath("message").exists())
-                .andExpect(jsonPath("data[0].field").exists())
-                .andExpect(jsonPath("data[0].objectName").exists())
-                .andExpect(jsonPath("data[0].code").exists())
-                .andExpect(jsonPath("data[0].defaultMessage").exists())
-                .andExpect(jsonPath("data[0].rejectedValue").value(password))
-                .andExpect(jsonPath("_links.index").exists())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("status").value("BAD_REQUEST"))
+            .andExpect(jsonPath("success").value("false"))
+            .andExpect(jsonPath("code").value("F-01-02-03"))
+            .andExpect(jsonPath("message").exists())
+            .andExpect(jsonPath("data[0].field").exists())
+            .andExpect(jsonPath("data[0].objectName").exists())
+            .andExpect(jsonPath("data[0].code").exists())
+            .andExpect(jsonPath("data[0].defaultMessage").exists())
+            .andExpect(jsonPath("data[0].rejectedValue").value(password))
+            .andExpect(jsonPath("_links.index").exists())
         ;
     }
 
@@ -187,28 +187,28 @@ class MemberControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = this.mockMvc
-                .perform(get("/api/members/me")
-                        .header("Authorization", accessToken)
-                        .contentType(MediaType.ALL)
-                        .accept(MediaTypes.HAL_JSON)
-                )
-                .andDo(print());
+            .perform(get("/api/members/me")
+                .header("Authorization", accessToken)
+                .contentType(MediaType.ALL)
+                .accept(MediaTypes.HAL_JSON)
+            )
+            .andDo(print());
 
         // then
         resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value("OK"))
-                .andExpect(jsonPath("success").value("true"))
-                .andExpect(jsonPath("code").value("S-01-04"))
-                .andExpect(jsonPath("message").exists())
-                .andExpect(jsonPath("data.id").exists())
-                .andExpect(jsonPath("data.createDate").exists())
-                .andExpect(jsonPath("data.modifyDate").exists())
-                .andExpect(jsonPath("data.username").value("user1"))
-                .andExpect(jsonPath("data.email").exists())
-                .andExpect(jsonPath("data.authorities").exists())
-                .andExpect(jsonPath("_links.self").exists())
-                .andExpect(jsonPath("_links.profile").exists())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("status").value("OK"))
+            .andExpect(jsonPath("success").value("true"))
+            .andExpect(jsonPath("code").value("S-01-04"))
+            .andExpect(jsonPath("message").exists())
+            .andExpect(jsonPath("data.id").exists())
+            .andExpect(jsonPath("data.createDate").exists())
+            .andExpect(jsonPath("data.modifyDate").exists())
+            .andExpect(jsonPath("data.username").value("user1"))
+            .andExpect(jsonPath("data.email").exists())
+            .andExpect(jsonPath("data.authorities").exists())
+            .andExpect(jsonPath("_links.self").exists())
+            .andExpect(jsonPath("_links.profile").exists())
         ;
     }
 }
