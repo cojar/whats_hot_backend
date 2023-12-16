@@ -38,7 +38,7 @@ public class MemberService {
         if (errors.hasErrors()) {
             return ResData.of(
                     HttpStatus.BAD_REQUEST,
-                    "F-01-01",
+                    "F-01-02-01",
                     "요청 값이 올바르지 않습니다",
                     errors
             );
