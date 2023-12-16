@@ -215,14 +215,6 @@ class MemberControllerTest extends BaseControllerTest {
         ;
     }
 
-    private static Stream<Arguments> argsFor_login_BadRequest_InputValidation() {
-        return Stream.of(
-                Arguments.of("", ""),
-                Arguments.of("user1", ""),
-                Arguments.of("", "1234")
-        );
-    }
-
     @Test
     @DisplayName("get:/api/members/me - ok, S-01-04")
     public void me_OK() throws Exception {
