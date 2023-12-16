@@ -103,6 +103,38 @@ class MemberControllerTest extends BaseControllerTest {
     }
 
     @Test
+    @DisplayName("post:/api/members/login - bad request user not exist, F-01-02-02")
+    public void login_BadRequest_UserNotExist() throws Exception {
+
+        // given
+        String username = "abcde";
+        String password = "12345";
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(post("/api/members/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "username": "%s",
+                                    "password": "%s"
+                                }
+                                """.formatted(username, password).stripIndent())
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-01-02-02"))
+                .andExpect(jsonPath("message").exists())
+        ;
+    }
+
+    @Test
     @DisplayName("get:/api/members/me - ok, S-01-04")
     public void me_OK() throws Exception {
 
