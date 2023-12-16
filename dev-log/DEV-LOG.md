@@ -6,6 +6,7 @@
 - [x] F-01-02-01 TC 작성
 - [x] F-01-02-02 TC 작성
 - [x] F-01-02-03 TC 작성
+- [x] F-01-02-02; member not exist 부분 코드 수정
 
 ## 23-12-15
 ### feature/get-api-members-me

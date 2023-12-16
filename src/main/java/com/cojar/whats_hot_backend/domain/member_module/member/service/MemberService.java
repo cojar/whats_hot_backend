@@ -47,10 +47,14 @@ public class MemberService {
         Member member= this.memberRepository.findByUsername(loginReq.getUsername())
                 .orElse(null);
         if (member == null) {
+
+            errors.rejectValue("username", "not exist", "member does not exist");
+
             return ResData.of(
                     HttpStatus.BAD_REQUEST,
                     "F-01-02-02",
-                    "존재하지 않는 회원입니다"
+                    "존재하지 않는 회원입니다",
+                    errors
             );
         }
 
