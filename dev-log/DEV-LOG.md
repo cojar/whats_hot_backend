@@ -3,6 +3,7 @@
 ## 23-12-16
 ### feature/post-api-members-login
 - [x] S-01-02 TC 작성
+- [x] F-01-02-01 TC 작성
 
 ## 23-12-15
 ### feature/get-api-members-me
