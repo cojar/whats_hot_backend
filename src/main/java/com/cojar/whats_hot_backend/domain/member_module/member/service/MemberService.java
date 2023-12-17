@@ -38,7 +38,7 @@ public class MemberService {
         if (errors.hasErrors()) {
             return ResData.of(
                     HttpStatus.BAD_REQUEST,
-                    "F-01-01",
+                    "F-01-02-01",
                     "요청 값이 올바르지 않습니다",
                     errors
             );
@@ -47,10 +47,14 @@ public class MemberService {
         Member member= this.memberRepository.findByUsername(loginReq.getUsername())
                 .orElse(null);
         if (member == null) {
+
+            errors.rejectValue("username", "not exist", "member does not exist");
+
             return ResData.of(
                     HttpStatus.BAD_REQUEST,
-                    "F-01-02",
-                    "존재하지 않는 회원입니다"
+                    "F-01-02-02",
+                    "존재하지 않는 회원입니다",
+                    errors
             );
         }
 
@@ -60,7 +64,7 @@ public class MemberService {
 
             return ResData.of(
                     HttpStatus.BAD_REQUEST,
-                    "F-01-03",
+                    "F-01-02-03",
                     "비밀번호가 일치하지 않습니다",
                     errors
             );
