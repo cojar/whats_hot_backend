@@ -19,7 +19,6 @@ public class FileService {
     public SaveFile create(Spot spot) {
 
         SaveFile saveFile = SaveFile.builder()
-                .spot(spot != null ? spot : null)
                 .build();
 
         this.fileRepository.save(saveFile);
@@ -31,7 +30,6 @@ public class FileService {
     public SaveFile create(Review review) {
 
         SaveFile saveFile = SaveFile.builder()
-                .review(review != null ? review : null)
                 .build();
 
         this.fileRepository.save(saveFile);

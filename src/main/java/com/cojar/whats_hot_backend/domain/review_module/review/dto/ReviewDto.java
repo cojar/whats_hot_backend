@@ -49,7 +49,7 @@ public class ReviewDto {
         this.content = review.getContent();
         this.score = review.getScore();
         this.imageUri = review.getImages().stream()
-                .map(image -> image.toUri())
+                .map(image -> image.getImage().toUri())
                 .collect(Collectors.toList());
         this.status = review.getStatus().getType();
         this.validated = review.isValidated();

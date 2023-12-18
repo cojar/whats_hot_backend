@@ -3,6 +3,7 @@
 ## 23-12-18
 ### feature/base_module-file
 - [x] SaveFile 엔티티 수정
+- [x] ReviewImage, SpotImage 추가 및 릴레이션 정리
 
 ## 23-12-16
 ### feature/post-api-members-login

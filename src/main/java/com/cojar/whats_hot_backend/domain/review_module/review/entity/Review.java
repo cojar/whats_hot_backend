@@ -1,8 +1,8 @@
 package com.cojar.whats_hot_backend.domain.review_module.review.entity;
 
 import com.cojar.whats_hot_backend.domain.comment_module.comment.entity.Comment;
-import com.cojar.whats_hot_backend.domain.base_module.file.entity.SaveFile;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
+import com.cojar.whats_hot_backend.domain.review_module.review_image.entity.ReviewImage;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.global.jpa.BaseEntity;
 import jakarta.persistence.*;
@@ -36,7 +36,7 @@ public class Review extends BaseEntity {
     private Double score;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
-    private List<SaveFile> images;
+    private List<ReviewImage> images;
 
     @Enumerated(value = EnumType.STRING)
     private ReviewStatus status;

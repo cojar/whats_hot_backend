@@ -52,7 +52,7 @@ public class SpotDto {
                 .map(MenuItemDto::of)
                 .collect(Collectors.toList());
         this.imageUri = spot.getImages().stream()
-                .map(image -> image.toUri())
+                .map(image -> image.getImage().toUri())
                 .collect(Collectors.toList());
         this.reviews = spot.getReviews().stream()
                 .map(ReviewDto::of)
