@@ -1,11 +1,6 @@
 package com.cojar.whats_hot_backend.domain.comment_module.comment.controller;
 
-import com.cojar.whats_hot_backend.domain.comment_module.comment.entity.Comment;
-import com.cojar.whats_hot_backend.domain.comment_module.comment.service.CommentService;
-import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
-import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
-import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 
 import com.cojar.whats_hot_backend.global.jwt.JwtProvider;
@@ -15,9 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -31,12 +23,6 @@ class CommentControllerTest extends BaseControllerTest {
   private MemberService memberService;
 
   @Autowired
-  private ReviewService reviewService;
-
-  @Autowired
-  private CommentService commentService;
-
-  @Autowired
   private JwtProvider jwtProvider;
 
   @Test
@@ -45,19 +31,16 @@ class CommentControllerTest extends BaseControllerTest {
   void createComment() throws Exception {
 
     // given
-    Member member = memberService.getUserByUsername("user1");
-
-    Map<String, Object> claims = new HashMap<>();
-    claims.put("id", member.getId());
-
-    String jwtToken = jwtProvider.genToken(claims, 1000);
+    String username = "user1";
+    String password = "1234";
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
     // when
     ResultActions resultActions = mockMvc
         .perform(
             post("/api/comments")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", accessToken)
                 .content("""
                         {
                         "reviewId": 1,
@@ -81,8 +64,6 @@ class CommentControllerTest extends BaseControllerTest {
             .andExpect(jsonPath("$.data.content", is("댓글내용2")))
             .andExpect(jsonPath("$.data.liked", is(0)));
 
-        boolean tokenValid = jwtProvider.verify(jwtToken);
-        assertThat(tokenValid).isTrue();
   }
 
 }
