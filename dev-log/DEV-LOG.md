@@ -20,7 +20,7 @@
 - [x] F-04-01-01 TC 작성
 - [x] S-04-01 TC 수정
 - [x] F-04-01-02 TC 작성
-- [x] validate 성공 케이스 작성, MemberControllerTest @ParameterizedTest 부분 수정 
+- [x] validate 성공 케이스 작성, MemberControllerTest @ParameterizedTest 부분 수정
 
 ## 23-12-16
 ### feature/post-api-members-login
