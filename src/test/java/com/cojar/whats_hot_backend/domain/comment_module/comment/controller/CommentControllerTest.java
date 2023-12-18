@@ -33,7 +33,7 @@ class CommentControllerTest extends BaseControllerTest {
         .perform(
             post("/api/comments")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", "Bearer " + accessToken)
                 .content("""
                         {
                         "reviewId": 1,
