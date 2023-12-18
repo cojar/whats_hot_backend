@@ -7,3 +7,7 @@ spring.datasource.url=jdbc:mariadb://127.0.0.1:3306/whats_hot?useUnicode=true&ch
 spring.datasource.driverClassName=org.mariadb.jdbc.Driver
 spring.datasource.username={username}
 spring.datasource.password={password}
+
+# File
+file.root.path={directory.path}/file
+file.origin.path=/file

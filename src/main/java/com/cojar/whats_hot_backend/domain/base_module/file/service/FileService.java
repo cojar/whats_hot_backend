@@ -1,11 +1,13 @@
 package com.cojar.whats_hot_backend.domain.base_module.file.service;
 
-import com.cojar.whats_hot_backend.domain.base_module.file.entity.SaveFile;
+import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
+import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.repository.FileRepository;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,19 +15,25 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class FileService {
 
+    @Value("${file.root.path}")
+    private String root;
+
     private final FileRepository fileRepository;
 
     @Transactional
-    public SaveFile create(Spot spot) {
+    public _File create(Spot spot) {
 
-        SaveFile saveFile = SaveFile.builder()
+        _File saveFile = _File.builder()
                 .build();
 
         this.fileRepository.save(saveFile);
@@ -34,14 +42,40 @@ public class FileService {
     }
 
     @Transactional
-    public SaveFile create(Review review) {
+    public _File create(Review review) {
 
-        SaveFile saveFile = SaveFile.builder()
+        _File saveFile = _File.builder()
                 .build();
 
         this.fileRepository.save(saveFile);
 
         return saveFile;
+    }
+
+    @Transactional
+    public _File create(MultipartFile _file, FileDomain domain) throws IOException {
+
+        Map<String, Object> fileBits = this.getFileBits(_file);
+        String uuid = UUID.randomUUID().toString();
+        String name = uuid + "." + fileBits.get("ext");
+        String saveDirPath = root + File.separator + domain.getDomain();
+        String saveFilePath = saveDirPath + File.separator + name;
+
+        File target = new File(saveDirPath);
+        if (!target.exists()) target.mkdirs();
+        _file.transferTo(new File(saveFilePath));
+
+        _File file = _File.builder()
+                .domain(domain)
+                .uuid(uuid)
+                .name(_file.getOriginalFilename())
+                .size((Long) fileBits.get("size"))
+                .ext(fileBits.get("ext").toString())
+                .build();
+
+        this.fileRepository.save(file);
+
+        return file;
     }
 
     public ResData validate(MultipartFile file) {

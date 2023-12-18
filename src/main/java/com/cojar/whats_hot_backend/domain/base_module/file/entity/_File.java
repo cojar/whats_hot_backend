@@ -2,10 +2,8 @@ package com.cojar.whats_hot_backend.domain.base_module.file.entity;
 
 import com.cojar.whats_hot_backend.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Transient;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 
@@ -15,7 +13,7 @@ import java.io.File;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @Entity
-public class SaveFile extends BaseEntity {
+public class _File extends BaseEntity {
 
     private FileDomain domain;
 
@@ -27,11 +25,7 @@ public class SaveFile extends BaseEntity {
 
     private String ext;
 
-    @Value("${file.origin.path}")
-    @Transient
-    private String origin;
-
-    public String toUri() {
+    public String toUri(String origin) {
         return origin
                 + File.separator + this.domain.getDomain()
                 + File.separator + this.uuid + "." + this.ext;
