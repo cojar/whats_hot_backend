@@ -61,4 +61,39 @@ class FileServiceTest {
         assertThat(fieldError.getRejectedValue()).isEqualTo("aaa/%s".formatted(ext));
     }
 
+    @Test
+    @DisplayName("validate fail; extension, F-00-00-02")
+    public void validate_Fail_Extension() throws Exception {
+
+        // given
+        String name = "test";
+        String ext = "a";
+        Resource resource = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(name, ext));
+        MockMultipartFile _file = new MockMultipartFile(
+                "file",
+                "%s.%s".formatted(name, ext),
+                "image/%s".formatted(ext),
+                resource.getInputStream()
+        );
+
+        // when
+        ResData resData = this.fileService.validate(_file);
+
+        // then
+        assertThat(resData).isNotNull();
+        assertThat(resData.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resData.isSuccess()).isFalse();
+        assertThat(resData.getCode()).isEqualTo("F-00-00-02");
+        assertThat(resData.getMessage()).isEqualTo("JPG, JPEG, PNG 확장자만 업로드할 수 있습니다");
+        assertThat(resData.getData()).isInstanceOf(Errors.class);
+
+        Errors errors = (Errors) resData.getData();
+        FieldError fieldError = errors.getFieldErrors().get(0);
+
+        assertThat(fieldError.getField()).isEqualTo("contentType");
+        assertThat(fieldError.getObjectName()).isEqualTo("file");
+        assertThat(fieldError.getCode()).isEqualTo("not allowed");
+        assertThat(fieldError.getDefaultMessage()).isEqualTo("file extension is not allowed");
+        assertThat(fieldError.getRejectedValue()).isEqualTo("image/%s".formatted(ext));
+    }
 }

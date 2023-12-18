@@ -5,6 +5,7 @@
 - [x] SaveFile 엔티티 수정
 - [x] ReviewImage, SpotImage 추가 및 릴레이션 정리
 - [x] F-00-00-01 TC 작성
+- [x] F-00-00-02 TC 작성
 
 ## 23-12-16
 ### feature/post-api-members-login
