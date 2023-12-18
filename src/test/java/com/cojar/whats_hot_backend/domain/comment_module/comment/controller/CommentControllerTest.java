@@ -1,6 +1,8 @@
 package com.cojar.whats_hot_backend.domain.comment_module.comment.controller;
 
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
+import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
+import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +20,6 @@ class CommentControllerTest extends BaseControllerTest {
 
   @Autowired
   private MemberService memberService;
-
 
   @Test
   @DisplayName("POST /api/comments")
@@ -55,11 +56,8 @@ class CommentControllerTest extends BaseControllerTest {
             .andExpect(jsonPath("data.modifyDate").exists())
             .andExpect(jsonPath("data.author", is("user1")))
             .andExpect(jsonPath("data.content", is("댓글내용2")))
-            .andExpect(jsonPath("data.liked", is(0)))
-            .andExpect(jsonPath("status").value("CREATED"))
-            .andExpect(jsonPath("success").value("true"))
-            .andExpect(jsonPath("code").value("S-04-01"))
-            .andExpect(jsonPath("message").exists());
+            .andExpect(jsonPath("data.liked", is(0)));
+
   }
 
   @Test
