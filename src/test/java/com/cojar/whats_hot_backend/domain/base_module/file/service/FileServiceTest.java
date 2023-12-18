@@ -3,6 +3,9 @@ package com.cojar.whats_hot_backend.domain.base_module.file.service;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
@@ -12,6 +15,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,6 +29,35 @@ class FileServiceTest {
 
     @Autowired
     private ResourceLoader resourceLoader;
+
+    @ParameterizedTest
+    @MethodSource("argsFor_validate_Success")
+    @DisplayName("validate success")
+    public void validate_Success(String name, String ext) throws Exception {
+
+        // given
+        Resource resource = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(name, ext));
+        MockMultipartFile _file = new MockMultipartFile(
+                "file",
+                "%s.%s".formatted(name, ext),
+                "image/%s".formatted(ext),
+                resource.getInputStream()
+        );
+
+        // when
+        ResData resData = this.fileService.validate(_file);
+
+        // then
+        assertThat(resData).isNull();
+    }
+
+    private static Stream<Arguments> argsFor_validate_Success() {
+        return Stream.of(
+                Arguments.of("test", "jpg"),
+                Arguments.of("test", "jpeg"),
+                Arguments.of("test", "png")
+        );
+    }
 
     @Test
     @DisplayName("validate fail; content type, F-00-00-01")
