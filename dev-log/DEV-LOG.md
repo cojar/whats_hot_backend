@@ -1,12 +1,28 @@
 # What's Hot Dev-Log
 
 ## 23-12-18
-- [x] post:/api/comments 테스트 케이스 jwt 발급 및 인증 방식 변경
+### feature/post-api-comments
+- [x] post:/api/comments review not exist 부분 코드 추가
+- [x] F-04-01-01 TC 작성
+- [x] S-04-01 TC 수정
 
 ## 23-12-14
-- [x] post:/api/comments 컨트롤러, 서비스 및 테스트 작업
-- [x] post:/api/comments 테스트 케이스 수정
-- [x] post:/api/comments 테스트 케이스 오류 확인을 위한 메서드 삭제
+- [x] post:/api/comments 컨트롤러, 서비스 작업
+- [x] S-04-01 TC 작성
+
+## 23-12-16
+### feature/post-api-members-login
+- [x] S-01-02 TC 작성
+- [x] F-01-02-01 TC 작성
+- [x] F-01-02-02 TC 작성
+- [x] F-01-02-03 TC 작성
+- [x] F-01-02-02; member not exist 부분 코드 수정
+
+## 23-12-15
+### feature/get-api-members-me
+- [x] S-01-04 TC 작성
+- [x] README.md 개발로그 링크 dev tree로 변경
+- [x] 테스트 코드 MemberService 의존성 주입 부분 BaseControllerTest로 이전
 
 ## 23-12-13
 - [x] 컨트롤러 묘듈 패키징

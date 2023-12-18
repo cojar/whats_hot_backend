@@ -51,6 +51,20 @@ public class CommentController {
 
         Review review = this.reviewService.getReviewById(request.getReviewId());
 
+        if (review == null) {
+            errors.rejectValue("reviewId", "not exist", "존재하지 않는 리뷰입니다.");
+
+            ResData resData = ResData.of(
+                HttpStatus.BAD_REQUEST,
+                "F-04-01-01",
+                "존재하지 않는 리뷰입니다.",
+                errors
+            );
+            resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/createComment").withRel("profile"));
+            return ResponseEntity.badRequest().body(resData);
+        }
+
+
         Comment tag = null;
 
         if (request.getTagId() != null){
