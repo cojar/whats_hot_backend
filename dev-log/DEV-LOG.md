@@ -1,5 +1,13 @@
 # What's Hot Dev-Log
 
+## 23-12-18
+- [x] post:/api/comments 테스트 케이스 jwt 발급 및 인증 방식 변경
+
+## 23-12-14
+- [x] post:/api/comments 컨트롤러, 서비스 및 테스트 작업
+- [x] post:/api/comments 테스트 케이스 수정
+- [x] post:/api/comments 테스트 케이스 오류 확인을 위한 메서드 삭제
+
 ## 23-12-13
 - [x] 컨트롤러 묘듈 패키징
 - [x] 컨트롤러 테스트 파일 생성
