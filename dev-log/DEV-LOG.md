@@ -5,6 +5,7 @@
 - [x] post:/api/comments review not exist 부분 코드 추가
 - [x] F-04-01-01 TC 작성
 - [x] S-04-01 TC 수정
+- [x] F-04-01-02 TC 작성
 
 ## 23-12-14
 - [x] post:/api/comments 컨트롤러, 서비스 작업
