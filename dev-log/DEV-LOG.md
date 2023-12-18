@@ -8,6 +8,7 @@
 - [x] F-00-00-02 TC 작성
 - [x] validate 성공 케이스 작성, MemberControllerTest @ParameterizedTest 부분 수정
 - [x] create 성공 TC 작성
+- [x] 일부 오류 제거
 
 ## 23-12-16
 ### feature/post-api-members-login
