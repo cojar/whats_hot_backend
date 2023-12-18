@@ -58,7 +58,7 @@ public class CommentController {
 
         Comment comment = this.commentService.create(author, review, request.getContent(), tag);
 
-         resData = ResData.of(
+        ResData.of(
                 HttpStatus.CREATED,
                 "S-04-01",
                 "댓글 등록이 완료되었습니다",
