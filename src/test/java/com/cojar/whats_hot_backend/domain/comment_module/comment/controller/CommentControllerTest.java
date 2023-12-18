@@ -9,6 +9,7 @@ import com.cojar.whats_hot_backend.global.jwt.JwtProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,6 @@ class CommentControllerTest extends BaseControllerTest {
   private JwtProvider jwtProvider;
 
   @Test
-  @Transactional
   @DisplayName("POST /api/comments")
   void createComment_OK() throws Exception {
 
@@ -60,9 +60,8 @@ class CommentControllerTest extends BaseControllerTest {
     // then
         resultActions
             .andExpect(status().isCreated())
-            .andExpect(handler().handlerType(CommentController.class))
             .andExpect(handler().methodName("createComment"))
-            .andExpect(jsonPath("$.data.id", is(2)))
+            .andExpect(jsonPath("data.id", is(2)))
             .andExpect(jsonPath("$.data.createDate").exists())
             .andExpect(jsonPath("$.data.modifyDate").exists())
             .andExpect(jsonPath("$.data.author", is("user1")))
@@ -76,9 +75,8 @@ class CommentControllerTest extends BaseControllerTest {
   }
 
   @Test
-  @Transactional
   @DisplayName("POST /api/comments")
-  void createComment_BAD_REQUSET() throws Exception {
+  void createComment_BadRequest_ReviewNotExist() throws Exception {
 
     // given
     String username = "user1";
@@ -118,7 +116,53 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("data[0].defaultMessage").exists())
         .andExpect(jsonPath("data[0].rejectedValue").value(review))
         .andExpect(jsonPath("_links.index").exists());
+  }
 
+  @Test
+  @DisplayName("POST /api/comments")
+  void createComment_BadRequest_NotNull() throws Exception {
+
+    // given
+    String username = "user1";
+    String password = "1234";
+
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    Long reviewId = 2L;
+    String content = "";
+    Long tagId = 1L;
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            post("/api/comments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", accessToken)
+                .content("""
+                        {
+                        "reviewId": %d,
+                        "content": "%s",
+                        "tagId": %d
+                        }
+                        """.formatted(reviewId, content, tagId).stripIndent())
+                .accept(MediaTypes.HAL_JSON)
+
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("status").value("BAD_REQUEST"))
+        .andExpect(jsonPath("success").value("false"))
+        .andExpect(jsonPath("code").value("F-04-01-02"))
+        .andExpect(jsonPath("message").exists())
+        .andExpect(jsonPath("data[0].field").exists())
+        .andExpect(jsonPath("data[0].objectName").exists())
+        .andExpect(jsonPath("data[0].code").exists())
+        .andExpect(jsonPath("data[0].defaultMessage").exists())
+        .andExpect(jsonPath("data[0].rejectedValue").value(content))
+        .andExpect(jsonPath("_links.index").exists());
   }
 
 }

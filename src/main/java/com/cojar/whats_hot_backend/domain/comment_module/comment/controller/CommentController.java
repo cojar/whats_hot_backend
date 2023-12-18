@@ -73,6 +73,19 @@ public class CommentController {
 
         Comment comment = this.commentService.create(author, review, request.getContent(), tag);
 
+        if (request.getContent().equals("") || request.getContent().trim().isEmpty()){
+            errors.rejectValue("content", "not exist", "댓글 내용을 작성해주세요.");
+
+            ResData resData = ResData.of(
+                HttpStatus.BAD_REQUEST,
+                "F-04-01-02",
+                "댓글 내용이 없습니다.",
+                errors
+            );
+            resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/createComment").withRel("profile"));
+            return ResponseEntity.badRequest().body(resData);
+        }
+
         ResData resData = ResData.of(
                 HttpStatus.CREATED,
                 "S-04-01",
