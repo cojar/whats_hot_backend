@@ -20,6 +20,7 @@
 - [x] F-04-01-01 TC 작성
 - [x] S-04-01 TC 수정
 - [x] F-04-01-02 TC 작성
+- [x] post:/api/comments 테스트 케이스 jwt 발급 및 인증 방식 변경
 - [x] validate 성공 케이스 작성, MemberControllerTest @ParameterizedTest 부분 수정
 
 ## 23-12-16
