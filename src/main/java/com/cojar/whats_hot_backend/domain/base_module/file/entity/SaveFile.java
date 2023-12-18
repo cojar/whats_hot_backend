@@ -1,13 +1,13 @@
 package com.cojar.whats_hot_backend.domain.base_module.file.entity;
 
-import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
-import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.io.File;
 
 @Getter
 @SuperBuilder(toBuilder = true)
@@ -17,23 +17,23 @@ import lombok.experimental.SuperBuilder;
 @Entity
 public class SaveFile extends BaseEntity {
 
-    private String primaryPath;
+    private FileDomain domain;
 
-    private String secondaryPath;
+    private String uuid;
 
-    private String uploader;
+    private String name;
 
-    private String date;
+    private Long size;
 
     private String ext;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Spot spot;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Review review;
+    @Value("${file.origin.path}")
+    @Transient
+    private String origin;
 
     public String toUri() {
-        return "image uri";
+        return origin
+                + File.separator + this.domain.getDomain()
+                + File.separator + this.uuid + "." + this.ext;
     }
 }

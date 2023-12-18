@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 23-12-18
+### feature/base_module-file
+- [x] SaveFile 엔티티 수정
+
 ## 23-12-16
 ### feature/post-api-members-login
 - [x] S-01-02 TC 작성
