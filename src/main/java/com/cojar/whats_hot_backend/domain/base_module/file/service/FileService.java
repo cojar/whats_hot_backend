@@ -61,6 +61,18 @@ public class FileService {
             );
         }
 
+        if (fileBits.get("ext").equals("etc")) {
+
+            errors.rejectValue("contentType", "not allowed", "file extension is not allowed");
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-00-00-02",
+                    "JPG, JPEG, PNG 확장자만 업로드할 수 있습니다",
+                    errors
+            );
+        }
+
         return null;
     }
 
