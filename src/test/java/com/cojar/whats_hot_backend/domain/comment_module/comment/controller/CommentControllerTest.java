@@ -19,6 +19,7 @@ class CommentControllerTest extends BaseControllerTest {
   @Autowired
   private MemberService memberService;
 
+
   @Test
   @DisplayName("POST /api/comments")
   void createComment_OK() throws Exception {
