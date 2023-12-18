@@ -39,6 +39,9 @@
 ### feature/post-api-comments
 - [x] post:/api/comments 컨트롤러, 서비스 작업
 - [x] S-04-01 TC 작성
+- [x] post:/api/comments 컨트롤러, 서비스 및 테스트 작업
+- [x] post:/api/comments 테스트 케이스 수정
+- [x] post:/api/comments 테스트 케이스 오류 확인을 위한 메서드 삭제
 
 ## 23-12-13
 - [x] 컨트롤러 묘듈 패키징
