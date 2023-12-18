@@ -1,6 +1,6 @@
 package com.cojar.whats_hot_backend.global.util;
 
-import com.cojar.whats_hot_backend.domain.base_module.file.entity.SaveFile;
+import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.base_module.hashtag.entity.Hashtag;
 import com.cojar.whats_hot_backend.domain.base_module.hashtag.service.HashtagService;
@@ -104,22 +104,22 @@ public class InitConfig {
             MenuItem menuItem8 = this.menuItemService.create("메뉴2", "20000원", spot3);
             MenuItem menuItem9 = this.menuItemService.create("메뉴3", "30000원", spot3);
 
-            SaveFile image1 = this.fileService.create(spot1);
-            SaveFile image2 = this.fileService.create(spot1);
-            SaveFile image3 = this.fileService.create(spot1);
+            _File image1 = this.fileService.create(spot1);
+            _File image2 = this.fileService.create(spot1);
+            _File image3 = this.fileService.create(spot1);
 
-            SaveFile image4 = this.fileService.create(spot2);
-            SaveFile image5 = this.fileService.create(spot2);
-            SaveFile image6 = this.fileService.create(spot2);
+            _File image4 = this.fileService.create(spot2);
+            _File image5 = this.fileService.create(spot2);
+            _File image6 = this.fileService.create(spot2);
 
-            SaveFile image7 = this.fileService.create(spot3);
-            SaveFile image8 = this.fileService.create(spot3);
-            SaveFile image9 = this.fileService.create(spot3);
+            _File image7 = this.fileService.create(spot3);
+            _File image8 = this.fileService.create(spot3);
+            _File image9 = this.fileService.create(spot3);
 
             Review review1 = this.reviewService.create(user1, spot1, LocalDateTime.now(), "리뷰제목1", "리뷰내용1", 4.5, ReviewStatus.PUBLIC);
-            SaveFile image10 = this.fileService.create(review1);
+            _File image10 = this.fileService.create(review1);
             Review review2 = this.reviewService.create(user1, spot1, LocalDateTime.now(), "리뷰제목2", "리뷰내용2", 4.5, ReviewStatus.PUBLIC);
-            SaveFile image11 = this.fileService.create(review2);
+            _File image11 = this.fileService.create(review2);
 
             Comment comment1 = this.commentService.create(user1, review1, "댓글내용1", null);
         };

@@ -1,6 +1,6 @@
 package com.cojar.whats_hot_backend.domain.review_module.review_image.entity;
 
-import com.cojar.whats_hot_backend.domain.base_module.file.entity.SaveFile;
+import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.global.jpa.BaseEntity;
 import jakarta.persistence.*;
@@ -19,5 +19,5 @@ public class ReviewImage extends BaseEntity {
     private Review review;
 
     @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private SaveFile image;
+    private _File image;
 }
