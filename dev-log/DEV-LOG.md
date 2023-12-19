@@ -4,6 +4,7 @@
 ### feature/post-api-comments
 - [x] create 작성
 - [x] S-04-01 TC 작성
+- [x] F-04-01-01 TC 작성
 
 ## 23-12-19
 ### feature/post-api-members

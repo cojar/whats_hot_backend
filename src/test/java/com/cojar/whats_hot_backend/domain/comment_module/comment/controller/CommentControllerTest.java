@@ -60,4 +60,43 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("message").exists());
   }
 
+  @Test
+  @DisplayName("POST /api/comments")
+  void createComment_BadRequest_ReviewNotExist() throws Exception {
+
+    // given
+    String username = "user1";
+    String password = "1234";
+
+    Long review = 3L;
+
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            post("/api/comments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", accessToken)
+                .content("""
+                        {
+                        "reviewId": 3,
+                        "content": "댓글내용2",
+                        "tagId": null
+                        }
+                        """
+                )
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("status").value("BAD_REQUEST"))
+        .andExpect(jsonPath("success").value("false"))
+        .andExpect(jsonPath("code").value("F-04-01-01"))
+        .andExpect(jsonPath("message").exists());
+  }
+
+
 }
