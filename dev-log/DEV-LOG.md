@@ -8,6 +8,7 @@
 - [x] F-01-01-02 TC 작성
 - [x] F-01-01-03 TC 작성
 - [x] F-01-01-04 TC 작성
+- [x] post:/api/members api 문서 수정
 
 ## 23-12-18
 ### feature/base_module-file
