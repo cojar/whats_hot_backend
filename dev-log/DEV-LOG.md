@@ -3,7 +3,10 @@
 ## 23-12-19
 ### feature/post-api-comments
 - [x] post:/api/comments validation service로 이전
+<<<<<<< HEAD
 - [x] post:/api/comments validation 수정
+=======
+>>>>>>> b3f824a (validation service로 이전)
 
 ## 23-12-18
 ### feature/base_module-file
@@ -23,11 +26,14 @@
 <<<<<<< HEAD
 =======
 
+<<<<<<< HEAD
 ## 23-12-14
 - [x] post:/api/comments 컨트롤러, 서비스 작업
 - [x] S-04-01 TC 작성
 >>>>>>> 33e7986 (F-04-01-02 TC 작성)
 
+=======
+>>>>>>> b3f824a (validation service로 이전)
 ## 23-12-16
 ### feature/post-api-members-login
 - [x] S-01-02 TC 작성
