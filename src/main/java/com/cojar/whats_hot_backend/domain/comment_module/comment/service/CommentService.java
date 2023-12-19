@@ -64,6 +64,17 @@ public class CommentService {
                 "존재하지 않는 리뷰입니다."
             );
         }
+
+        if (request.getContent().equals("") || request.getContent().trim().isEmpty()){
+            errors.rejectValue("content", "not exist", "댓글 내용을 작성해주세요.");
+
+           return ResData.of(
+                HttpStatus.BAD_REQUEST,
+                "F-04-01-02",
+                "댓글 내용이 없습니다.",
+                errors
+            );
+        }
         return null;
     }
 }
