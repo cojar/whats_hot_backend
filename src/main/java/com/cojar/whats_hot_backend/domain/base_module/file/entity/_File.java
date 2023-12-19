@@ -27,7 +27,7 @@ public class _File extends BaseEntity {
 
     public String toUri(String origin) {
         return origin
-                + File.separator + this.domain.getDomain()
-                + File.separator + this.uuid + "." + this.ext;
+            + File.separator + this.domain.getDomain()
+            + File.separator + this.uuid + "." + this.ext;
     }
 }

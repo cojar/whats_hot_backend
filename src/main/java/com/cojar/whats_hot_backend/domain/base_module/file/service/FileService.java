@@ -34,7 +34,7 @@ public class FileService {
     public _File create(Spot spot) {
 
         _File saveFile = _File.builder()
-                .build();
+            .build();
 
         this.fileRepository.save(saveFile);
 
@@ -45,7 +45,7 @@ public class FileService {
     public _File create(Review review) {
 
         _File saveFile = _File.builder()
-                .build();
+            .build();
 
         this.fileRepository.save(saveFile);
 
@@ -66,12 +66,12 @@ public class FileService {
         _file.transferTo(new File(saveFilePath));
 
         _File file = _File.builder()
-                .domain(domain)
-                .uuid(uuid)
-                .name(_file.getOriginalFilename())
-                .size((Long) fileBits.get("size"))
-                .ext(fileBits.get("ext").toString())
-                .build();
+            .domain(domain)
+            .uuid(uuid)
+            .name(_file.getOriginalFilename())
+            .size((Long) fileBits.get("size"))
+            .ext(fileBits.get("ext").toString())
+            .build();
 
         this.fileRepository.save(file);
 
@@ -88,10 +88,10 @@ public class FileService {
             errors.rejectValue("contentType", "not allowed", "content type is not allowed");
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-00-00-01",
-                    "이미지 형식만 업로드할 수 있습니다",
-                    errors
+                HttpStatus.BAD_REQUEST,
+                "F-00-00-01",
+                "이미지 형식만 업로드할 수 있습니다",
+                errors
             );
         }
 
@@ -100,10 +100,10 @@ public class FileService {
             errors.rejectValue("contentType", "not allowed", "file extension is not allowed");
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-00-00-02",
-                    "JPG, JPEG, PNG 확장자만 업로드할 수 있습니다",
-                    errors
+                HttpStatus.BAD_REQUEST,
+                "F-00-00-02",
+                "JPG, JPEG, PNG 확장자만 업로드할 수 있습니다",
+                errors
             );
         }
 
@@ -127,9 +127,9 @@ public class FileService {
         }
 
         return Map.of(
-                "type", type,
-                "ext", ext,
-                "size", file.getSize()
+            "type", type,
+            "ext", ext,
+            "size", file.getSize()
         );
     }
 }

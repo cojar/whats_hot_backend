@@ -42,14 +42,14 @@ public class MemberController {
         Member member = this.memberService.signup("aa", "aaa", "aaaa", List.of(MemberRole.USER));
 
         ResData resData = ResData.of(
-                HttpStatus.CREATED,
-                "S-01-01",
-                "회원가입을 완료했습니다",
-                linkTo(this.getClass()).slash("login")
+            HttpStatus.CREATED,
+            "S-01-01",
+            "회원가입을 완료했습니다",
+            linkTo(this.getClass()).slash("login")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/signup").withRel("profile"));
         return ResponseEntity.created(linkTo(this.getClass()).slash("me").toUri())
-                .body(resData);
+            .body(resData);
     }
 
     @MemberApiResponse.Login
@@ -62,15 +62,15 @@ public class MemberController {
         String accessToken = this.memberService.getAccessToken(loginReq);
 
         resData = ResData.of(
-                HttpStatus.OK,
-                "S-01-02",
-                "액세스 토큰이 생성되었습니다",
-                new MemberResponse.Login(accessToken),
-                linkTo(IndexController.class).slash("/api/index")
+            HttpStatus.OK,
+            "S-01-02",
+            "액세스 토큰이 생성되었습니다",
+            new MemberResponse.Login(accessToken),
+            linkTo(IndexController.class).slash("/api/index")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/login").withRel("profile"));
         return ResponseEntity.ok()
-                .body(resData);
+            .body(resData);
     }
 
     @MemberApiResponse.Logout
@@ -81,14 +81,14 @@ public class MemberController {
         this.memberService.logout(member);
 
         ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-01-03",
-                "로그아웃이 완료되었습니다",
-                linkTo(IndexController.class).slash("/api/index")
+            HttpStatus.OK,
+            "S-01-03",
+            "로그아웃이 완료되었습니다",
+            linkTo(IndexController.class).slash("/api/index")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/logout").withRel("profile"));
         return ResponseEntity.ok()
-                .body(resData);
+            .body(resData);
     }
 
     @MemberApiResponse.Me
@@ -98,15 +98,15 @@ public class MemberController {
         Member member = this.memberService.getUserByUsername(user.getUsername());
 
         ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-01-04",
-                "로그인된 회원 정보를 반환합니다",
-                new MemberResponse.Me(MemberDto.of(member)),
-                linkTo(this.getClass()).slash("me")
+            HttpStatus.OK,
+            "S-01-04",
+            "로그인된 회원 정보를 반환합니다",
+            new MemberResponse.Me(MemberDto.of(member)),
+            linkTo(this.getClass()).slash("me")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/me").withRel("profile"));
         return ResponseEntity.ok()
-                .body(resData);
+            .body(resData);
     }
 
     @MemberApiResponse.UpdatePassword
@@ -114,14 +114,14 @@ public class MemberController {
     public ResponseEntity updatePassword(@Valid @RequestBody MemberRequest.UpdatePassword updatePassword, @AuthenticationPrincipal User user) {
 
         ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-01-05",
-                "비밀번호 변경을 완료했습니다",
-                linkTo(this.getClass()).slash("me")
+            HttpStatus.OK,
+            "S-01-05",
+            "비밀번호 변경을 완료했습니다",
+            linkTo(this.getClass()).slash("me")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/updatePassword").withRel("profile"));
         return ResponseEntity.ok()
-                .body(resData);
+            .body(resData);
     }
 
     @MemberApiResponse.FindUsername
@@ -131,15 +131,15 @@ public class MemberController {
         String username = "user";
 
         ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-01-06",
-                "요청하신 아이디를 반환합니다",
-                new MemberResponse.FindUsername(username),
-                linkTo(this.getClass()).slash("login")
+            HttpStatus.OK,
+            "S-01-06",
+            "요청하신 아이디를 반환합니다",
+            new MemberResponse.FindUsername(username),
+            linkTo(this.getClass()).slash("login")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/findUsername").withRel("profile"));
         return ResponseEntity.ok()
-                .body(resData);
+            .body(resData);
     }
 
     @MemberApiResponse.FindPassword
@@ -147,14 +147,14 @@ public class MemberController {
     public ResponseEntity findPassword(@Valid @RequestBody MemberRequest.FindPassword findPassword) {
 
         ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-01-07",
-                "이메일로 임시비밀번호를 발송했습니다",
-                linkTo(this.getClass()).slash("login")
+            HttpStatus.OK,
+            "S-01-07",
+            "이메일로 임시비밀번호를 발송했습니다",
+            linkTo(this.getClass()).slash("login")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/findPassword").withRel("profile"));
         return ResponseEntity.ok()
-                .body(resData);
+            .body(resData);
     }
 
 
