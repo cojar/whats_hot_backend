@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 23-12-19
+### feature/post-api-members
+- [x] signup 엔드포인트 수정; post:/api/members
+
 ## 23-12-18
 ### feature/base_module-file
 - [x] SaveFile 엔티티 수정

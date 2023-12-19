@@ -36,7 +36,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @MemberApiResponse.Signup
-    @PostMapping(value = "/signup")
+    @PostMapping
     public ResponseEntity signup(@Valid @RequestBody MemberRequest.Signup signup, Errors errors) {
 
         Member member = this.memberService.signup("aa", "aaa", "aaaa", List.of(MemberRole.USER));
