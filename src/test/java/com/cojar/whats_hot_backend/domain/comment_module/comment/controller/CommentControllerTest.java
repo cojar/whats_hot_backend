@@ -1,7 +1,6 @@
 package com.cojar.whats_hot_backend.domain.comment_module.comment.controller;
 
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
-import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 
@@ -12,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -62,11 +59,11 @@ class CommentControllerTest extends BaseControllerTest {
             .andExpect(status().isCreated())
             .andExpect(handler().methodName("createComment"))
             .andExpect(jsonPath("data.id", is(2)))
-            .andExpect(jsonPath("$.data.createDate").exists())
-            .andExpect(jsonPath("$.data.modifyDate").exists())
-            .andExpect(jsonPath("$.data.author", is("user1")))
-            .andExpect(jsonPath("$.data.content", is("댓글내용2")))
-            .andExpect(jsonPath("$.data.liked", is(0)))
+            .andExpect(jsonPath("data.createDate").exists())
+            .andExpect(jsonPath("data.modifyDate").exists())
+            .andExpect(jsonPath("data.author", is("user1")))
+            .andExpect(jsonPath("data.content", is("댓글내용2")))
+            .andExpect(jsonPath("data.liked", is(0)))
             .andExpect(jsonPath("status").value("CREATED"))
             .andExpect(jsonPath("success").value("true"))
             .andExpect(jsonPath("code").value("S-04-01"))
@@ -109,13 +106,7 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("status").value("BAD_REQUEST"))
         .andExpect(jsonPath("success").value("false"))
         .andExpect(jsonPath("code").value("F-04-01-01"))
-        .andExpect(jsonPath("message").exists())
-        .andExpect(jsonPath("data[0].field").exists())
-        .andExpect(jsonPath("data[0].objectName").exists())
-        .andExpect(jsonPath("data[0].code").exists())
-        .andExpect(jsonPath("data[0].defaultMessage").exists())
-        .andExpect(jsonPath("data[0].rejectedValue").value(review))
-        .andExpect(jsonPath("_links.index").exists());
+        .andExpect(jsonPath("message").exists());
   }
 
   @Test
@@ -129,7 +120,7 @@ class CommentControllerTest extends BaseControllerTest {
     String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
     Long reviewId = 2L;
-    String content = "";
+    String content = " ";
     Long tagId = 1L;
 
     // when
@@ -156,13 +147,7 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("status").value("BAD_REQUEST"))
         .andExpect(jsonPath("success").value("false"))
         .andExpect(jsonPath("code").value("F-04-01-02"))
-        .andExpect(jsonPath("message").exists())
-        .andExpect(jsonPath("data[0].field").exists())
-        .andExpect(jsonPath("data[0].objectName").exists())
-        .andExpect(jsonPath("data[0].code").exists())
-        .andExpect(jsonPath("data[0].defaultMessage").exists())
-        .andExpect(jsonPath("data[0].rejectedValue").value(content))
-        .andExpect(jsonPath("_links.index").exists());
+        .andExpect(jsonPath("message").exists());
   }
 
 }

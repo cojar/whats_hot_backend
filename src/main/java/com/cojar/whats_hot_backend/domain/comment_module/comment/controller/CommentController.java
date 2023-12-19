@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
@@ -47,23 +46,13 @@ public class CommentController {
                                         Errors errors,
                                         @AuthenticationPrincipal User user) {
 
+        ResData resData = this.commentService.createValidate(request, errors);
+
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
+
         Member author = this.memberService.getUserByUsername(user.getUsername());
 
         Review review = this.reviewService.getReviewById(request.getReviewId());
-
-        if (review == null) {
-            errors.rejectValue("reviewId", "not exist", "존재하지 않는 리뷰입니다.");
-
-            ResData resData = ResData.of(
-                HttpStatus.BAD_REQUEST,
-                "F-04-01-01",
-                "존재하지 않는 리뷰입니다.",
-                errors
-            );
-            resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/createComment").withRel("profile"));
-            return ResponseEntity.badRequest().body(resData);
-        }
-
 
         Comment tag = null;
 
@@ -73,20 +62,7 @@ public class CommentController {
 
         Comment comment = this.commentService.create(author, review, request.getContent(), tag);
 
-        if (request.getContent().equals("") || request.getContent().trim().isEmpty()){
-            errors.rejectValue("content", "not exist", "댓글 내용을 작성해주세요.");
-
-            ResData resData = ResData.of(
-                HttpStatus.BAD_REQUEST,
-                "F-04-01-02",
-                "댓글 내용이 없습니다.",
-                errors
-            );
-            resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/createComment").withRel("profile"));
-            return ResponseEntity.badRequest().body(resData);
-        }
-
-        ResData resData = ResData.of(
+         resData = ResData.of(
                 HttpStatus.CREATED,
                 "S-04-01",
                 "댓글 등록이 완료되었습니다",

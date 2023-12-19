@@ -1,15 +1,15 @@
 # What's Hot Dev-Log
 
+## 23-12-19
+### feature/post-api-comments
+- [x] post:/api/comments validation service로 이전
+
 ## 23-12-18
 ### feature/post-api-comments
 - [x] post:/api/comments review not exist 부분 코드 추가
 - [x] F-04-01-01 TC 작성
 - [x] S-04-01 TC 수정
 - [x] F-04-01-02 TC 작성
-
-## 23-12-14
-- [x] post:/api/comments 컨트롤러, 서비스 작업
-- [x] S-04-01 TC 작성
 
 ## 23-12-16
 ### feature/post-api-members-login
@@ -24,6 +24,11 @@
 - [x] S-01-04 TC 작성
 - [x] README.md 개발로그 링크 dev tree로 변경
 - [x] 테스트 코드 MemberService 의존성 주입 부분 BaseControllerTest로 이전
+
+## 23-12-14
+### feature/post-api-comments
+- [x] post:/api/comments 컨트롤러, 서비스 작업
+- [x] S-04-01 TC 작성
 
 ## 23-12-13
 - [x] 컨트롤러 묘듈 패키징
