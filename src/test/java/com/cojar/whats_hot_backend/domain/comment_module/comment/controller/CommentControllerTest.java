@@ -5,6 +5,7 @@ import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -98,5 +99,45 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("message").exists());
   }
 
+  @Test
+  @DisplayName("POST /api/comments")
+  void createComment_BadRequest_NotNull() throws Exception {
+
+    // given
+    String username = "user1";
+    String password = "1234";
+
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    Long reviewId = 2L;
+    String content = "  ";
+    Long tagId = 1L;
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            post("/api/comments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", accessToken)
+                .content("""
+                        {
+                        "reviewId": %d,
+                        "content": "%s",
+                        "tagId": %d
+                        }
+                        """.formatted(reviewId, content, tagId).stripIndent())
+                .accept(MediaTypes.HAL_JSON)
+
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("status").value("BAD_REQUEST"))
+        .andExpect(jsonPath("success").value("false"))
+        .andExpect(jsonPath("code").value("F-04-01-02"))
+        .andExpect(jsonPath("message").exists());
+  }
 
 }
