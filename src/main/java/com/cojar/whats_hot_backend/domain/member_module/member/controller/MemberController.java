@@ -62,8 +62,6 @@ public class MemberController {
             member.updateProfileImage(_profileImage);
         }
 
-        //TODO: validation - request parts, unique issue
-
         resData = ResData.of(
                 HttpStatus.CREATED,
                 "S-01-01",

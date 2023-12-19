@@ -80,6 +80,18 @@ public class MemberService {
             );
         }
 
+        if (this.memberRepository.existsByEmail(request.getEmail())) {
+
+            errors.rejectValue("email", "unique violation", "email unique violation");
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-01-01-04",
+                    "이미 존재하는 이메일입니다",
+                    errors
+            );
+        }
+
         return null;
     }
 
