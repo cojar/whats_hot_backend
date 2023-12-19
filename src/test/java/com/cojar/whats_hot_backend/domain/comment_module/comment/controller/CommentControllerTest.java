@@ -9,8 +9,8 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -54,7 +54,11 @@ class CommentControllerTest extends BaseControllerTest {
             .andExpect(jsonPath("data.modifyDate").exists())
             .andExpect(jsonPath("data.author", is("user1")))
             .andExpect(jsonPath("data.content", is("댓글내용2")))
-            .andExpect(jsonPath("data.liked", is(0)));
+            .andExpect(jsonPath("data.liked", is(0)))
+            .andExpect(jsonPath("status").value("CREATED"))
+            .andExpect(jsonPath("success").value("true"))
+            .andExpect(jsonPath("code").value("S-04-01"))
+            .andExpect(jsonPath("message").exists());
 
   }
 
