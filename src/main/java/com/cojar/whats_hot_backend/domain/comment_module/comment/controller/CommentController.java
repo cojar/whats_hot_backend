@@ -54,11 +54,7 @@ public class CommentController {
 
         Review review = this.reviewService.getReviewById(request.getReviewId());
 
-        Comment tag = null;
-
-        if (request.getTagId() != null){
-            tag = this.commentService.getCommentById(request.getTagId());
-        }
+        Comment tag = (request.getTagId() != null) ? this.commentService.getCommentById(request.getTagId()) : null;
 
         Comment comment = this.commentService.create(author, review, request.getContent(), tag);
 

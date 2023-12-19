@@ -3,6 +3,7 @@
 ## 23-12-19
 ### feature/post-api-comments
 - [x] post:/api/comments validation service로 이전
+- [x] post:/api/comments validation 수정
 
 ## 23-12-18
 ### feature/post-api-comments
