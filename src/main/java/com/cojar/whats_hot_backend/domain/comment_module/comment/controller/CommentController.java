@@ -54,23 +54,11 @@ public class CommentController {
 
         Review review = this.reviewService.getReviewById(request.getReviewId());
 
-<<<<<<< HEAD
         Comment tag = (request.getTagId() != null) ? this.commentService.getCommentById(request.getTagId()) : null;
 
         Comment comment = this.commentService.create(author, review, request.getContent(), tag);
 
         ResData.of(
-=======
-        Comment tag = null;
-
-        if (request.getTagId() != null){
-            tag = this.commentService.getCommentById(request.getTagId());
-        }
-
-        Comment comment = this.commentService.create(author, review, request.getContent(), tag);
-
-         resData = ResData.of(
->>>>>>> b3f824a (validation service로 이전)
                 HttpStatus.CREATED,
                 "S-04-01",
                 "댓글 등록이 완료되었습니다",

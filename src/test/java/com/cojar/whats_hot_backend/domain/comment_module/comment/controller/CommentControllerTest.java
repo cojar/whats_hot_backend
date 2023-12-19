@@ -1,10 +1,6 @@
 package com.cojar.whats_hot_backend.domain.comment_module.comment.controller;
 
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
-<<<<<<< HEAD
-=======
-import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
->>>>>>> b3f824a (validation service로 이전)
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,13 +9,8 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-<<<<<<< HEAD
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-=======
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
->>>>>>> b3f824a (validation service로 이전)
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
