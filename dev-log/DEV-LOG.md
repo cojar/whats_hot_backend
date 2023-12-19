@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 23-12-20
+### feature/post-api-comments
+- [x] create 작성
+
 ## 23-12-19
 ### feature/post-api-members
 - [x] signup 엔드포인트 수정; post:/api/members
