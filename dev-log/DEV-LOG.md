@@ -1,5 +1,15 @@
 # What's Hot Dev-Log
 
+## 23-12-18
+### feature/base_module-file
+- [x] SaveFile 엔티티 수정
+- [x] ReviewImage, SpotImage 추가 및 릴레이션 정리
+- [x] F-00-00-01 TC 작성
+- [x] F-00-00-02 TC 작성
+- [x] validate 성공 케이스 작성, MemberControllerTest @ParameterizedTest 부분 수정
+- [x] create 성공 TC 작성
+- [x] 일부 오류 제거
+
 ## 23-12-16
 ### feature/post-api-members-login
 - [x] S-01-02 TC 작성

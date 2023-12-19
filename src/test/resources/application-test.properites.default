@@ -7,3 +7,7 @@ spring.datasource.url=jdbc:h2:mem:test;MODE=MariaDB
 spring.datasource.driverClassName=org.h2.Driver
 spring.datasource.username=
 spring.datasource.password=
+
+# File
+file.root.path={directory.path}/file
+file.origin.path=/file

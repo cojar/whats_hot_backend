@@ -58,11 +58,9 @@ class MemberControllerTest extends BaseControllerTest {
     @ParameterizedTest
     @MethodSource("argsFor_login_BadRequest_InputValidation")
     @DisplayName("post:/api/members/login - bad request input validation, F-01-02-01")
-    public void login_BadRequest_InputValidation() throws Exception {
+    public void login_BadRequest_InputValidation(String username, String password) throws Exception {
 
         // given
-        String username = "";
-        String password = "";
 
         // when
         ResultActions resultActions = this.mockMvc
