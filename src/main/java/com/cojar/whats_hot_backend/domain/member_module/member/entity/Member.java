@@ -1,5 +1,6 @@
 package com.cojar.whats_hot_backend.domain.member_module.member.entity;
 
+import com.cojar.whats_hot_backend.domain.member_module.member_image.entity.MemberImage;
 import com.cojar.whats_hot_backend.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,8 +29,12 @@ public class Member extends BaseEntity {
     @Column(unique = true)
     private String email;
 
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private MemberImage profileImage;
+
+    @Builder.Default
     @Enumerated(value = EnumType.STRING)
-    private MemberStatus memberStatus;
+    private MemberStatus memberStatus = MemberStatus.ACTIVE;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(value = EnumType.STRING)
@@ -50,5 +55,9 @@ public class Member extends BaseEntity {
                 "id", this.getId(),
                 "username", this.getUsername()
         );
+    }
+
+    public void updateProfileImage(MemberImage profileImage) {
+        this.profileImage = profileImage;
     }
 }

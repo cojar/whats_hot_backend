@@ -2,10 +2,9 @@ package com.cojar.whats_hot_backend.domain.review_module.review.dto;
 
 import com.cojar.whats_hot_backend.domain.comment_module.comment.dto.CommentDto;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.cojar.whats_hot_backend.global.util.AppConfig;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,10 +13,6 @@ import java.util.stream.Collectors;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 public class ReviewDto {
-
-    @JsonIgnore
-    @Value("${file.origin.path}")
-    private String origin;
 
     private final Long id;
 
@@ -55,7 +50,7 @@ public class ReviewDto {
         this.content = review.getContent();
         this.score = review.getScore();
         this.imageUri = review.getImages().stream()
-                .map(image -> image.getImage().toUri(origin))
+                .map(image -> image.getImage().toUri(AppConfig.getBaseFileURL()))
                 .collect(Collectors.toList());
         this.status = review.getStatus().getType();
         this.validated = review.isValidated();

@@ -8,6 +8,7 @@ import com.cojar.whats_hot_backend.domain.comment_module.comment.entity.Comment;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.service.CommentService;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.MemberRole;
+import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.ReviewStatus;
@@ -52,8 +53,20 @@ public class InitConfig {
 
             log.info("데이터 초기화 실행");
 
-            Member admin = this.memberService.signup("admin", "1234", "admin@test.com", List.of(MemberRole.ADMIN, MemberRole.USER));
-            Member user1 = this.memberService.signup("user1", "1234", "user1@test.com", List.of(MemberRole.USER));
+            Member admin = this.memberService.signup(
+                    MemberRequest.Signup.builder()
+                            .username("admin")
+                            .password("1234")
+                            .email("admin@test.com")
+                            .build(),
+                    List.of(MemberRole.ADMIN, MemberRole.USER));
+            Member user1 = this.memberService.signup(
+                    MemberRequest.Signup.builder()
+                            .username("user1")
+                            .password("1234")
+                            .email("user1@test.com")
+                            .build(),
+                    List.of(MemberRole.USER));
 
             Category category1 = this.categoryService.create("맛집", 1, -1L);
             Category category2 = this.categoryService.create("2차", 2, category1.getId());

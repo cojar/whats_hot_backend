@@ -1,24 +1,89 @@
 package com.cojar.whats_hot_backend.domain.member_module.member.controller;
 
+import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.core.io.Resource;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class MemberControllerTest extends BaseControllerTest {
+
+    @Test
+    @DisplayName("post:/api/members - ok, S-01-01")
+    public void signup_OK() throws Exception {
+
+        // given
+        String username = "tester";
+        String password = "1234";
+        String passwordConfirm = "1234";
+        String email = "tester@test.io";
+        MemberRequest.Signup request = MemberRequest.Signup.builder()
+                .username(username)
+                .password(password)
+                .passwordConfirm(passwordConfirm)
+                .email(email)
+                .build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        String name = "test";
+        String ext = "png";
+        Resource resource = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(name, ext));
+        MockMultipartFile _file = new MockMultipartFile(
+                "profileImage",
+                "%s.%s".formatted(name, ext),
+                MediaType.IMAGE_PNG_VALUE,
+                resource.getInputStream()
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.POST, "/api/members")
+                        .file(_request)
+                        .file(_file)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("status").value("CREATED"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-01-01"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data.id").exists())
+                .andExpect(jsonPath("data.createDate").exists())
+                .andExpect(jsonPath("data.modifyDate").exists())
+                .andExpect(jsonPath("data.username").value(username))
+                .andExpect(jsonPath("data.email").value(email))
+                .andExpect(jsonPath("data.profileImageUri").exists())
+                .andExpect(jsonPath("data.authorities[0]").value("user"))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+    }
 
     @Test
     @DisplayName("post:/api/members/login - ok, S-01-02")
