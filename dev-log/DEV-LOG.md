@@ -6,6 +6,7 @@
 - [x] S-01-01 TC 작성
 - [x] F-01-01-01 TC 작성
 - [x] F-01-01-02 TC 작성
+- [x] F-01-01-03 TC 작성
 
 ## 23-12-18
 ### feature/base_module-file

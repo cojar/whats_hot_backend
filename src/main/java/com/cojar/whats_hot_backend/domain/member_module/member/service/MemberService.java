@@ -63,7 +63,19 @@ public class MemberService {
             return ResData.of(
                     HttpStatus.BAD_REQUEST,
                     "F-01-01-02",
-                    "비밀번호가 서로 일치하지 않습니다",
+                    "비밀번호가 서로 일치하지 않습니",
+                    errors
+            );
+        }
+
+        if (this.memberRepository.existsByUsername(request.getUsername())) {
+
+            errors.rejectValue("username", "unique violation", "username unique violation");
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-01-01-03",
+                    "이미 존재하는 아이디입니다",
                     errors
             );
         }
