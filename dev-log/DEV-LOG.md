@@ -4,9 +4,13 @@
 ### feature/post-api-comments
 - [x] post:/api/comments validation service로 이전
 <<<<<<< HEAD
+<<<<<<< HEAD
 - [x] post:/api/comments validation 수정
 =======
 >>>>>>> b3f824a (validation service로 이전)
+=======
+- [x] post:/api/comments validation 수정
+>>>>>>> 2cd479f (validation 수정)
 
 ## 23-12-18
 ### feature/base_module-file
