@@ -49,12 +49,14 @@ public class MemberController {
     public ResponseEntity signup(@Valid @RequestPart(value = "request") MemberRequest.Signup request, Errors errors,
                                  @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
 
-        ResData resData;
+        ResData resData = this.memberService.signupValidate(request, errors);
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
 
         Member member = this.memberService.signup(request, List.of(MemberRole.USER));
 
         if (profileImage != null) {
             resData = this.fileService.validate(profileImage);
+            if (resData != null) return ResponseEntity.badRequest().body(resData);
             _File file = this.fileService.create(profileImage, FileDomain.MEMBER);
             MemberImage _profileImage = this.memberImageService.create(member, file);
             member.updateProfileImage(_profileImage);
