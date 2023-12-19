@@ -56,6 +56,18 @@ public class MemberService {
             );
         }
 
+        if (!request.getPassword().equals(request.getPasswordConfirm())) {
+
+            errors.rejectValue("passwordConfirm", "not matched", "passwordConfirm does not matched with password");
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-01-01-02",
+                    "비밀번호가 서로 일치하지 않습니다",
+                    errors
+            );
+        }
+
         return null;
     }
 

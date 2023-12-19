@@ -142,6 +142,65 @@ class MemberControllerTest extends BaseControllerTest {
         ;
     }
 
+    @Test
+    @DisplayName("post:/api/members - bad request password not matched, F-01-01-02")
+    public void signup_BadRequest_PasswordNotMatched() throws Exception {
+
+        // given
+        String username = "tester";
+        String password = "1234";
+        String passwordConfirm = "1235";
+        String email = "tester@test.io";
+
+        // given
+        MemberRequest.Signup request = MemberRequest.Signup.builder()
+                .username(username)
+                .password(password)
+                .passwordConfirm(passwordConfirm)
+                .email(email)
+                .build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        String name = "test";
+        String ext = "png";
+        Resource resource = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(name, ext));
+        MockMultipartFile _file = new MockMultipartFile(
+                "profileImage",
+                "%s.%s".formatted(name, ext),
+                MediaType.IMAGE_PNG_VALUE,
+                resource.getInputStream()
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.POST, "/api/members")
+                        .file(_request)
+                        .file(_file)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-01-01-02"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(passwordConfirm))
+        ;
+    }
+
     private static Stream<Arguments> argsFor_signup_BadRequest_NotBlank() {
         return Stream.of(
                 Arguments.of("", "1234", "1234", "tester@test.io"),

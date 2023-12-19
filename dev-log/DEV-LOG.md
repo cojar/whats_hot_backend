@@ -5,6 +5,7 @@
 - [x] signup 엔드포인트 수정; post:/api/members
 - [x] S-01-01 TC 작성
 - [x] F-01-01-01 TC 작성
+- [x] F-01-01-02 TC 작성
 
 ## 23-12-18
 ### feature/base_module-file
