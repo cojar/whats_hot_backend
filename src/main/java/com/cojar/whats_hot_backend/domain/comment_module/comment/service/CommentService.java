@@ -66,4 +66,16 @@ public class CommentService {
         }
         return null;
     }
+
+    public ResData getValidate(Comment comment) {
+
+        if (comment == null) {
+            return ResData.of(
+                HttpStatus.BAD_REQUEST,
+                "F-04-02-01",
+                "존재하지 않는 댓글입니다."
+            );
+        }
+        return null;
+    }
 }

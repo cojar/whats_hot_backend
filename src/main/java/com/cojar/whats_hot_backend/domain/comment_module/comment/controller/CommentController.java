@@ -73,7 +73,11 @@ public class CommentController {
 
         Comment comment = this.commentService.getCommentById(id);
 
-        ResData resData = ResData.of(
+        ResData resData = this.commentService.getValidate(comment);
+
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
+
+        resData = ResData.of(
                 HttpStatus.OK,
                 "S-04-02",
                 "요청하신 댓글 정보를 반환합니다",
