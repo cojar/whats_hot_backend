@@ -170,6 +170,9 @@ public class MemberController {
     @PostMapping(value = "/password")
     public ResponseEntity findPassword(@Valid @RequestBody MemberRequest.FindPassword request, Errors errors) {
 
+        ResData resData = this.memberService.findPasswordValidate(request, errors);
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
+
         Member member = this.memberService.getUserByUsernameAndEmail(request);
 
         String resetPassword = this.memberService.resetPassword(request, member);
@@ -177,7 +180,7 @@ public class MemberController {
 
         System.out.println(resetPassword);
 
-        ResData resData = ResData.of(
+        resData = ResData.of(
                 HttpStatus.OK,
                 "S-01-07",
                 "이메일로 임시비밀번호를 발송했습니다",

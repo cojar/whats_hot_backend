@@ -196,4 +196,18 @@ public class MemberService {
 
         return resetPassword;
     }
+
+    public ResData findPasswordValidate(MemberRequest.FindPassword request, Errors errors) {
+
+        if (errors.hasErrors()) {
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-01-07-01",
+                    "요청 값이 올바르지 않습니다",
+                    errors
+            );
+        }
+
+        return null;
+    }
 }

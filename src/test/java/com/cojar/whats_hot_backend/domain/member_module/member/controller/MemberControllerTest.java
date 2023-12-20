@@ -558,4 +558,47 @@ class MemberControllerTest extends BaseControllerTest {
         Member member = this.memberService.getUserByUsername(username);
         assertThat(this.passwordEncoder.matches(password, member.getPassword())).isFalse();
     }
+
+    @ParameterizedTest
+    @MethodSource("argsFor_findPassword_BadRequest_NotBlank")
+    @DisplayName("post:/api/members/password - bad request not blank, F-01-07-01")
+    public void findPassword_BadRequest_NotBlank(String username, String email) throws Exception {
+
+        // given
+        MemberRequest.FindPassword request = MemberRequest.FindPassword.builder()
+                .username(username)
+                .email(email)
+                .build();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(post("/api/members/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-01-07-01"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(""))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    private static Stream<Arguments> argsFor_findPassword_BadRequest_NotBlank() {
+        return Stream.of(
+                Arguments.of("", "user1@test.com"),
+                Arguments.of("user1", "")
+        );
+    }
 }

@@ -10,6 +10,7 @@
 ### feature/post-api-members-password
 - [x] S-01-07 TC 작성
 - [x] 임시 비밀번호 이메일 발송
+- [x] F-01-07-01 TC 작성
 
 ## 23-12-19
 ### feature/post-api-members
