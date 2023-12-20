@@ -1,5 +1,6 @@
 package com.cojar.whats_hot_backend.domain.member_module.member.controller;
 
+import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -518,5 +520,47 @@ class MemberControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
         ;
+    }
+
+    @Test
+    @DisplayName("patch:/api/members/password - ok, S-01-05")
+    public void updatePassword_OK() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+        String newPassword = "12345";
+        String newPasswordConfirm = "12345";
+        MemberRequest.UpdatePassword request = MemberRequest.UpdatePassword.builder()
+                .oldPassword(password)
+                .newPassword(newPassword)
+                .newPasswordConfirm(newPasswordConfirm)
+                .build();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(patch("/api/members/password")
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("OK"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-01-05"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+
+        Member member = this.memberService.getUserByUsername(username);
+        assertThat(this.passwordEncoder.matches(newPassword, member.getPassword())).isTrue();
     }
 }

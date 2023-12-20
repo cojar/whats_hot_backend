@@ -176,4 +176,14 @@ public class MemberService {
 
         return member;
     }
+
+    @Transactional
+    public void updatePassword(MemberRequest.UpdatePassword request, Member member) {
+
+        member = member.toBuilder()
+                .password(this.passwordEncoder.encode(request.getNewPassword()))
+                .build();
+
+        this.memberRepository.save(member);
+    }
 }

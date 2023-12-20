@@ -133,7 +133,10 @@ public class MemberController {
 
     @MemberApiResponse.UpdatePassword
     @PatchMapping(value = "/password")
-    public ResponseEntity updatePassword(@Valid @RequestBody MemberRequest.UpdatePassword updatePassword, @AuthenticationPrincipal User user) {
+    public ResponseEntity updatePassword(@Valid @RequestBody MemberRequest.UpdatePassword request, @AuthenticationPrincipal User user) {
+
+        Member member = this.memberService.getUserByUsername(user.getUsername());
+        this.memberService.updatePassword(request, member);
 
         ResData resData = ResData.of(
                 HttpStatus.OK,
