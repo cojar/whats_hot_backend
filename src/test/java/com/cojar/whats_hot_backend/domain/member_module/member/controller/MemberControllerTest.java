@@ -519,4 +519,37 @@ class MemberControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.profile").exists())
         ;
     }
+
+    @Test
+    @DisplayName("post:/api/members/username - ok, S-01-06")
+    public void findUsername_OK() throws Exception {
+
+        // given
+        String username = "user1";
+        String email = "user1@test.com";
+        MemberRequest.FindUsername request = MemberRequest.FindUsername.builder()
+                .email(email)
+                .build();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(post("/api/members/username")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("OK"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-01-06"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data.username").value(username))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+    }
 }

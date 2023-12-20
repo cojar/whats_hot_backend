@@ -148,15 +148,15 @@ public class MemberController {
 
     @MemberApiResponse.FindUsername
     @PostMapping(value = "/username")
-    public ResponseEntity findUsername(@Valid @RequestBody MemberRequest.FindUsername findUsername) {
+    public ResponseEntity findUsername(@Valid @RequestBody MemberRequest.FindUsername request, Errors errors) {
 
-        String username = "user";
+        Member member = this.memberService.getUserByEmail(request.getEmail());
 
         ResData resData = ResData.of(
                 HttpStatus.OK,
                 "S-01-06",
                 "요청하신 아이디를 반환합니다",
-                new MemberResponse.FindUsername(username),
+                new MemberResponse.FindUsername(member.getUsername()),
                 linkTo(this.getClass()).slash("login")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/findUsername").withRel("profile"));

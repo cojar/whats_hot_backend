@@ -176,4 +176,10 @@ public class MemberService {
 
         return member;
     }
+
+    public Member getUserByEmail(String email) {
+
+        return this.memberRepository.findByEmail(email)
+                .orElse(null);
+    }
 }

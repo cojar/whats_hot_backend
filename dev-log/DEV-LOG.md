@@ -7,6 +7,9 @@
 - [x] F-04-01-01 TC 작성
 - [x] F-04-01-02 TC 작성
 
+### feature/post-api-members-username
+- [x] S-01-06 TC 작성
+
 ## 23-12-19
 ### feature/post-api-members
 - [x] signup 엔드포인트 수정; post:/api/members
