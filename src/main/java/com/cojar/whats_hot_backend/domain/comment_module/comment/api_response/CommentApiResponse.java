@@ -1,7 +1,9 @@
 package com.cojar.whats_hot_backend.domain.comment_module.comment.api_response;
 
+import com.cojar.whats_hot_backend.domain.comment_module.comment.dto.CommentDto;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -102,6 +104,62 @@ public @interface CommentApiResponse {
     )
     public @interface Detail {
     }
+
+  @Target({ElementType.METHOD})
+  @Retention(RetentionPolicy.RUNTIME)
+  @Operation(
+      summary = "작성한 댓글 리스트 조회",
+      description = "성공 시 작성자가 작성한 댓글 리스트를 반환합니다",
+      security = @SecurityRequirement(name = "bearerAuth"),
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "정상 응답",
+              content = @Content(mediaType = MediaTypes.HAL_JSON_VALUE,
+                  array = @ArraySchema(schema = @Schema(implementation = CommentDto.class)),
+                  examples = @ExampleObject(value = """
+                                          [
+                                              {
+                                                  "id": 1,
+                                                  "createDate": "2023-12-11T23:51:54.839192",
+                                                  "modifyDate": "2023-12-11T23:51:54.839192",
+                                                  "author": "user1",
+                                                  "content": "댓글내용1",
+                                                  "liked": 0,
+                                                  "_links": {
+                                                      "self": {
+                                                          "href": "http://localhost:8080/api/comments/1"
+                                                      },
+                                                      "profile": {
+                                                          "href": "http://localhost:8080/swagger-ui/index.html#/Comment/getComment"
+                                                      }
+                                                  }
+                                              },
+                                              {
+                                                  "id": 2,
+                                                  "createDate": "2023-12-12T12:34:56.789012",
+                                                  "modifyDate": "2023-12-12T12:34:56.789012",
+                                                  "author": "user1",
+                                                  "content": "댓글내용2",
+                                                  "liked": 1,
+                                                  "_links": {
+                                                      "self": {
+                                                          "href": "http://localhost:8080/api/comments/2"
+                                                      },
+                                                      "profile": {
+                                                          "href": "http://localhost:8080/swagger-ui/index.html#/Comment/getComment"
+                                                      }
+                                                  }
+                                              }
+                                          ]
+                                          """
+                  )
+              )
+          )
+      }
+  )
+  public @interface Me {
+  }
 
     @Target({ElementType.METHOD})
     @Retention(RetentionPolicy.RUNTIME)

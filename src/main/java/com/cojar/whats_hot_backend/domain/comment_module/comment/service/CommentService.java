@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 
+import java.util.List;
+
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
@@ -77,5 +79,20 @@ public class CommentService {
             );
         }
         return null;
+    }
+
+    public ResData getMyValidate(List<Comment> comments) {
+        if (comments == null || comments.isEmpty()) {
+            return ResData.of(
+                HttpStatus.BAD_REQUEST,
+                "F-04-03-01",
+                "작성한 댓글이 없습니다."
+            );
+        }
+        return null;
+    }
+
+    public List<Comment> getCommentsByAuthor(Member author) {
+        return this.commentRepository.findCommentsByAuthor(author);
     }
 }
