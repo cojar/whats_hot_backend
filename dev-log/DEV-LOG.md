@@ -7,6 +7,7 @@
 - [x] F-04-02-01 TC 작성
 - [x] get comments/me 작성
 - [x] S-04-03 TC 작성
+- [x] F-04-03-01 TC 작성
 
 ### feature/post-api-comments
 - [x] create 작성
