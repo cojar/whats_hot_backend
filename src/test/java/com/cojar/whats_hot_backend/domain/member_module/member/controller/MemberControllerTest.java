@@ -613,4 +613,48 @@ class MemberControllerTest extends BaseControllerTest {
                 Arguments.of("1234", "12345", "")
         );
     }
+
+    @Test
+    @DisplayName("patch:/api/members/password - bad request old password not matched, F-01-05-02")
+    public void updatePassword_BadRequest_OldPasswordNotMatched() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+        String oldPassword = "1111";
+        String newPassword = "12345";
+        String newPasswordConfirm = "12345";
+        MemberRequest.UpdatePassword request = MemberRequest.UpdatePassword.builder()
+                .oldPassword(oldPassword)
+                .newPassword(newPassword)
+                .newPasswordConfirm(newPasswordConfirm)
+                .build();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(patch("/api/members/password")
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-01-05-02"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(oldPassword))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
 }

@@ -198,6 +198,18 @@ public class MemberService {
             );
         }
 
+        if (!this.passwordEncoder.matches(request.getOldPassword(), member.getPassword())) {
+
+            errors.rejectValue("oldPassword", "not matched", "oldPassword is not matched");
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-01-05-02",
+                    "기존 비밀번호가 일치하지 않습니다",
+                    errors
+            );
+        }
+
         return null;
     }
 }
