@@ -166,7 +166,11 @@ public class MemberController {
 
     @MemberApiResponse.FindPassword
     @PostMapping(value = "/password")
-    public ResponseEntity findPassword(@Valid @RequestBody MemberRequest.FindPassword findPassword) {
+    public ResponseEntity findPassword(@Valid @RequestBody MemberRequest.FindPassword request, Errors errors) {
+
+        Member member = this.memberService.getUserByUsernameAndEmail(request);
+
+        member = this.memberService.resetPassword(request, member);
 
         ResData resData = ResData.of(
                 HttpStatus.OK,
@@ -178,6 +182,4 @@ public class MemberController {
         return ResponseEntity.ok()
                 .body(resData);
     }
-
-
 }

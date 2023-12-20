@@ -7,6 +7,7 @@ import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberReq
 import com.cojar.whats_hot_backend.domain.member_module.member_image.entity.MemberImage;
 import com.cojar.whats_hot_backend.global.jwt.JwtProvider;
 import com.cojar.whats_hot_backend.global.response.ResData;
+import com.cojar.whats_hot_backend.global.util.AppConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -111,7 +112,7 @@ public class MemberService {
             );
         }
 
-        Member member= this.memberRepository.findByUsername(loginReq.getUsername())
+        Member member = this.memberRepository.findByUsername(loginReq.getUsername())
                 .orElse(null);
         if (member == null) {
 
@@ -170,6 +171,23 @@ public class MemberService {
 
         member = member.toBuilder()
                 .profileImage(profileImage)
+                .build();
+
+        this.memberRepository.save(member);
+
+        return member;
+    }
+
+    public Member getUserByUsernameAndEmail(MemberRequest.FindPassword request) {
+        return this.memberRepository.findByUsernameAndEmail(request.getUsername(), request.getEmail())
+                .orElse(null);
+    }
+
+    @Transactional
+    public Member resetPassword(MemberRequest.FindPassword request, Member member) {
+
+        member = member.toBuilder()
+                .password(this.passwordEncoder.encode(AppConfig.getRandomPassword()))
                 .build();
 
         this.memberRepository.save(member);

@@ -1,5 +1,6 @@
 package com.cojar.whats_hot_backend.domain.member_module.member.controller;
 
+import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -518,5 +520,42 @@ class MemberControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
         ;
+    }
+
+    @Test
+    @DisplayName("post:/api/members/password - ok, S-01-07")
+    public void findPassword_OK() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String email = "user1@test.com";
+        MemberRequest.FindPassword request = MemberRequest.FindPassword.builder()
+                .username(username)
+                .email(email)
+                .build();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(post("/api/members/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("OK"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-01-07"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+
+        Member member = this.memberService.getUserByUsername(username);
+        assertThat(this.passwordEncoder.matches(password, member.getPassword())).isFalse();
     }
 }

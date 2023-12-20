@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.security.SecureRandom;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -48,6 +49,21 @@ public class AppConfig {
 
     public static String getBaseFileURL() {
         return getBaseURL() + fileOriginPath;
+    }
+
+    public static String getRandomPassword() {
+
+        String candidateCode = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&";
+        SecureRandom secureRandom = new SecureRandom();
+
+        String code = "";
+        int len = 24;
+        for (int i = 0; i < len; i++) {
+            int index = secureRandom.nextInt(candidateCode.length());
+            code += candidateCode.charAt(index);
+        }
+
+        return code;
     }
 
     public static String toJson(Object object) {

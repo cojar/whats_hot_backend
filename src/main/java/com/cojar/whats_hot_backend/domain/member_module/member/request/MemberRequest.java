@@ -71,6 +71,9 @@ public class MemberRequest {
     }
 
     @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class FindPassword {
 
         @NotBlank
