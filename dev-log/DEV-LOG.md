@@ -3,7 +3,8 @@
 ## 23-12-20
 ### feature/get-api-comments
 - [x] S-04-02 TC 작성
-- [x] F-04-02-01; validate 작성 
+- [x] F-04-02-01; validate 작성
+- [x] F-04-02-01 TC 작성
 
 ### feature/post-api-comments
 - [x] create 작성
