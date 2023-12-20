@@ -194,6 +194,18 @@ public class MemberService {
             );
         }
 
+        if (!this.memberRepository.existsByEmail(request.getEmail())) {
+
+            errors.rejectValue("email", "not exist", "member that has email does not exist");
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-01-06-02",
+                    "해당 이메일을 보유한 회원이 존재하지 않습니다",
+                    errors
+            );
+        }
+
         return null;
     }
 }

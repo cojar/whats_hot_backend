@@ -10,6 +10,7 @@
 ### feature/post-api-members-username
 - [x] S-01-06 TC 작성
 - [x] F-01-06-01 TC 작성
+- [x] F-01-06-02 TC 작성
 
 ## 23-12-19
 ### feature/post-api-members
