@@ -17,6 +17,7 @@ import com.cojar.whats_hot_backend.domain.member_module.member_image.service.Mem
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Link;
@@ -168,15 +169,16 @@ public class MemberController {
 
     @MemberApiResponse.FindPassword
     @PostMapping(value = "/password")
-    public ResponseEntity findPassword(@Valid @RequestBody MemberRequest.FindPassword request, Errors errors) {
+    public ResponseEntity findPassword(@Valid @RequestBody MemberRequest.FindPassword request, Errors errors) throws MessagingException {
 
         ResData resData = this.memberService.findPasswordValidate(request, errors);
         if (resData != null) return ResponseEntity.badRequest().body(resData);
 
         Member member = this.memberService.getUserByUsernameAndEmail(request);
 
-        String resetPassword = this.memberService.resetPassword(request, member);
-        this.mailService.send(member.getEmail(), resetPassword, "임시 비밀번호");
+        String resetPassword = AppConfig.getRandomPassword();
+        this.mailService.send(member.getEmail(), resetPassword, "임시 비밀번호"); // exception 발생 시 저장 안 되도록
+        this.memberService.updatePassword(member, resetPassword);
 
         resData = ResData.of(
                 HttpStatus.OK,
