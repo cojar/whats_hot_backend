@@ -1,15 +1,14 @@
 # What's Hot Dev-Log
 
 ## 23-12-20
-### feature/post-api-members-logout
-- [x] S-01-03 TC 작성
-
-## 23-12-20
 ### feature/post-api-comments
 - [x] create 작성
 - [x] S-04-01 TC 작성
 - [x] F-04-01-01 TC 작성
 - [x] F-04-01-02 TC 작성
+
+### feature/post-api-members-logout
+- [x] S-01-03 TC 작성
 
 ## 23-12-19
 ### feature/post-api-members
