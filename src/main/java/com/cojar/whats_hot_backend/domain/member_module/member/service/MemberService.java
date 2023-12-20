@@ -184,14 +184,16 @@ public class MemberService {
     }
 
     @Transactional
-    public Member resetPassword(MemberRequest.FindPassword request, Member member) {
+    public String resetPassword(MemberRequest.FindPassword request, Member member) {
+
+        String resetPassword = AppConfig.getRandomPassword();
 
         member = member.toBuilder()
-                .password(this.passwordEncoder.encode(AppConfig.getRandomPassword()))
+                .password(this.passwordEncoder.encode(resetPassword))
                 .build();
 
         this.memberRepository.save(member);
 
-        return member;
+        return resetPassword;
     }
 }

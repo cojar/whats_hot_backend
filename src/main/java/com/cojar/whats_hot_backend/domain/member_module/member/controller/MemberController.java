@@ -3,6 +3,7 @@ package com.cojar.whats_hot_backend.domain.member_module.member.controller;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
+import com.cojar.whats_hot_backend.domain.base_module.mail.service.MailService;
 import com.cojar.whats_hot_backend.domain.index_module.index.controller.IndexController;
 import com.cojar.whats_hot_backend.domain.member_module.member.api_response.MemberApiResponse;
 import com.cojar.whats_hot_backend.domain.member_module.member.dto.MemberDto;
@@ -43,6 +44,7 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberImageService memberImageService;
     private final FileService fileService;
+    private final MailService mailService;
 
     @MemberApiResponse.Signup
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -170,7 +172,10 @@ public class MemberController {
 
         Member member = this.memberService.getUserByUsernameAndEmail(request);
 
-        member = this.memberService.resetPassword(request, member);
+        String resetPassword = this.memberService.resetPassword(request, member);
+        this.mailService.send(member.getEmail(), resetPassword, "임시 비밀번호");
+
+        System.out.println(resetPassword);
 
         ResData resData = ResData.of(
                 HttpStatus.OK,
