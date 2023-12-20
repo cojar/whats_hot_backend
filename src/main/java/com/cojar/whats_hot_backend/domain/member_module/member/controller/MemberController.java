@@ -178,8 +178,6 @@ public class MemberController {
         String resetPassword = this.memberService.resetPassword(request, member);
         this.mailService.send(member.getEmail(), resetPassword, "임시 비밀번호");
 
-        System.out.println(resetPassword);
-
         resData = ResData.of(
                 HttpStatus.OK,
                 "S-01-07",

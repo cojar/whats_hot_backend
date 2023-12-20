@@ -208,6 +208,24 @@ public class MemberService {
             );
         }
 
+        if (!this.memberRepository.existsByUsernameAndEmail(request.getUsername(), request.getEmail())) {
+
+            if (!this.memberRepository.existsByUsername(request.getUsername())) {
+                errors.rejectValue("username", "not exist", "member that has username does not exist");
+            }
+
+            if (!this.memberRepository.existsByEmail(request.getEmail())) {
+                errors.rejectValue("email", "not exist", "member that has email does not exist");
+            }
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-01-07-02",
+                    "해당 아이디 또는 이메일을 보유한 회원이 존재하지 않습니다",
+                    errors
+            );
+        }
+
         return null;
     }
 }
