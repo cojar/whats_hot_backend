@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -138,6 +138,37 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("success").value("false"))
         .andExpect(jsonPath("code").value("F-04-01-02"))
         .andExpect(jsonPath("message").exists());
+  }
+
+  @Test
+  @DisplayName("GET /api/comments/1")
+  void getComments_OK() throws Exception {
+
+    // given
+
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            get("/api/comments/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaTypes.HAL_JSON)
+
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("status").value("OK"))
+        .andExpect(jsonPath("success").value("true"))
+        .andExpect(jsonPath("code").value("S-04-02"))
+        .andExpect(jsonPath("message").exists())
+        .andExpect(jsonPath("data.id").value(1))
+        .andExpect(jsonPath("data.content").value("댓글내용1"))
+        .andExpect(jsonPath("data.createDate").exists())
+        .andExpect(jsonPath("data.modifyDate").exists())
+        .andExpect(jsonPath("data.author").value("user1"));
   }
 
 }
