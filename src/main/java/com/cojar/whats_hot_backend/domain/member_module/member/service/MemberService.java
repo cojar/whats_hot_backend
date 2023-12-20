@@ -210,6 +210,18 @@ public class MemberService {
             );
         }
 
+        if (!request.getNewPassword().equals(request.getNewPasswordConfirm())) {
+
+            errors.rejectValue("newPasswordConfirm", "not matched", "newPassword is not matched");
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-01-05-03",
+                    "새 비밀번호가 일치하지 않습니다",
+                    errors
+            );
+        }
+
         return null;
     }
 }

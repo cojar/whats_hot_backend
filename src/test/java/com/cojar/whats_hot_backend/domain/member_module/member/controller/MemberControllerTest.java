@@ -657,4 +657,53 @@ class MemberControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.index").exists())
         ;
     }
+
+    @ParameterizedTest
+    @MethodSource("argsFor_updatePassword_BadRequest_NewPasswordNotMatched")
+    @DisplayName("patch:/api/members/password - bad request new password not matched, F-01-05-03")
+    public void updatePassword_BadRequest_NewPasswordNotMatched(String newPassword, String newPasswordConfirm) throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+        MemberRequest.UpdatePassword request = MemberRequest.UpdatePassword.builder()
+                .oldPassword(password)
+                .newPassword(newPassword)
+                .newPasswordConfirm(newPasswordConfirm)
+                .build();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(patch("/api/members/password")
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-01-05-03"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(newPasswordConfirm))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    private static Stream<Arguments> argsFor_updatePassword_BadRequest_NewPasswordNotMatched() {
+        return Stream.of(
+                Arguments.of("12345", "123456"),
+                Arguments.of("123456", "12345")
+        );
+    }
 }
