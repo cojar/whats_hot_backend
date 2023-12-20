@@ -4,6 +4,7 @@ import com.cojar.whats_hot_backend.domain.base_module.hashtag.dto.HashtagDto;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.dto.MenuItemDto;
 import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
+import com.cojar.whats_hot_backend.global.util.AppConfig;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
@@ -58,7 +59,7 @@ public class SpotDto {
                 .map(MenuItemDto::of)
                 .collect(Collectors.toList());
         this.imageUri = spot.getImages().stream()
-                .map(image -> image.getImage().toUri(origin))
+                .map(image -> image.getImage().toUri(AppConfig.getBaseFileURL()))
                 .collect(Collectors.toList());
         this.reviews = spot.getReviews().stream()
                 .map(ReviewDto::of)

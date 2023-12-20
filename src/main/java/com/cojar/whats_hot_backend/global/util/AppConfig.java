@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,9 +14,16 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@Configuration
 @RequiredArgsConstructor
+@Configuration
 public class AppConfig {
+
+    private static String fileOriginPath;
+
+    @Value("${file.origin.path}")
+    public void setFileOriginPath(String fileOriginPath) {
+        AppConfig.fileOriginPath = fileOriginPath;
+    }
 
     @Bean
     public ModelMapper modelMapper() {
@@ -36,6 +44,10 @@ public class AppConfig {
 
     public static String getBaseURL() {
         return ServletUriComponentsBuilder.fromCurrentContextPath().toUriString();
+    }
+
+    public static String getBaseFileURL() {
+        return getBaseURL() + fileOriginPath;
     }
 
     public static String toJson(Object object) {

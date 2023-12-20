@@ -2,6 +2,8 @@ package com.cojar.whats_hot_backend.domain.base_module.file.entity;
 
 import com.cojar.whats_hot_backend.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -15,6 +17,7 @@ import java.io.File;
 @Entity
 public class _File extends BaseEntity {
 
+    @Enumerated(value = EnumType.STRING)
     private FileDomain domain;
 
     private String uuid;

@@ -33,6 +33,17 @@ public @interface MemberApiResponse {
                                                 "success": true,
                                                 "code": "S-01-01",
                                                 "message": "회원가입을 완료했습니다",
+                                                "data": {
+                                                    "id": 1,
+                                                    "createDate": "2023-12-20T01:33:52.377973",
+                                                    "modifyDate": "2023-12-20T01:33:52.377973",
+                                                    "username": "test",
+                                                    "email": "test@test.io",
+                                                    "profileImageUri": "http://localhost:8080/file/member/d6c2a791-bf1d-479d-ab7f-80d06148172b.png",
+                                                    "authorities": [
+                                                        "user"
+                                                    ]
+                                                },
                                                 "_links": {
                                                     "self": {
                                                         "href": "http://localhost:8080/api/members/login"

@@ -1,5 +1,9 @@
 package com.cojar.whats_hot_backend.domain.member_module.member.controller;
 
+import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
+import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
+import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
+import com.cojar.whats_hot_backend.domain.index_module.index.controller.IndexController;
 import com.cojar.whats_hot_backend.domain.member_module.member.api_response.MemberApiResponse;
 import com.cojar.whats_hot_backend.domain.member_module.member.dto.MemberDto;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
@@ -7,9 +11,10 @@ import com.cojar.whats_hot_backend.domain.member_module.member.entity.MemberRole
 import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
 import com.cojar.whats_hot_backend.domain.member_module.member.response.MemberResponse;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
+import com.cojar.whats_hot_backend.domain.member_module.member_image.entity.MemberImage;
+import com.cojar.whats_hot_backend.domain.member_module.member_image.service.MemberImageService;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
-import com.cojar.whats_hot_backend.domain.index_module.index.controller.IndexController;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +27,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -34,17 +41,32 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 public class MemberController {
 
     private final MemberService memberService;
+    private final MemberImageService memberImageService;
+    private final FileService fileService;
 
     @MemberApiResponse.Signup
-    @PostMapping(value = "/signup")
-    public ResponseEntity signup(@Valid @RequestBody MemberRequest.Signup signup, Errors errors) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity signup(@Valid @RequestPart(value = "request") MemberRequest.Signup request, Errors errors,
+                                 @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
 
-        Member member = this.memberService.signup("aa", "aaa", "aaaa", List.of(MemberRole.USER));
+        ResData resData = this.memberService.signupValidate(request, errors);
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
 
-        ResData resData = ResData.of(
+        Member member = this.memberService.signup(request, List.of(MemberRole.USER));
+
+        if (profileImage != null) {
+            resData = this.fileService.validate(profileImage);
+            if (resData != null) return ResponseEntity.badRequest().body(resData);
+            _File file = this.fileService.create(profileImage, FileDomain.MEMBER);
+            MemberImage _profileImage = this.memberImageService.create(member, file);
+            member.updateProfileImage(_profileImage);
+        }
+
+        resData = ResData.of(
                 HttpStatus.CREATED,
                 "S-01-01",
                 "회원가입을 완료했습니다",
+                MemberDto.of(member),
                 linkTo(this.getClass()).slash("login")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/signup").withRel("profile"));
