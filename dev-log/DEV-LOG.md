@@ -9,6 +9,7 @@
 
 ### feature/patch-api-members-password
 - [x] S-01-05 TC 작성
+- [x] F-01-05-01 TC 작성
 
 ## 23-12-19
 ### feature/post-api-members

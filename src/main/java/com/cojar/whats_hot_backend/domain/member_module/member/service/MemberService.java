@@ -186,4 +186,18 @@ public class MemberService {
 
         this.memberRepository.save(member);
     }
+
+    public ResData updatePasswordValidate(MemberRequest.UpdatePassword request, Member member, Errors errors) {
+
+        if (errors.hasErrors()) {
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-01-05-01",
+                    "요청 값이 올바르지 않습니다",
+                    errors
+            );
+        }
+
+        return null;
+    }
 }
