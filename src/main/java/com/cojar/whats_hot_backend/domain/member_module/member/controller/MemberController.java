@@ -150,9 +150,12 @@ public class MemberController {
     @PostMapping(value = "/username")
     public ResponseEntity findUsername(@Valid @RequestBody MemberRequest.FindUsername request, Errors errors) {
 
+        ResData resData = this.memberService.findUsernameValidate(request, errors);
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
+
         Member member = this.memberService.getUserByEmail(request.getEmail());
 
-        ResData resData = ResData.of(
+        resData = ResData.of(
                 HttpStatus.OK,
                 "S-01-06",
                 "요청하신 아이디를 반환합니다",

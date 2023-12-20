@@ -182,4 +182,18 @@ public class MemberService {
         return this.memberRepository.findByEmail(email)
                 .orElse(null);
     }
+
+    public ResData findUsernameValidate(MemberRequest.FindUsername request, Errors errors) {
+
+        if (errors.hasErrors()) {
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-01-06-01",
+                    "요청 값이 올바르지 않습니다",
+                    errors
+            );
+        }
+
+        return null;
+    }
 }
