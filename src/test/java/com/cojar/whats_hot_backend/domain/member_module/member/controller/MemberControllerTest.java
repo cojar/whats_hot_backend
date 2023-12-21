@@ -841,4 +841,196 @@ class MemberControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.index").exists())
         ;
     }
+
+    @Test
+    @DisplayName("post:/api/members/password - ok, S-01-07")
+    public void findPassword_OK() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String email = "user1@test.com";
+        MemberRequest.FindPassword request = MemberRequest.FindPassword.builder()
+                .username(username)
+                .email(email)
+                .build();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(post("/api/members/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("OK"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-01-07"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+
+        Member member = this.memberService.getUserByUsername(username);
+        assertThat(this.passwordEncoder.matches(password, member.getPassword())).isFalse();
+    }
+
+    @ParameterizedTest
+    @MethodSource("argsFor_findPassword_BadRequest_NotBlank")
+    @DisplayName("post:/api/members/password - bad request not blank, F-01-07-01")
+    public void findPassword_BadRequest_NotBlank(String username, String email) throws Exception {
+
+        // given
+        MemberRequest.FindPassword request = MemberRequest.FindPassword.builder()
+                .username(username)
+                .email(email)
+                .build();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(post("/api/members/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-01-07-01"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(""))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    private static Stream<Arguments> argsFor_findPassword_BadRequest_NotBlank() {
+        return Stream.of(
+                Arguments.of("", "user1@test.com"),
+                Arguments.of("user1", "")
+        );
+    }
+
+    @Test
+    @DisplayName("post:/api/members/password - bad request member not exist wrong all, F-01-07-02")
+    public void findPassword_BadRequest_MemberNotExist_WrongAll() throws Exception {
+
+        // given
+        String username = "test";
+        String email = "test@test.com";
+        MemberRequest.FindPassword request = MemberRequest.FindPassword.builder()
+                .username(username)
+                .email(email)
+                .build();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(post("/api/members/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-01-07-02"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(username))
+                .andExpect(jsonPath("data[1].rejectedValue").value(email))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    @Test
+    @DisplayName("post:/api/members/password - bad request member not exist wrong username, F-01-07-02")
+    public void findPassword_BadRequest_MemberNotExist_WrongUserName() throws Exception {
+
+        // given
+        String username = "test";
+        String email = "user1@test.com";
+        MemberRequest.FindPassword request = MemberRequest.FindPassword.builder()
+                .username(username)
+                .email(email)
+                .build();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(post("/api/members/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-01-07-02"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(username))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    @Test
+    @DisplayName("post:/api/members/password - bad request member not exist wrong email, F-01-07-02")
+    public void findPassword_BadRequest_MemberNotExist_WrongEmail() throws Exception {
+
+        // given
+        String username = "user1";
+        String email = "test@test.com";
+        MemberRequest.FindPassword request = MemberRequest.FindPassword.builder()
+                .username(username)
+                .email(email)
+                .build();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(post("/api/members/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-01-07-02"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(email))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
 }

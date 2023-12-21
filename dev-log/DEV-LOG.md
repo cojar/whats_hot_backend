@@ -21,6 +21,13 @@
 - [x] F-01-06-01 TC 작성
 - [x] F-01-06-02 TC 작성
 
+### feature/post-api-members-password
+- [x] S-01-07 TC 작성
+- [x] 임시 비밀번호 이메일 발송
+- [x] F-01-07-01 TC 작성
+- [x] F-01-07-02 TC 작성
+- [x] 이메일 발송 예외 시 임시 비밀번호 저장되지 않도록 변경
+
 ## 23-12-19
 ### feature/post-api-members
 - [x] signup 엔드포인트 수정; post:/api/members

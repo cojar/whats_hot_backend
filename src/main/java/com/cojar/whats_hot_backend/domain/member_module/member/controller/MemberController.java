@@ -3,6 +3,7 @@ package com.cojar.whats_hot_backend.domain.member_module.member.controller;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
+import com.cojar.whats_hot_backend.domain.base_module.mail.service.MailService;
 import com.cojar.whats_hot_backend.domain.index_module.index.controller.IndexController;
 import com.cojar.whats_hot_backend.domain.member_module.member.api_response.MemberApiResponse;
 import com.cojar.whats_hot_backend.domain.member_module.member.dto.MemberDto;
@@ -16,6 +17,7 @@ import com.cojar.whats_hot_backend.domain.member_module.member_image.service.Mem
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Link;
@@ -43,6 +45,7 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberImageService memberImageService;
     private final FileService fileService;
+    private final MailService mailService;
 
     @MemberApiResponse.Signup
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -177,9 +180,18 @@ public class MemberController {
 
     @MemberApiResponse.FindPassword
     @PostMapping(value = "/password")
-    public ResponseEntity findPassword(@Valid @RequestBody MemberRequest.FindPassword findPassword) {
+    public ResponseEntity findPassword(@Valid @RequestBody MemberRequest.FindPassword request, Errors errors) throws MessagingException {
 
-        ResData resData = ResData.of(
+        ResData resData = this.memberService.findPasswordValidate(request, errors);
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
+
+        Member member = this.memberService.getUserByUsernameAndEmail(request);
+
+        String resetPassword = AppConfig.getRandomPassword();
+        this.mailService.send(member.getEmail(), resetPassword, "임시 비밀번호"); // exception 발생 시 저장 안 되도록
+        this.memberService.updatePassword(member, resetPassword);
+
+        resData = ResData.of(
                 HttpStatus.OK,
                 "S-01-07",
                 "이메일로 임시비밀번호를 발송했습니다",
@@ -189,6 +201,4 @@ public class MemberController {
         return ResponseEntity.ok()
                 .body(resData);
     }
-
-
 }
