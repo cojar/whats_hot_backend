@@ -31,6 +31,11 @@ public class MemberService {
     }
 
     @Transactional
+    public Member save(Member member) {
+
+        return this.memberRepository.save(member);
+    }
+
     public Member signup(MemberRequest.Signup request, List<MemberRole> authorities) throws IOException {
 
         Member member = Member.builder()
@@ -39,8 +44,6 @@ public class MemberService {
                 .email(request.getEmail())
                 .authorities(authorities)
                 .build();
-
-        this.memberRepository.save(member);
 
         return member;
     }

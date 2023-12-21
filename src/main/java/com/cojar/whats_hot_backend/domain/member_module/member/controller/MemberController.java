@@ -65,6 +65,8 @@ public class MemberController {
             member.updateProfileImage(_profileImage);
         }
 
+        member = this.memberService.save(member);
+
         resData = ResData.of(
                 HttpStatus.CREATED,
                 "S-01-01",
