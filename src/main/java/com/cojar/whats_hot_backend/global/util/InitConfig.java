@@ -60,6 +60,7 @@ public class InitConfig {
                             .email("admin@test.com")
                             .build(),
                     List.of(MemberRole.ADMIN, MemberRole.USER));
+            this.memberService.save(admin);
             Member user1 = this.memberService.signup(
                     MemberRequest.Signup.builder()
                             .username("user1")
@@ -67,6 +68,7 @@ public class InitConfig {
                             .email("user1@test.com")
                             .build(),
                     List.of(MemberRole.USER));
+            this.memberService.save(user1);
 
             Category category1 = this.categoryService.create("맛집", 1, -1L);
             Category category2 = this.categoryService.create("2차", 2, category1.getId());

@@ -6,10 +6,14 @@
 - [x] S-04-02 TC 이전
 - [x] F-04-02-01 TC 이전
 
-### feature/get-api-commets
+### feature/get-api-comments
 - [x] getAllByAuthor 수정
 - [x] validate 수정
 - [x] get comments/id 분리
+
+### feature/post-api-members
+- [x] F-00-00-01 TC 작성
+- [x] F-00-00-02 TC 작성
 
 ## 23-12-20
 ### feature/get-api-comments
