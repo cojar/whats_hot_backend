@@ -4,6 +4,7 @@
 ### feature/get-api-comments-id
 - [x] get comments/id 작성
 - [x] S-04-02 TC 이전
+- [x] F-04-02-01 TC 이전
 
 ### feature/get-api-commets
 - [x] getAllByAuthor 수정
