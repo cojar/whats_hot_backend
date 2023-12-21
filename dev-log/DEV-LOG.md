@@ -3,6 +3,7 @@
 ## 23-12-21
 ### feature/get-api-comments-id
 - [x] get comments/id 작성
+- [x] S-04-02 TC 이전
 
 ### feature/get-api-commets
 - [x] getAllByAuthor 수정
