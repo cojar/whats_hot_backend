@@ -67,6 +67,9 @@ public class MemberRequest {
     }
 
     @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class FindUsername {
 
         @NotBlank

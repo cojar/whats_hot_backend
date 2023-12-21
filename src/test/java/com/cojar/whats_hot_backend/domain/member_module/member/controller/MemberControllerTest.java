@@ -23,7 +23,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberControllerTest extends BaseControllerTest {
 
@@ -738,5 +737,108 @@ class MemberControllerTest extends BaseControllerTest {
                 Arguments.of("12345", "123456"),
                 Arguments.of("123456", "12345")
         );
+    }
+
+    @Test
+    @DisplayName("post:/api/members/username - ok, S-01-06")
+    public void findUsername_OK() throws Exception {
+
+        // given
+        String username = "user1";
+        String email = "user1@test.com";
+        MemberRequest.FindUsername request = MemberRequest.FindUsername.builder()
+                .email(email)
+                .build();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(post("/api/members/username")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("OK"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-01-06"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data.username").value(username))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+    }
+
+    @Test
+    @DisplayName("post:/api/members/username - bad request not blank, F-01-06-01")
+    public void findUsername_BadRequest_NotBlank() throws Exception {
+
+        // given
+        String email = "";
+        MemberRequest.FindUsername request = MemberRequest.FindUsername.builder()
+                .email(email)
+                .build();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(post("/api/members/username")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-01-06-01"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(""))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    @Test
+    @DisplayName("post:/api/members/username - bad request member not exist, F-01-06-02")
+    public void findUsername_BadRequest_MemberNotExist() throws Exception {
+
+        // given
+        String email = "test@test.com";
+        MemberRequest.FindUsername request = MemberRequest.FindUsername.builder()
+                .email(email)
+                .build();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(post("/api/members/username")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-01-06-02"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(email))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
     }
 }

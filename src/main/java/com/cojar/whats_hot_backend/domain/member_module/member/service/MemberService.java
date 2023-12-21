@@ -111,7 +111,7 @@ public class MemberService {
             );
         }
 
-        Member member= this.memberRepository.findByUsername(loginReq.getUsername())
+        Member member = this.memberRepository.findByUsername(loginReq.getUsername())
                 .orElse(null);
         if (member == null) {
 
@@ -177,16 +177,6 @@ public class MemberService {
         return member;
     }
 
-    @Transactional
-    public void updatePassword(MemberRequest.UpdatePassword request, Member member) {
-
-        member = member.toBuilder()
-                .password(this.passwordEncoder.encode(request.getNewPassword()))
-                .build();
-
-        this.memberRepository.save(member);
-    }
-
     public ResData updatePasswordValidate(MemberRequest.UpdatePassword request, Member member, Errors errors) {
 
         if (errors.hasErrors()) {
@@ -223,5 +213,47 @@ public class MemberService {
         }
 
         return null;
+    }
+
+    @Transactional
+    public void updatePassword(MemberRequest.UpdatePassword request, Member member) {
+
+        member = member.toBuilder()
+                .password(this.passwordEncoder.encode(request.getNewPassword()))
+                .build();
+
+        this.memberRepository.save(member);
+    }
+
+    public ResData findUsernameValidate(MemberRequest.FindUsername request, Errors errors) {
+
+        if (errors.hasErrors()) {
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-01-06-01",
+                    "요청 값이 올바르지 않습니다",
+                    errors
+            );
+        }
+
+        if (!this.memberRepository.existsByEmail(request.getEmail())) {
+
+            errors.rejectValue("email", "not exist", "member that has email does not exist");
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-01-06-02",
+                    "해당 이메일을 보유한 회원이 존재하지 않습니다",
+                    errors
+            );
+        }
+
+        return null;
+    }
+
+    public Member getUserByEmail(String email) {
+
+        return this.memberRepository.findByEmail(email)
+                .orElse(null);
     }
 }
