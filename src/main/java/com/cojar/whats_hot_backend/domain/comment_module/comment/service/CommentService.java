@@ -69,20 +69,9 @@ public class CommentService {
         return null;
     }
 
-    public ResData getValidate(Comment comment) {
+    public ResData getMyCommentsValidate(Member author) {
 
-        if (comment == null) {
-            return ResData.of(
-                HttpStatus.BAD_REQUEST,
-                "F-04-02-01",
-                "존재하지 않는 댓글입니다."
-            );
-        }
-        return null;
-    }
-
-    public ResData getMyValidate(List<Comment> comments) {
-        if (comments == null || comments.isEmpty()) {
+        if (this.commentRepository.countByAuthor(author) == 0) {
             return ResData.of(
                 HttpStatus.BAD_REQUEST,
                 "F-04-03-01",

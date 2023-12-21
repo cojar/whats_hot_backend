@@ -2,6 +2,8 @@
 
 ## 23-12-21
 - [x] getAllByAuthor 수정
+- [x] validate 수정
+- [x] get comments/id 분리
 
 ## 23-12-20
 ### feature/get-api-comments

@@ -141,62 +141,6 @@ class CommentControllerTest extends BaseControllerTest {
   }
 
   @Test
-  @DisplayName("GET /api/comments/1")
-  void getComments_OK() throws Exception {
-
-    // given
-
-
-    // when
-    ResultActions resultActions = mockMvc
-        .perform(
-            get("/api/comments/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaTypes.HAL_JSON)
-
-        )
-        .andDo(print());
-
-    // then
-    resultActions
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("status").value("OK"))
-        .andExpect(jsonPath("success").value("true"))
-        .andExpect(jsonPath("code").value("S-04-02"))
-        .andExpect(jsonPath("message").exists())
-        .andExpect(jsonPath("data.id").value(1))
-        .andExpect(jsonPath("data.content").value("댓글내용1"))
-        .andExpect(jsonPath("data.createDate").exists())
-        .andExpect(jsonPath("data.modifyDate").exists())
-        .andExpect(jsonPath("data.author").value("user1"));
-  }
-
-  @Test
-  @DisplayName("GET /api/comments/1")
-  void getComments_BadRequest_CommentsNotExist() throws Exception {
-
-    // given
-
-
-    // when
-    ResultActions resultActions = mockMvc
-        .perform(
-            get("/api/comments/3")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaTypes.HAL_JSON)
-
-        )
-        .andDo(print());
-
-    // then
-    resultActions
-        .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("status").value("BAD_REQUEST"))
-        .andExpect(jsonPath("success").value("false"))
-        .andExpect(jsonPath("code").value("F-04-02-01"));
-  }
-
-  @Test
   @DisplayName("GET /api/comments/me")
   void getMyComments_OK() throws Exception {
 

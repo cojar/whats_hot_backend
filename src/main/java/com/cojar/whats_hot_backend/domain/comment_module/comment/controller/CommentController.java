@@ -70,28 +70,6 @@ public class CommentController {
             .body(resData);
     }
 
-    @CommentApiResponse.Detail
-    @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity getComment(@PathVariable(value = "id") Long id) {
-
-        Comment comment = this.commentService.getCommentById(id);
-
-        ResData resData = this.commentService.getValidate(comment);
-
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
-
-        resData = ResData.of(
-                HttpStatus.OK,
-                "S-04-02",
-                "요청하신 댓글 정보를 반환합니다",
-                CommentDto.of(comment),
-                linkTo(this.getClass()).slash(comment.getId())
-        );
-
-        return ResponseEntity.ok()
-                .body(resData);
-    }
-
     @CommentApiResponse.Me
     @GetMapping(value = "/me", consumes = MediaType.ALL_VALUE)
     public ResponseEntity getMyComments(@AuthenticationPrincipal User user) {
@@ -100,7 +78,7 @@ public class CommentController {
 
         List<Comment> comments = this.commentService.getAllByAuthor(author);
 
-        ResData resData = this.commentService.getMyValidate(comments);
+        ResData resData = this.commentService.getMyCommentsValidate(author);
 
         if (resData != null) return ResponseEntity.badRequest().body(resData);
 

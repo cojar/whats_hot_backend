@@ -8,4 +8,7 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
   List<Comment> findAllByAuthor(Member author);
+
+  int countByAuthor(Member author);
+
 }
