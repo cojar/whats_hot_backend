@@ -1,6 +1,10 @@
 # What's Hot Dev-Log
 
 ## 23-12-21
+### feature/get-api-comments-id
+- [x] get comments/id 작성
+
+### feature/get-api-commets
 - [x] getAllByAuthor 수정
 - [x] validate 수정
 - [x] get comments/id 분리

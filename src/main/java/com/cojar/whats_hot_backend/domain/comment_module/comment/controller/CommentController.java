@@ -70,6 +70,29 @@ public class CommentController {
             .body(resData);
     }
 
+    @CommentApiResponse.Detail
+    @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity getComment(@PathVariable(value = "id") Long id) {
+
+        ResData resData = this.commentService.getValidate(id);
+
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
+
+        Comment comment = this.commentService.getCommentById(id);
+
+        resData = ResData.of(
+            HttpStatus.OK,
+            "S-04-02",
+            "요청하신 댓글 정보를 반환합니다",
+            CommentDto.of(comment),
+            linkTo(this.getClass()).slash(comment.getId())
+        );
+
+        return ResponseEntity.ok()
+            .body(resData);
+    }
+
+
     @CommentApiResponse.Me
     @GetMapping(value = "/me", consumes = MediaType.ALL_VALUE)
     public ResponseEntity getMyComments(@AuthenticationPrincipal User user) {

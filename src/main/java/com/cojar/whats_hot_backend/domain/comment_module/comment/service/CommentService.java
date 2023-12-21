@@ -69,6 +69,19 @@ public class CommentService {
         return null;
     }
 
+    public ResData getValidate(Long commentId) {
+
+        if (!this.commentRepository.existsById(commentId)) {
+            return ResData.of(
+                HttpStatus.BAD_REQUEST,
+                "F-04-02-01",
+                "존재하지 않는 댓글입니다."
+            );
+        }
+        return null;
+    }
+
+
     public ResData getMyCommentsValidate(Member author) {
 
         if (this.commentRepository.countByAuthor(author) == 0) {
