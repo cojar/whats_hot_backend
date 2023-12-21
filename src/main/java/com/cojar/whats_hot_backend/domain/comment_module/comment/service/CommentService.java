@@ -92,7 +92,7 @@ public class CommentService {
         return null;
     }
 
-    public List<Comment> getCommentsByAuthor(Member author) {
-        return this.commentRepository.findCommentsByAuthor(author);
+    public List<Comment> getAllByAuthor(Member author) {
+        return this.commentRepository.findAllByAuthor(author);
     }
 }

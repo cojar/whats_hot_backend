@@ -1,5 +1,8 @@
 # What's Hot Dev-Log
 
+## 23-12-21
+- [x] getAllByAuthor 수정
+
 ## 23-12-20
 ### feature/get-api-comments
 - [x] S-04-02 TC 작성

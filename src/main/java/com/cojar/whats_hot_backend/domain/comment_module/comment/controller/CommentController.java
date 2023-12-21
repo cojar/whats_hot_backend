@@ -98,7 +98,7 @@ public class CommentController {
 
         Member author = this.memberService.getUserByUsername(user.getUsername());
 
-        List<Comment> comments = this.commentService.getCommentsByAuthor(author);
+        List<Comment> comments = this.commentService.getAllByAuthor(author);
 
         ResData resData = this.commentService.getMyValidate(comments);
 
