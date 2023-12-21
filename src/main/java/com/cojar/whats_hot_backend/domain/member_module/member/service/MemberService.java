@@ -177,19 +177,84 @@ public class MemberService {
         return member;
     }
 
-    public Member getUserByUsernameAndEmail(MemberRequest.FindPassword request) {
-        return this.memberRepository.findByUsernameAndEmail(request.getUsername(), request.getEmail())
-                .orElse(null);
+    public ResData updatePasswordValidate(MemberRequest.UpdatePassword request, Member member, Errors errors) {
+
+        if (errors.hasErrors()) {
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-01-05-01",
+                    "요청 값이 올바르지 않습니다",
+                    errors
+            );
+        }
+
+        if (!this.passwordEncoder.matches(request.getOldPassword(), member.getPassword())) {
+
+            errors.rejectValue("oldPassword", "not matched", "oldPassword is not matched");
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-01-05-02",
+                    "기존 비밀번호가 일치하지 않습니다",
+                    errors
+            );
+        }
+
+        if (!request.getNewPassword().equals(request.getNewPasswordConfirm())) {
+
+            errors.rejectValue("newPasswordConfirm", "not matched", "newPassword is not matched");
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-01-05-03",
+                    "새 비밀번호가 일치하지 않습니다",
+                    errors
+            );
+        }
+
+        return null;
     }
 
     @Transactional
-    public void updatePassword(Member member, String password) {
+    public void updatePassword(MemberRequest.UpdatePassword request, Member member) {
 
         member = member.toBuilder()
-                .password(password)
+                .password(this.passwordEncoder.encode(request.getNewPassword()))
                 .build();
 
         this.memberRepository.save(member);
+    }
+
+    public ResData findUsernameValidate(MemberRequest.FindUsername request, Errors errors) {
+
+        if (errors.hasErrors()) {
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-01-06-01",
+                    "요청 값이 올바르지 않습니다",
+                    errors
+            );
+        }
+
+        if (!this.memberRepository.existsByEmail(request.getEmail())) {
+
+            errors.rejectValue("email", "not exist", "member that has email does not exist");
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-01-06-02",
+                    "해당 이메일을 보유한 회원이 존재하지 않습니다",
+                    errors
+            );
+        }
+
+        return null;
+    }
+
+    public Member getUserByEmail(String email) {
+
+        return this.memberRepository.findByEmail(email)
+                .orElse(null);
     }
 
     public ResData findPasswordValidate(MemberRequest.FindPassword request, Errors errors) {
@@ -222,5 +287,20 @@ public class MemberService {
         }
 
         return null;
+    }
+
+    public Member getUserByUsernameAndEmail(MemberRequest.FindPassword request) {
+        return this.memberRepository.findByUsernameAndEmail(request.getUsername(), request.getEmail())
+                .orElse(null);
+    }
+
+    @Transactional
+    public void updatePassword(Member member, String password) {
+
+        member = member.toBuilder()
+                .password(password)
+                .build();
+
+        this.memberRepository.save(member);
     }
 }
