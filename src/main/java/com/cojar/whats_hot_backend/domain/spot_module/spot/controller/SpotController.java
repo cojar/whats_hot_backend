@@ -1,11 +1,17 @@
 package com.cojar.whats_hot_backend.domain.spot_module.spot.controller;
 
+import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
+import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
+import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.spot_module.category.service.CategoryService;
+import com.cojar.whats_hot_backend.domain.spot_module.menu_item.service.MenuItemService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.api_response.SpotApiResponse;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
+import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.service.SpotHashtagService;
+import com.cojar.whats_hot_backend.domain.spot_module.spot_image.service.SpotImageService;
 import com.cojar.whats_hot_backend.global.response.DataModel;
 import com.cojar.whats_hot_backend.global.response.PagedDataModel;
 import com.cojar.whats_hot_backend.global.response.ResData;
@@ -13,6 +19,7 @@ import com.cojar.whats_hot_backend.global.util.AppConfig;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
@@ -27,6 +34,7 @@ import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+@Slf4j
 @Tag(name = "Spot", description = "장소 서비스 API")
 @RequestMapping(value = "/api/spots", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaTypes.HAL_JSON_VALUE)
 @RequiredArgsConstructor
@@ -35,13 +43,31 @@ public class SpotController {
 
     private final SpotService spotService;
     private final CategoryService categoryService;
+    private final SpotHashtagService spotHashtagService;
+    private final MenuItemService menuItemService;
+    private final FileService fileService;
+    private final SpotImageService spotImageService;
 
     @SpotApiResponse.Create
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity create(@Valid @RequestPart(value = "createReq") SpotRequest.Create createReq, Errors errors,
-                                 @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+    public ResponseEntity createSpot(@Valid @RequestPart(value = "request") SpotRequest.CreateSpot request, Errors errors,
+                                     @RequestPart(value = "images", required = false) List<MultipartFile> images) {
 
-        Spot spot = this.spotService.getSpotById(1L);
+        Spot spot = this.spotService.create(request);
+
+        // hashtags 저장
+        if (!request.getHashtags().isEmpty()) this.spotHashtagService.createAll(request.getHashtags(), spot);
+
+        // menu item 저장
+        if (!request.getMenuItems().isEmpty()) this.menuItemService.createAll(request.getMenuItems(), spot);
+
+        // images 저장
+        if (!images.isEmpty()) {
+            List<_File> files = this.fileService.createAll(images, FileDomain.SPOT);
+            this.spotImageService.createAll(files, spot);
+        }
+
+        spot = this.spotService.save(spot);
 
         ResData resData = ResData.of(
                 HttpStatus.CREATED,

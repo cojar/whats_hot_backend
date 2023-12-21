@@ -24,4 +24,9 @@ public class HashtagService {
 
         return hashtag;
     }
+
+    public Hashtag getHashtagByName(String name) {
+        return this.hashtagRepository.findByName(name)
+                .orElse(null);
+    }
 }

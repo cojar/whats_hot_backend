@@ -15,6 +15,9 @@
 - [x] F-00-00-01 TC 작성
 - [x] F-00-00-02 TC 작성
 
+### feature/post-api-spots
+- [x] S-02-01 TC 작성 및 관련 엔티티, DTO 수정
+
 ## 23-12-20
 ### feature/get-api-comments
 - [x] S-04-02 TC 작성

@@ -4,9 +4,11 @@ import com.cojar.whats_hot_backend.domain.spot_module.menu_item.entity.MenuItem;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class MenuItemDto {
 
     @NotBlank
@@ -29,5 +31,9 @@ public class MenuItemDto {
 
     public static MenuItemDto of(MenuItem menuItem) {
         return new MenuItemDto(menuItem);
+    }
+
+    public static MenuItemDto of(String name, String price) {
+        return new MenuItemDto(name, price);
     }
 }

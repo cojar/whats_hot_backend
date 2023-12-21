@@ -1,11 +1,15 @@
 package com.cojar.whats_hot_backend.domain.spot_module.menu_item.service;
 
+import com.cojar.whats_hot_backend.domain.spot_module.menu_item.dto.MenuItemDto;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.entity.MenuItem;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.repository.MenuItemRepository;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -26,5 +30,22 @@ public class MenuItemService {
         this.menuItemRepository.save(menuItem);
 
         return menuItem;
+    }
+
+    @Transactional
+    public List<MenuItem> createAll(List<MenuItemDto> items, Spot spot) {
+
+        List<MenuItem> menuItems = items.stream()
+                .map(item -> MenuItem.builder()
+                        .name(item.getName())
+                        .price(item.getPrice())
+                        .spot(spot)
+                        .build()
+                )
+                .collect(Collectors.toList());
+
+        this.menuItemRepository.saveAll(menuItems);
+        spot.updateMenuItems(menuItems);
+        return menuItems;
     }
 }

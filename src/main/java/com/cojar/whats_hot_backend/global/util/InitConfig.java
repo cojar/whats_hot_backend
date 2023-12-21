@@ -79,33 +79,27 @@ public class InitConfig {
 
             Spot spot1 = this.spotService.create(category3,
                     "대전 서구 대덕대로 179",
-                    "010-1234-5678",
-                    List.of(hashtag1, hashtag2));
+                    "010-1234-5678");
 
             Spot spot2 = this.spotService.create(category3,
                     "대전 서구 대덕대로 179",
-                    "010-1234-5678",
-                    List.of(hashtag1, hashtag2));
+                    "010-1234-5678");
 
             Spot spot3 = this.spotService.create(category3,
                     "대전 서구 대덕대로 179",
-                    "010-1234-5678",
-                    List.of(hashtag1, hashtag2));
+                    "010-1234-5678");
 
             Spot spot4 = this.spotService.create(category3,
                     "대전 서구 대덕대로 179",
-                    "010-1234-5678",
-                    List.of(hashtag1, hashtag2));
+                    "010-1234-5678");
 
             Spot spot5 = this.spotService.create(category3,
                     "대전 서구 대덕대로 179",
-                    "010-1234-5678",
-                    List.of(hashtag1, hashtag2));
+                    "010-1234-5678");
 
             Spot spot6 = this.spotService.create(category3,
                     "대전 서구 대덕대로 179",
-                    "010-1234-5678",
-                    List.of(hashtag1, hashtag2));
+                    "010-1234-5678");
 
             MenuItem menuItem1 = this.menuItemService.create("메뉴1", "10000원", spot1);
             MenuItem menuItem2 = this.menuItemService.create("메뉴2", "20000원", spot1);

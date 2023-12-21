@@ -17,8 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -53,7 +55,7 @@ public class FileService {
     }
 
     @Transactional
-    public _File create(MultipartFile _file, FileDomain domain) throws IOException {
+    public _File create(MultipartFile _file, FileDomain domain) {
 
         Map<String, Object> fileBits = this.getFileBits(_file);
         String uuid = UUID.randomUUID().toString();
@@ -63,7 +65,11 @@ public class FileService {
 
         File target = new File(saveDirPath);
         if (!target.exists()) target.mkdirs();
-        _file.transferTo(new File(saveFilePath));
+        try {
+            _file.transferTo(new File(saveFilePath));
+        } catch (IOException e) {
+            throw new RuntimeException("F-00-00-03", e);
+        }
 
         _File file = _File.builder()
                 .domain(domain)
@@ -131,5 +137,15 @@ public class FileService {
                 "ext", ext,
                 "size", file.getSize()
         );
+    }
+
+    @Transactional
+    public List<_File> createAll(List<MultipartFile> images, FileDomain fileDomain) {
+        return images.stream()
+                .map(image -> {
+                    _File file = this.create(image, fileDomain);
+                    return this.fileRepository.save(file);
+                })
+                .collect(Collectors.toList());
     }
 }
