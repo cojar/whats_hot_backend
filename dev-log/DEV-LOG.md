@@ -13,6 +13,9 @@
 - [x] F-01-05-02 TC 작성
 - [x] F-01-05-03 TC 작성
 
+### feature/post-api-members-logout
+- [x] S-01-03 TC 작성
+
 ## 23-12-19
 ### feature/post-api-members
 - [x] signup 엔드포인트 수정; post:/api/members
