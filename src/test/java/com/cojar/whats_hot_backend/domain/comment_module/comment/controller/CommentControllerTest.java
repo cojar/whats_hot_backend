@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -137,6 +137,70 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("status").value("BAD_REQUEST"))
         .andExpect(jsonPath("success").value("false"))
         .andExpect(jsonPath("code").value("F-04-01-02"))
+        .andExpect(jsonPath("message").exists());
+  }
+
+  @Test
+  @DisplayName("GET /api/comments/me")
+  void getMyComments_OK() throws Exception {
+
+    // given
+
+    String username = "user1";
+    String password = "1234";
+
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            get("/api/comments/me")
+                .header("Authorization", accessToken)
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("status").value("OK"))
+        .andExpect(jsonPath("success").value("true"))
+        .andExpect(jsonPath("code").value("S-04-03"))
+        .andExpect(jsonPath("message").exists())
+        .andExpect(jsonPath("data").isArray())
+        .andExpect(jsonPath("data[0].content").value("댓글내용1"))
+        .andExpect(jsonPath("data[0].id").value("1"))
+        .andExpect(jsonPath("data[0].createDate").exists())
+        .andExpect(jsonPath("data[0].modifyDate").exists())
+        .andExpect(jsonPath("data[0].author").value("user1"));
+  }
+
+  @Test
+  @DisplayName("GET /api/comments/me")
+  void getMyComments_BadRequest_CommentsNotExist() throws Exception {
+
+    // given
+
+    String username = "admin";
+    String password = "1234";
+
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            get("/api/comments/me")
+                .header("Authorization", accessToken)
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("status").value("BAD_REQUEST"))
+        .andExpect(jsonPath("success").value("false"))
+        .andExpect(jsonPath("code").value("F-04-03-01"))
         .andExpect(jsonPath("message").exists());
   }
 

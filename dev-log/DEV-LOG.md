@@ -1,6 +1,19 @@
 # What's Hot Dev-Log
 
+## 23-12-21
+- [x] getAllByAuthor 수정
+- [x] validate 수정
+- [x] get comments/id 분리
+
 ## 23-12-20
+### feature/get-api-comments
+- [x] S-04-02 TC 작성
+- [x] F-04-02-01; validate 작성
+- [x] F-04-02-01 TC 작성
+- [x] get comments/me 작성
+- [x] S-04-03 TC 작성
+- [x] F-04-03-01 TC 작성
+
 ### feature/post-api-comments
 - [x] create 작성
 - [x] S-04-01 TC 작성

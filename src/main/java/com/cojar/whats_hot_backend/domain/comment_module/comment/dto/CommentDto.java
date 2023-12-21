@@ -24,6 +24,7 @@ public class CommentDto {
 
     private final Long tagId;
 
+
     public CommentDto (Comment comment) {
         this.id = comment.getId();
         this.createDate = comment.getCreateDate();
@@ -33,8 +34,8 @@ public class CommentDto {
         this.liked = comment.getLiked();
         this.tagId = comment.getTag() != null ? comment.getTag().getId() : null;
     }
-
     public static CommentDto of(Comment comment) {
         return new CommentDto(comment);
     }
+
 }

@@ -135,6 +135,8 @@ public class InitConfig {
             _File image11 = this.fileService.create(review2);
 
             Comment comment1 = this.commentService.create(user1, review1, "댓글내용1", null);
+            Comment comment2 = this.commentService.create(user1, review1, "댓글내용2", null);
+
         };
     }
 }

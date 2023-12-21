@@ -550,8 +550,7 @@ class MemberControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data.email").exists())
                 .andExpect(jsonPath("data.authorities").exists())
                 .andExpect(jsonPath("_links.self").exists())
-                .andExpect(jsonPath("_links.profile").exists())
-        ;
+                .andExpect(jsonPath("_links.profile").exists());
     }
 
     @Test

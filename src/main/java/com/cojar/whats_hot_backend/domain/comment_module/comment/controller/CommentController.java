@@ -25,6 +25,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Tag(name = "Comments", description = "댓글 서비스 API")
@@ -67,23 +70,31 @@ public class CommentController {
             .body(resData);
     }
 
-    @CommentApiResponse.Detail
-    @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity getComment(@PathVariable(value = "id") Long id) {
+    @CommentApiResponse.Me
+    @GetMapping(value = "/me", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity getMyComments(@AuthenticationPrincipal User user) {
 
-        Comment comment = this.commentService.getCommentById(id);
+        Member author = this.memberService.getUserByUsername(user.getUsername());
 
-        ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-04-02",
-                "요청하신 댓글 정보를 반환합니다",
-                CommentDto.of(comment),
-                linkTo(this.getClass()).slash(comment.getId())
+        List<Comment> comments = this.commentService.getAllByAuthor(author);
+
+        ResData resData = this.commentService.getMyCommentsValidate(author);
+
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
+
+        List<CommentDto> commentDtos = comments.stream()
+            .map(CommentDto::of)
+            .collect(Collectors.toList());
+
+        resData = ResData.of(
+            HttpStatus.OK,
+            "S-04-03",
+            "요청하신 댓글 리스트입니다.",
+            commentDtos
         );
-        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/getComment").withRel("profile"));
 
-        return ResponseEntity.ok()
-                .body(resData);
+        return ResponseEntity.ok().body(resData);
+
     }
 
     @CommentApiResponse.Update
