@@ -1,7 +1,10 @@
 # What's Hot Dev-Log
 
-## 23-12-22
+## 23-12-23
 ### feature/patch-api-comments-like-id
+- [x] toggleLike 추가 수정
+
+## 23-12-22
 - [x] patch likeComment/id 작성
 - [x] S-04-06 TC 작성
 - [x] F-04-06-01 TC 작성

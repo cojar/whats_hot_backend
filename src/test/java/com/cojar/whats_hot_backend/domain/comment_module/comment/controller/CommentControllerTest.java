@@ -1,6 +1,7 @@
 package com.cojar.whats_hot_backend.domain.comment_module.comment.controller;
 
 import com.cojar.whats_hot_backend.domain.comment_module.comment.repository.CommentRepository;
+import com.cojar.whats_hot_backend.domain.comment_module.comment.service.CommentService;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
@@ -13,13 +14,17 @@ import org.springframework.test.web.servlet.ResultActions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 class CommentControllerTest extends BaseControllerTest {
 
   @Autowired
   private MemberService memberService;
+
+  @Autowired
+  private CommentService commentService;
 
   @Autowired
   private CommentRepository commentRepository;
@@ -502,9 +507,8 @@ class CommentControllerTest extends BaseControllerTest {
   }
 
   @Test
-  @DisplayName("PATCH /api/comments/1/like")
-  void likesComment_OK() throws Exception {
-
+  @DisplayName("PATCH /api/comments/{id}/like - Like Comment")
+  void likeComment_OK() throws Exception {
     // given
     String username = "admin";
     String password = "1234";
@@ -516,7 +520,6 @@ class CommentControllerTest extends BaseControllerTest {
             patch("/api/comments/1/like")
                 .header("Authorization", accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
-
         )
         .andDo(print());
 
