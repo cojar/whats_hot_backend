@@ -188,7 +188,7 @@ public class CommentController {
 
         resData = ResData.of(
                 HttpStatus.OK,
-                "S-04-05",
+                "S-04-06",
                 "댓글 좋아요 상태가 변경되었습니다",
                 CommentDto.of(comment),
                 linkTo(this.getClass()).slash(comment.getId())

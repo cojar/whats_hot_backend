@@ -501,4 +501,33 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("message").exists());
   }
 
+  @Test
+  @DisplayName("PATCH /api/comments/1/like")
+  void likesComment_OK() throws Exception {
+
+    // given
+    String username = "admin";
+    String password = "1234";
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            patch("/api/comments/1/like")
+                .header("Authorization", accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("status").value("OK"))
+        .andExpect(jsonPath("success").value("true"))
+        .andExpect(jsonPath("code").value("S-04-06"))
+        .andExpect(jsonPath("message").exists())
+        .andExpect(jsonPath("data.liked").value("1"));
+  }
+
 }
