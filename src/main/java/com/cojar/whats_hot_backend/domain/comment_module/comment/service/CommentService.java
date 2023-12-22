@@ -128,6 +128,26 @@ public class CommentService {
         return null;
     }
 
+    public ResData deleteValidate(User user, Comment comment) {
+
+        if (comment == null){
+            return ResData.of(
+                HttpStatus.BAD_REQUEST,
+                "F-04-05-01",
+                "존재하지 않는 댓글입니다."
+            );
+        }
+
+        if (!comment.getAuthor().getUsername().equals(user.getUsername())){
+            return ResData.of(
+                HttpStatus.BAD_REQUEST,
+                "F-04-05-02",
+                "삭제 권한이 없습니다."
+            );
+        }
+        return null;
+    }
+
     @Transactional
     public void update(Comment comment, String content) {
         comment = comment.toBuilder()
@@ -137,8 +157,13 @@ public class CommentService {
         this.commentRepository.save(comment);
     }
 
+    @Transactional
+    public void delete(Comment comment) {
+        this.commentRepository.delete(comment);
+    }
 
     public List<Comment> getAllByAuthor(Member author) {
         return this.commentRepository.findAllByAuthor(author);
     }
+
 }
