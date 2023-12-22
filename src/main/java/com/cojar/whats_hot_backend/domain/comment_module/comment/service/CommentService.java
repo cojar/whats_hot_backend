@@ -107,7 +107,6 @@ public class CommentService {
         }
 
         if (comment == null){
-            errors.reject("not exist", "존재하지 않는 댓글입니다.");
 
             return ResData.of(
                 HttpStatus.BAD_REQUEST,
@@ -117,7 +116,6 @@ public class CommentService {
         }
 
         if (!comment.getAuthor().getUsername().equals(user.getUsername())){
-            errors.reject("not equals", "수정 권한이 없습니다.");
 
             return ResData.of(
                 HttpStatus.BAD_REQUEST,
