@@ -1,6 +1,9 @@
 # What's Hot Dev-Log
 
 ## 23-12-22
+### feature/patch-api-comments-like-id
+- [x] patch likeComment/id 작성
+
 ### feature/delete-api-comments-id
 - [x] delete comments/id 작성
 - [x] S-04-05 TC 작성

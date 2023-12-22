@@ -178,7 +178,15 @@ public class CommentController {
 
         Comment comment = this.commentService.getCommentById(id);
 
-        ResData resData = ResData.of(
+        Member author = this.memberService.getUserByUsername(user.getUsername());
+
+        ResData resData = this.commentService.likeValidate(user, comment);
+
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
+
+        this.commentService.toggleLike(comment, author);
+
+        resData = ResData.of(
                 HttpStatus.OK,
                 "S-04-05",
                 "댓글 좋아요 상태가 변경되었습니다",

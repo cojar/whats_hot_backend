@@ -148,6 +148,24 @@ public class CommentService {
         return null;
     }
 
+    public ResData likeValidate(User user, Comment comment) {
+        if (comment == null){
+            return ResData.of(
+                HttpStatus.BAD_REQUEST,
+                "F-04-06-01",
+                "존재하지 않는 댓글입니다."
+            );
+        }
+        if (comment.getAuthor().getUsername().equals(user.getUsername())){
+            return ResData.of(
+                HttpStatus.BAD_REQUEST,
+                "F-04-06-02",
+                "작성자는 좋아요를 누를 수 없습니다."
+            );
+        }
+        return null;
+    }
+
     @Transactional
     public void update(Comment comment, String content) {
         comment = comment.toBuilder()
@@ -166,4 +184,31 @@ public class CommentService {
         return this.commentRepository.findAllByAuthor(author);
     }
 
+
+    @Transactional
+    public void toggleLike(Comment comment, Member user){
+
+        if (comment.getLikedMember().contains(user)) {
+            decreaseLike(comment, user);
+        } else {
+            increaseLike(comment, user);
+        }
+    }
+
+    @Transactional
+    public void increaseLike(Comment comment, Member user) {
+        comment = comment.toBuilder()
+            .liked(comment.getLiked() + 1)
+            .build();
+        comment.getLikedMember().add(user);
+        this.commentRepository.save(comment);
+    }
+    @Transactional
+    public void decreaseLike(Comment comment, Member user){
+        comment = comment.toBuilder()
+            .liked(Math.min(comment.getLiked() - 1, 0))
+            .build();
+        comment.getLikedMember().remove(user);
+        this.commentRepository.save(comment);
+    }
 }
