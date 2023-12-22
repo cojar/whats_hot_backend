@@ -546,7 +546,11 @@ class CommentControllerTest extends BaseControllerTest {
 
     Comment comment = this.commentService.getCommentById(1L);
 
-    commentService.toggleLike(comment, member);
+    comment = comment.toBuilder().liked(1L).build();
+
+    comment.getLikedMember().add(member);
+
+    this.commentRepository.save(comment);
 
     String username = "admin";
     String password = "1234";
