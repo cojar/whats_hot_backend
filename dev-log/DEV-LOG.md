@@ -3,6 +3,7 @@
 ## 23-12-22
 ### feature/delete-api-comments-id
 - [x] delete comments/id 작성
+- [x] S-04-05 TC 작성
 
 ### feature/patch-api-comments-id
 - [x] patch comments/id 작성

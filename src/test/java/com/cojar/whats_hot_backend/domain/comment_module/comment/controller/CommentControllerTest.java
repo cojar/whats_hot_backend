@@ -49,6 +49,7 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(status().isCreated())
         .andExpect(handler().methodName("createComment"))
         .andExpect(jsonPath("status").value("CREATED"))
+        .andExpect(jsonPath("message").exists())
         .andExpect(jsonPath("data.id").value(3))
         .andExpect(jsonPath("data.createDate").exists())
         .andExpect(jsonPath("data.modifyDate").exists())
@@ -57,8 +58,7 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("data.liked").value(0))
         .andExpect(jsonPath("status").value("CREATED"))
         .andExpect(jsonPath("success").value("true"))
-        .andExpect(jsonPath("code").value("S-04-01"))
-        .andExpect(jsonPath("message").exists());
+        .andExpect(jsonPath("code").value("S-04-01"));
   }
 
   @Test
@@ -410,6 +410,36 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("success").value("false"))
         .andExpect(jsonPath("code").value("F-04-04-03"))
         .andExpect(jsonPath("message").exists());
+  }
+
+  @Test
+  @DisplayName("DELETE /api/comments/1")
+  void deleteComment_OK() throws Exception {
+
+    // given
+    String username = "user1";
+    String password = "1234";
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            delete("/api/comments/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", accessToken)
+
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(handler().methodName("deleteComment"))
+        .andExpect(jsonPath("status").value("OK"))
+        .andExpect(jsonPath("success").value("true"))
+        .andExpect(jsonPath("code").value("S-04-05"))
+        .andExpect(jsonPath("message").exists())
+        .andExpect(jsonPath("data").doesNotExist());
   }
 
 }
