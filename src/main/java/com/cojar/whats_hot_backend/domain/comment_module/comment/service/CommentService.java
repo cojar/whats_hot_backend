@@ -132,11 +132,11 @@ public class CommentService {
 
     @Transactional
     public void update(Comment comment, String content) {
-        Comment comment1 = comment.toBuilder()   // toBuilder 로 수정!!!
+        comment = comment.toBuilder()   // toBuilder 로 수정!!!
             .content(content)
             .modifyDate(LocalDateTime.now())
             .build();
-        this.commentRepository.save(comment1);
+        this.commentRepository.save(comment);
     }
 
 
