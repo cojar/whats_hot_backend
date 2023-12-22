@@ -1,7 +1,9 @@
 package com.cojar.whats_hot_backend.domain.comment_module.comment.controller;
 
+import com.cojar.whats_hot_backend.domain.comment_module.comment.entity.Comment;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.repository.CommentRepository;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.service.CommentService;
+import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -531,6 +534,41 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("code").value("S-04-06"))
         .andExpect(jsonPath("message").exists())
         .andExpect(jsonPath("data.liked").value("1"));
+  }
+
+  @Test
+  @Transactional
+  @DisplayName("PATCH /api/comments/{id}/like - Unlike Comment")
+  void unlikeComment_OK() throws Exception {
+    // given
+
+    Member member = this.memberService.getUserByUsername("admin");
+
+    Comment comment = this.commentService.getCommentById(1L);
+
+    commentService.toggleLike(comment, member);
+
+    String username = "admin";
+    String password = "1234";
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            patch("/api/comments/1/like")
+                .header("Authorization", accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("status").value("OK"))
+        .andExpect(jsonPath("success").value("true"))
+        .andExpect(jsonPath("code").value("S-04-06"))
+        .andExpect(jsonPath("message").exists())
+        .andExpect(jsonPath("data.liked").value("0"));
   }
 
   @Test

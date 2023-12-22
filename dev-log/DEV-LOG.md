@@ -3,6 +3,7 @@
 ## 23-12-23
 ### feature/patch-api-comments-like-id
 - [x] toggleLike 추가 수정
+- [x] F-04-06 TC like TC와 unlike TC로 분할
 
 ## 23-12-22
 - [x] patch likeComment/id 작성
