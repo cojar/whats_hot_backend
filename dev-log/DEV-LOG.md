@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 23-12-22
+### feature/patch-api-comments-id
+- [x] patch comments/id 작성
+
 ## 23-12-21
 ### feature/get-api-comments-id
 - [x] get comments/id 작성
