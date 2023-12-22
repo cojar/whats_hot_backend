@@ -471,4 +471,33 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("message").exists());
   }
 
+  @Test
+  @DisplayName("DELETE /api/comments/1")
+  void deleteComment_BadRequest_MismatchedUser() throws Exception {
+
+    // given
+    String username = "admin";
+    String password = "1234";
+
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            delete("/api/comments/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", accessToken)
+
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("status").value("BAD_REQUEST"))
+        .andExpect(jsonPath("success").value("false"))
+        .andExpect(jsonPath("code").value("F-04-05-02"))
+        .andExpect(jsonPath("message").exists());
+  }
+
 }
