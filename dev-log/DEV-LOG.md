@@ -6,6 +6,7 @@
 - [x] S-04-05 TC 작성
 - [x] F-04-05-01 TC 작성
 - [x] F-04-05-02 TC 작성
+- [x] TC 일부 수정
 
 ### feature/patch-api-comments-id
 - [x] patch comments/id 작성

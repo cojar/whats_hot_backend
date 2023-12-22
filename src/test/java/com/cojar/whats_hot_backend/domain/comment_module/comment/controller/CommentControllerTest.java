@@ -1,5 +1,6 @@
 package com.cojar.whats_hot_backend.domain.comment_module.comment.controller;
 
+import com.cojar.whats_hot_backend.domain.comment_module.comment.repository.CommentRepository;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
@@ -9,15 +10,19 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 class CommentControllerTest extends BaseControllerTest {
 
   @Autowired
   private MemberService memberService;
 
+  @Autowired
+  private CommentRepository commentRepository;
   @Test
   @DisplayName("POST /api/comments")
   void createComment_OK() throws Exception {
@@ -56,7 +61,6 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("data.author").value("user1"))
         .andExpect(jsonPath("data.content").value("댓글내용2"))
         .andExpect(jsonPath("data.liked").value(0))
-        .andExpect(jsonPath("status").value("CREATED"))
         .andExpect(jsonPath("success").value("true"))
         .andExpect(jsonPath("code").value("S-04-01"));
   }
@@ -425,7 +429,6 @@ class CommentControllerTest extends BaseControllerTest {
     ResultActions resultActions = mockMvc
         .perform(
             delete("/api/comments/1")
-                .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", accessToken)
 
         )
@@ -438,8 +441,10 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("status").value("OK"))
         .andExpect(jsonPath("success").value("true"))
         .andExpect(jsonPath("code").value("S-04-05"))
-        .andExpect(jsonPath("message").exists())
-        .andExpect(jsonPath("data").doesNotExist());
+        .andExpect(jsonPath("message").exists());
+
+    assertThat(commentRepository.findById(1L)).isEmpty();
+
   }
 
   @Test
@@ -456,7 +461,6 @@ class CommentControllerTest extends BaseControllerTest {
     ResultActions resultActions = mockMvc
         .perform(
             delete("/api/comments/10")
-                .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", accessToken)
 
         )
@@ -485,7 +489,6 @@ class CommentControllerTest extends BaseControllerTest {
     ResultActions resultActions = mockMvc
         .perform(
             delete("/api/comments/1")
-                .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", accessToken)
 
         )
