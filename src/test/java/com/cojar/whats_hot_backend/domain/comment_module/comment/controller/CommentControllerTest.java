@@ -334,9 +334,15 @@ class CommentControllerTest extends BaseControllerTest {
     resultActions
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("status").value("BAD_REQUEST"))
-        .andExpect(jsonPath("success").value("false"))
+        .andExpect(jsonPath("success").value(false))
         .andExpect(jsonPath("code").value("F-04-04-01"))
-        .andExpect(jsonPath("message").exists());
+        .andExpect(jsonPath("message").value("내용을 작성해주십시오."))
+        .andExpect(jsonPath("data[0].field").value("content"))
+        .andExpect(jsonPath("data[0].objectName").value("updateComment"))
+        .andExpect(jsonPath("data[0].code").value("NotBlank"))
+        .andExpect(jsonPath("data[0].defaultMessage").value("must not be blank"))
+        .andExpect(jsonPath("data[0].rejectedValue").value("  "));
+
   }
 
   @Test
