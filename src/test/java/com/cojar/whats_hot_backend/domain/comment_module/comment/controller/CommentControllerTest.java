@@ -260,4 +260,44 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("message").exists());
   }
 
+  @Test
+  @DisplayName("PATCH /api/comments/1")
+  void updateComment_OK() throws Exception {
+
+    // given
+    String username = "user1";
+    String password = "1234";
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            patch("/api/comments/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", accessToken)
+                .content("""
+                        {
+                        "content": "댓글내용10"
+                        }
+                        """
+                )
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(handler().methodName("updateComment"))
+        .andExpect(jsonPath("data.id", is(1)))
+        .andExpect(jsonPath("data.createDate").exists())
+        .andExpect(jsonPath("data.modifyDate").exists())
+        .andExpect(jsonPath("data.author", is("user1")))
+        .andExpect(jsonPath("data.content", is("댓글내용10")))
+        .andExpect(jsonPath("data.liked", is(0)))
+        .andExpect(jsonPath("status").value("OK"))
+        .andExpect(jsonPath("success").value("true"))
+        .andExpect(jsonPath("code").value("S-04-04"))
+        .andExpect(jsonPath("message").exists());
+  }
+
 }
