@@ -6,6 +6,7 @@
 - [x] S-04-06 TC 작성
 - [x] F-04-06-01 TC 작성
 - [x] F-04-06-02 TC 작성
+- [x] toggleLike 수정
 
 ### feature/delete-api-comments-id
 - [x] delete comments/id 작성

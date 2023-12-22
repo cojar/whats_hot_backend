@@ -191,26 +191,18 @@ public class CommentService {
     public void toggleLike(Comment comment, Member user){
 
         if (comment.getLikedMember().contains(user)) {
-            decreaseLike(comment, user);
+            comment = comment.toBuilder()
+                .liked(comment.getLiked() + 1)
+                .build();
+            comment.getLikedMember().add(user);
+            this.commentRepository.save(comment);
         } else {
-            increaseLike(comment, user);
+            comment = comment.toBuilder()
+                .liked(Math.min(comment.getLiked() - 1, 0))
+                .build();
+            comment.getLikedMember().remove(user);
+            this.commentRepository.save(comment);
         }
     }
 
-    @Transactional
-    public void increaseLike(Comment comment, Member user) {
-        comment = comment.toBuilder()
-            .liked(comment.getLiked() + 1)
-            .build();
-        comment.getLikedMember().add(user);
-        this.commentRepository.save(comment);
-    }
-    @Transactional
-    public void decreaseLike(Comment comment, Member user){
-        comment = comment.toBuilder()
-            .liked(Math.min(comment.getLiked() - 1, 0))
-            .build();
-        comment.getLikedMember().remove(user);
-        this.commentRepository.save(comment);
-    }
 }
