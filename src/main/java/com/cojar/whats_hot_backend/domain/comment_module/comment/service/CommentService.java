@@ -9,10 +9,12 @@ import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewSer
 import com.cojar.whats_hot_backend.global.response.ResData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Transactional(readOnly = true)
@@ -93,6 +95,48 @@ public class CommentService {
         }
         return null;
     }
+
+    public ResData updateValidate(User user, Comment comment, Errors errors) {
+        if (errors.hasErrors()) {
+            return ResData.of(
+                HttpStatus.BAD_REQUEST,
+                "F-04-04-01",
+                "올바르지 않은 입력값입니다.",
+                errors
+            );
+        }
+
+        if (comment == null){
+
+            return ResData.of(
+                HttpStatus.BAD_REQUEST,
+                "F-04-04-02",
+                "존재하지 않는 댓글입니다."
+            );
+        }
+
+        if (!comment.getAuthor().getUsername().equals(user.getUsername())){
+
+            return ResData.of(
+                HttpStatus.BAD_REQUEST,
+                "F-04-04-03",
+                "수정 권한이 없습니다.",
+                errors
+            );
+        }
+
+        return null;
+    }
+
+    @Transactional
+    public void update(Comment comment, String content) {
+        comment = comment.toBuilder()
+            .content(content)
+            .modifyDate(LocalDateTime.now())
+            .build();
+        this.commentRepository.save(comment);
+    }
+
 
     public List<Comment> getAllByAuthor(Member author) {
         return this.commentRepository.findAllByAuthor(author);

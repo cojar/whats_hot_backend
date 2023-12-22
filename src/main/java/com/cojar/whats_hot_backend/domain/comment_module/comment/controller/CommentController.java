@@ -121,25 +121,32 @@ public class CommentController {
     }
 
     @CommentApiResponse.Update
-    @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity updateComment(@Valid @RequestPart(value = "request") CommentRequest.UpdateComment request, Errors errors,
-                                       @PathVariable(value = "id") Long id,
-                                       @AuthenticationPrincipal User user) {
+    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity updateComment(@Valid @RequestBody CommentRequest.UpdateComment request, Errors errors,
+                                        @PathVariable(value = "id") Long id,
+                                        @AuthenticationPrincipal User user) {
 
         Comment comment = this.commentService.getCommentById(id);
 
-        ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-04-03",
-                "댓글 수정이 완료되었습니다",
-                CommentDto.of(comment),
-                linkTo(this.getClass()).slash(comment.getId())
+        ResData resData = this.commentService.updateValidate(user, comment, errors);
+
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
+
+        this.commentService.update(comment, request.getContent());
+
+        resData = ResData.of(
+            HttpStatus.OK,
+            "S-04-04",
+            "댓글 수정이 완료되었습니다",
+            CommentDto.of(comment),
+            linkTo(this.getClass()).slash(comment.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/updateComment").withRel("profile"));
 
         return ResponseEntity.ok()
-                .body(resData);
+            .body(resData);
     }
+
 
     @CommentApiResponse.Delete
     @DeleteMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)

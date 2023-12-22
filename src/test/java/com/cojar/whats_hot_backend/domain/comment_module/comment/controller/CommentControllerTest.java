@@ -9,7 +9,6 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -49,12 +48,13 @@ class CommentControllerTest extends BaseControllerTest {
     resultActions
         .andExpect(status().isCreated())
         .andExpect(handler().methodName("createComment"))
-        .andExpect(jsonPath("data.id", is(2)))
+        .andExpect(jsonPath("status").value("CREATED"))
+        .andExpect(jsonPath("data.id").value(3))
         .andExpect(jsonPath("data.createDate").exists())
         .andExpect(jsonPath("data.modifyDate").exists())
-        .andExpect(jsonPath("data.author", is("user1")))
-        .andExpect(jsonPath("data.content", is("댓글내용2")))
-        .andExpect(jsonPath("data.liked", is(0)))
+        .andExpect(jsonPath("data.author").value("user1"))
+        .andExpect(jsonPath("data.content").value("댓글내용2"))
+        .andExpect(jsonPath("data.liked").value(0))
         .andExpect(jsonPath("status").value("CREATED"))
         .andExpect(jsonPath("success").value("true"))
         .andExpect(jsonPath("code").value("S-04-01"))
@@ -257,6 +257,158 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("status").value("BAD_REQUEST"))
         .andExpect(jsonPath("success").value("false"))
         .andExpect(jsonPath("code").value("F-04-03-01"))
+        .andExpect(jsonPath("message").exists());
+  }
+
+  @Test
+  @DisplayName("PATCH /api/comments/1")
+  void updateComment_OK() throws Exception {
+
+    // given
+    String username = "user1";
+    String password = "1234";
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            patch("/api/comments/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", accessToken)
+                .content("""
+                        {
+                        "content": "댓글내용10"
+                        }
+                        """
+                )
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(handler().methodName("updateComment"))
+        .andExpect(jsonPath("status").value("OK"))
+        .andExpect(jsonPath("success").value("true"))
+        .andExpect(jsonPath("code").value("S-04-04"))
+        .andExpect(jsonPath("message").exists())
+        .andExpect(jsonPath("data.content").value("댓글내용10"));
+  }
+
+  @Test
+  @DisplayName("PATCH /api/comments/1")
+  void updateComment_BadRequest_NotNull() throws Exception {
+
+    // given
+    String username = "user1";
+    String password = "1234";
+
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    String content = "  ";
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            patch("/api/comments/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", accessToken)
+                .content("""
+                        {
+                        "content": "%s"
+                        }
+                        """.formatted(content).stripIndent())
+                .accept(MediaTypes.HAL_JSON)
+
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("status").value("BAD_REQUEST"))
+        .andExpect(jsonPath("success").value(false))
+        .andExpect(jsonPath("code").value("F-04-04-01"))
+        .andExpect(jsonPath("message").value("내용을 작성해주십시오."))
+        .andExpect(jsonPath("data[0].field").value("content"))
+        .andExpect(jsonPath("data[0].objectName").value("updateComment"))
+        .andExpect(jsonPath("data[0].code").value("NotBlank"))
+        .andExpect(jsonPath("data[0].defaultMessage").value("must not be blank"))
+        .andExpect(jsonPath("data[0].rejectedValue").value("  "));
+
+  }
+
+  @Test
+  @DisplayName("PATCH /api/comments/10")
+  void updateComment_BadRequest_CommentNotExist() throws Exception {
+
+    // given
+    String username = "user1";
+    String password = "1234";
+
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    String content = "안녕하세요";
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            patch("/api/comments/10")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", accessToken)
+                .content("""
+                        {
+                        "content": "%s"
+                        }
+                        """.formatted(content).stripIndent())
+                .accept(MediaTypes.HAL_JSON)
+
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("status").value("BAD_REQUEST"))
+        .andExpect(jsonPath("success").value("false"))
+        .andExpect(jsonPath("code").value("F-04-04-02"))
+        .andExpect(jsonPath("message").exists());
+  }
+
+  @Test
+  @DisplayName("PATCH /api/comments/1")
+  void updateComment_BadRequest_MismatchedUser() throws Exception {
+
+    // given
+    String username = "admin";
+    String password = "1234";
+
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    String content = "안녕하세요";
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            patch("/api/comments/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", accessToken)
+                .content("""
+                        {
+                        "content": "%s"
+                        }
+                        """.formatted(content).stripIndent())
+                .accept(MediaTypes.HAL_JSON)
+
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("status").value("BAD_REQUEST"))
+        .andExpect(jsonPath("success").value("false"))
+        .andExpect(jsonPath("code").value("F-04-04-03"))
         .andExpect(jsonPath("message").exists());
   }
 
