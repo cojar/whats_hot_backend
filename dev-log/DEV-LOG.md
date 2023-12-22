@@ -10,6 +10,7 @@
 - [x] update 수정
 - [x] TC 일부 수정
 - [x] F-04-04-01 TC 수정
+- [x] TC 추가 수정 및 오류 메시지 수정
 
 ## 23-12-21
 ### feature/get-api-comments-id

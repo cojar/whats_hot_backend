@@ -101,7 +101,7 @@ public class CommentService {
             return ResData.of(
                 HttpStatus.BAD_REQUEST,
                 "F-04-04-01",
-                "내용을 작성해주십시오.",
+                "올바르지 않은 입력값입니다.",
                 errors
             );
         }
@@ -117,12 +117,12 @@ public class CommentService {
         }
 
         if (!comment.getAuthor().getUsername().equals(user.getUsername())){
-            errors.reject("not equals", "작성자만 수정할 수 있습니다.");
+            errors.reject("not equals", "수정 권한이 없습니다.");
 
             return ResData.of(
                 HttpStatus.BAD_REQUEST,
                 "F-04-04-03",
-                "작성자만 수정할 수 있습니다.",
+                "수정 권한이 없습니다.",
                 errors
             );
         }
@@ -132,7 +132,7 @@ public class CommentService {
 
     @Transactional
     public void update(Comment comment, String content) {
-        comment = comment.toBuilder()   // toBuilder 로 수정!!!
+        comment = comment.toBuilder()
             .content(content)
             .modifyDate(LocalDateTime.now())
             .build();

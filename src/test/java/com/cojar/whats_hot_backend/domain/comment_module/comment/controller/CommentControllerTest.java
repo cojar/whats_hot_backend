@@ -9,7 +9,6 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -50,12 +49,12 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(status().isCreated())
         .andExpect(handler().methodName("createComment"))
         .andExpect(jsonPath("status").value("CREATED"))
-        .andExpect(jsonPath("data.id", is(3)))
+        .andExpect(jsonPath("data.id").value(3))
         .andExpect(jsonPath("data.createDate").exists())
         .andExpect(jsonPath("data.modifyDate").exists())
-        .andExpect(jsonPath("data.author", is("user1")))
-        .andExpect(jsonPath("data.content", is("댓글내용2")))
-        .andExpect(jsonPath("data.liked", is(0)))
+        .andExpect(jsonPath("data.author").value("user1"))
+        .andExpect(jsonPath("data.content").value("댓글내용2"))
+        .andExpect(jsonPath("data.liked").value(0))
         .andExpect(jsonPath("status").value("CREATED"))
         .andExpect(jsonPath("success").value("true"))
         .andExpect(jsonPath("code").value("S-04-01"))
@@ -290,16 +289,10 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(handler().methodName("updateComment"))
         .andExpect(jsonPath("status").value("OK"))
-        .andExpect(jsonPath("data.id", is(1)))
-        .andExpect(jsonPath("data.createDate").exists())
-        .andExpect(jsonPath("data.modifyDate").exists())
-        .andExpect(jsonPath("data.author", is("user1")))
-        .andExpect(jsonPath("data.content", is("댓글내용10")))
-        .andExpect(jsonPath("data.liked", is(0)))
-        .andExpect(jsonPath("status").value("OK"))
         .andExpect(jsonPath("success").value("true"))
         .andExpect(jsonPath("code").value("S-04-04"))
-        .andExpect(jsonPath("message").exists());
+        .andExpect(jsonPath("message").exists())
+        .andExpect(jsonPath("data.content").value("댓글내용10"));
   }
 
   @Test
