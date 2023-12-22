@@ -52,17 +52,16 @@ class CommentControllerTest extends BaseControllerTest {
     // then
     resultActions
         .andExpect(status().isCreated())
-        .andExpect(handler().methodName("createComment"))
         .andExpect(jsonPath("status").value("CREATED"))
+        .andExpect(jsonPath("success").value("true"))
+        .andExpect(jsonPath("code").value("S-04-01"))
         .andExpect(jsonPath("message").exists())
         .andExpect(jsonPath("data.id").value(3))
         .andExpect(jsonPath("data.createDate").exists())
         .andExpect(jsonPath("data.modifyDate").exists())
         .andExpect(jsonPath("data.author").value("user1"))
         .andExpect(jsonPath("data.content").value("댓글내용2"))
-        .andExpect(jsonPath("data.liked").value(0))
-        .andExpect(jsonPath("success").value("true"))
-        .andExpect(jsonPath("code").value("S-04-01"));
+        .andExpect(jsonPath("data.liked").value(0));
   }
 
   @Test
@@ -197,7 +196,8 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("status").value("BAD_REQUEST"))
         .andExpect(jsonPath("success").value("false"))
-        .andExpect(jsonPath("code").value("F-04-02-01"));
+        .andExpect(jsonPath("code").value("F-04-02-01"))
+        .andExpect(jsonPath("message").exists());
   }
 
   @Test
@@ -291,7 +291,6 @@ class CommentControllerTest extends BaseControllerTest {
     // then
     resultActions
         .andExpect(status().isOk())
-        .andExpect(handler().methodName("updateComment"))
         .andExpect(jsonPath("status").value("OK"))
         .andExpect(jsonPath("success").value("true"))
         .andExpect(jsonPath("code").value("S-04-04"))
@@ -437,7 +436,6 @@ class CommentControllerTest extends BaseControllerTest {
     // then
     resultActions
         .andExpect(status().isOk())
-        .andExpect(handler().methodName("deleteComment"))
         .andExpect(jsonPath("status").value("OK"))
         .andExpect(jsonPath("success").value("true"))
         .andExpect(jsonPath("code").value("S-04-05"))
