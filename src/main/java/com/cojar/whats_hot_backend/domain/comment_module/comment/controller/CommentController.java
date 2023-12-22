@@ -153,13 +153,19 @@ public class CommentController {
     public ResponseEntity deleteComment(@PathVariable(value = "id") Long id,
                                         @AuthenticationPrincipal User user) {
 
-        ResData resData = ResData.of(
+        Comment comment = this.commentService.getCommentById(id);
+
+        ResData resData = this.commentService.deleteValidate(user, comment);
+
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
+
+        this.commentService.delete(comment);
+
+        resData = ResData.of(
                 HttpStatus.OK,
-                "S-04-04",
-                "댓글 삭제가 완료되었습니다",
-                linkTo(this.getClass())
+                "S-04-05",
+                "댓글 삭제가 완료되었습니다"
         );
-        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/deleteComment").withRel("profile"));
 
         return ResponseEntity.ok()
                 .body(resData);

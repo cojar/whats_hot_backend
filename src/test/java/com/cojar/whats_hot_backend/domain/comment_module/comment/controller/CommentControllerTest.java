@@ -1,5 +1,6 @@
 package com.cojar.whats_hot_backend.domain.comment_module.comment.controller;
 
+import com.cojar.whats_hot_backend.domain.comment_module.comment.repository.CommentRepository;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
@@ -9,15 +10,19 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 class CommentControllerTest extends BaseControllerTest {
 
   @Autowired
   private MemberService memberService;
 
+  @Autowired
+  private CommentRepository commentRepository;
   @Test
   @DisplayName("POST /api/comments")
   void createComment_OK() throws Exception {
@@ -47,18 +52,16 @@ class CommentControllerTest extends BaseControllerTest {
     // then
     resultActions
         .andExpect(status().isCreated())
-        .andExpect(handler().methodName("createComment"))
         .andExpect(jsonPath("status").value("CREATED"))
+        .andExpect(jsonPath("success").value("true"))
+        .andExpect(jsonPath("code").value("S-04-01"))
+        .andExpect(jsonPath("message").exists())
         .andExpect(jsonPath("data.id").value(3))
         .andExpect(jsonPath("data.createDate").exists())
         .andExpect(jsonPath("data.modifyDate").exists())
         .andExpect(jsonPath("data.author").value("user1"))
         .andExpect(jsonPath("data.content").value("댓글내용2"))
-        .andExpect(jsonPath("data.liked").value(0))
-        .andExpect(jsonPath("status").value("CREATED"))
-        .andExpect(jsonPath("success").value("true"))
-        .andExpect(jsonPath("code").value("S-04-01"))
-        .andExpect(jsonPath("message").exists());
+        .andExpect(jsonPath("data.liked").value(0));
   }
 
   @Test
@@ -193,7 +196,8 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("status").value("BAD_REQUEST"))
         .andExpect(jsonPath("success").value("false"))
-        .andExpect(jsonPath("code").value("F-04-02-01"));
+        .andExpect(jsonPath("code").value("F-04-02-01"))
+        .andExpect(jsonPath("message").exists());
   }
 
   @Test
@@ -287,7 +291,6 @@ class CommentControllerTest extends BaseControllerTest {
     // then
     resultActions
         .andExpect(status().isOk())
-        .andExpect(handler().methodName("updateComment"))
         .andExpect(jsonPath("status").value("OK"))
         .andExpect(jsonPath("success").value("true"))
         .andExpect(jsonPath("code").value("S-04-04"))
@@ -409,6 +412,92 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("status").value("BAD_REQUEST"))
         .andExpect(jsonPath("success").value("false"))
         .andExpect(jsonPath("code").value("F-04-04-03"))
+        .andExpect(jsonPath("message").exists());
+  }
+
+  @Test
+  @DisplayName("DELETE /api/comments/1")
+  void deleteComment_OK() throws Exception {
+
+    // given
+    String username = "user1";
+    String password = "1234";
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            delete("/api/comments/1")
+                .header("Authorization", accessToken)
+
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("status").value("OK"))
+        .andExpect(jsonPath("success").value("true"))
+        .andExpect(jsonPath("code").value("S-04-05"))
+        .andExpect(jsonPath("message").exists());
+
+    assertThat(commentRepository.findById(1L)).isEmpty();
+
+  }
+
+  @Test
+  @DisplayName("DELETE /api/comments/10")
+  void deleteComment_BadRequest_CommentNotExist() throws Exception {
+
+    // given
+    String username = "user1";
+    String password = "1234";
+
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            delete("/api/comments/10")
+                .header("Authorization", accessToken)
+
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("status").value("BAD_REQUEST"))
+        .andExpect(jsonPath("success").value("false"))
+        .andExpect(jsonPath("code").value("F-04-05-01"))
+        .andExpect(jsonPath("message").exists());
+  }
+
+  @Test
+  @DisplayName("DELETE /api/comments/1")
+  void deleteComment_BadRequest_MismatchedUser() throws Exception {
+
+    // given
+    String username = "admin";
+    String password = "1234";
+
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            delete("/api/comments/1")
+                .header("Authorization", accessToken)
+
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("status").value("BAD_REQUEST"))
+        .andExpect(jsonPath("success").value("false"))
+        .andExpect(jsonPath("code").value("F-04-05-02"))
         .andExpect(jsonPath("message").exists());
   }
 
