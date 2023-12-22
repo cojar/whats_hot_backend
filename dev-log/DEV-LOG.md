@@ -6,6 +6,7 @@
 - [x] S-04-04 TC 작성
 - [x] F-04-04-01 TC 작성
 - [x] F-04-04-02 TC 작성
+- [x] F-04-04-03 TC 작성
 
 ## 23-12-21
 ### feature/get-api-comments-id
