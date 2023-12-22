@@ -1,5 +1,25 @@
 # What's Hot Dev-Log
 
+## 23-12-22
+### feature/delete-api-comments-id
+- [x] delete comments/id 작성
+- [x] S-04-05 TC 작성
+- [x] F-04-05-01 TC 작성
+- [x] F-04-05-02 TC 작성
+- [x] TC 일부 수정
+
+### feature/patch-api-comments-id
+- [x] patch comments/id 작성
+- [x] S-04-04 TC 작성
+- [x] F-04-04-01 TC 작성
+- [x] F-04-04-02 TC 작성
+- [x] F-04-04-03 TC 작성
+- [x] update 수정
+- [x] TC 일부 수정
+- [x] F-04-04-01 TC 수정
+- [x] TC 추가 수정 및 오류 메시지 수정
+- [x] validate 수정 
+
 ## 23-12-21
 ### feature/get-api-comments-id
 - [x] get comments/id 작성

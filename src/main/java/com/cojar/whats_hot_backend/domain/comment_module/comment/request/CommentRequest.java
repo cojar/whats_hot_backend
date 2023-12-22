@@ -27,6 +27,7 @@ public class CommentRequest {
     public static class UpdateComment {
 
         @Schema(example = "댓글내용1")
+        @NotBlank
         private String content;
     }
 }
