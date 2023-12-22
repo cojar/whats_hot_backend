@@ -111,7 +111,7 @@ public class CommentService {
 
             return ResData.of(
                 HttpStatus.BAD_REQUEST,
-                "F-04-01-03",
+                "F-04-01-02",
                 "존재하지 않는 댓글입니다."
             );
         }
@@ -121,7 +121,7 @@ public class CommentService {
 
             return ResData.of(
                 HttpStatus.BAD_REQUEST,
-                "F-04-04-02",
+                "F-04-04-03",
                 "작성자만 수정할 수 있습니다.",
                 errors
             );

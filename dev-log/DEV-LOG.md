@@ -4,6 +4,7 @@
 ### feature/patch-api-comments-id
 - [x] patch comments/id 작성
 - [x] S-04-04 TC 작성
+- [x] F-04-04-01 TC 작성
 
 ## 23-12-21
 ### feature/get-api-comments-id
