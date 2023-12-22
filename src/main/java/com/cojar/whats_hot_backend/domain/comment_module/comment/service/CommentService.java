@@ -149,6 +149,7 @@ public class CommentService {
     }
 
     public ResData likeValidate(User user, Comment comment) {
+
         if (comment == null){
             return ResData.of(
                 HttpStatus.BAD_REQUEST,
@@ -156,6 +157,7 @@ public class CommentService {
                 "존재하지 않는 댓글입니다."
             );
         }
+
         if (comment.getAuthor().getUsername().equals(user.getUsername())){
             return ResData.of(
                 HttpStatus.BAD_REQUEST,
