@@ -5,6 +5,7 @@
 - [x] patch likeComment/id 작성
 - [x] S-04-06 TC 작성
 - [x] F-04-06-01 TC 작성
+- [x] F-04-06-02 TC 작성
 
 ### feature/delete-api-comments-id
 - [x] delete comments/id 작성
