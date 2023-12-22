@@ -14,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -546,9 +548,10 @@ class CommentControllerTest extends BaseControllerTest {
 
     Comment comment = this.commentService.getCommentById(1L);
 
-    comment = comment.toBuilder().liked(1L).build();
-
-    comment.getLikedMember().add(member);
+    comment = comment.toBuilder()
+        .liked(1L)
+        .likedMember(Set.of(member))
+        .build();
 
     this.commentRepository.save(comment);
 

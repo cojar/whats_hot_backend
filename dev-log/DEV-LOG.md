@@ -5,6 +5,7 @@
 - [x] toggleLike 추가 수정
 - [x] S-04-06 TC like TC와 unlike TC로 분할
 - [x] S-04-06 unlike TC 수정
+- [x] S-04-06 unlike TC 추가 수정
 
 ## 23-12-22
 - [x] patch likeComment/id 작성
