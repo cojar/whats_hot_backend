@@ -2,11 +2,14 @@ package com.cojar.whats_hot_backend.domain.spot_module.spot.service;
 
 import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.category.repository.CategoryRepository;
+import com.cojar.whats_hot_backend.domain.spot_module.menu_item.entity.MenuItem;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.controller.SpotController;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotListDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.repository.SpotRepository;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
+import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.entity.SpotHashtag;
+import com.cojar.whats_hot_backend.domain.spot_module.spot_image.entity.SpotImage;
 import com.cojar.whats_hot_backend.global.response.DataModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +17,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -52,8 +57,8 @@ public class SpotService {
     }
 
     @Transactional
-    public Spot save(Spot spot) {
-        return this.spotRepository.save(spot);
+    public void save(Spot spot) {
+        this.spotRepository.save(spot);
     }
 
     public Spot getSpotById(Long id) {
@@ -73,5 +78,23 @@ public class SpotService {
                     );
                     return dataModel;
                 });
+    }
+
+    public Spot updateHashtags(Spot spot, List<SpotHashtag> spotHashtags) {
+        return spot.toBuilder()
+                .hashtags(spotHashtags)
+                .build();
+    }
+
+    public Spot updateMenuItems(Spot spot, List<MenuItem> menuItems) {
+        return spot.toBuilder()
+                .menuItems(menuItems)
+                .build();
+    }
+
+    public Spot updateImages(Spot spot, List<SpotImage> spotImages) {
+        return spot.toBuilder()
+                .images(spotImages)
+                .build();
     }
 }

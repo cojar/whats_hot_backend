@@ -52,16 +52,4 @@ public class Spot extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "spot", cascade = CascadeType.REMOVE)
     private List<Review> reviews = new ArrayList<>();
-
-    public void updateHashtags(List<SpotHashtag> hashtags) {
-        this.hashtags = hashtags;
-    }
-
-    public void updateMenuItems(List<MenuItem> menuItems) {
-        this.menuItems = menuItems;
-    }
-
-    public void updateImages(List<SpotImage> images) {
-        this.images = images;
-    }
 }

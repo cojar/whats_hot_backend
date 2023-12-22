@@ -18,7 +18,10 @@
 - [x] TC 일부 수정
 - [x] F-04-04-01 TC 수정
 - [x] TC 추가 수정 및 오류 메시지 수정
-- [x] validate 수정 
+- [x] validate 수정
+
+### feature/post-api-spots
+- [x] fail, exception 발생 시 db 저장되지 않도록 변경, update 로직 service 코드로 이전
 
 ## 23-12-21
 ### feature/get-api-comments-id

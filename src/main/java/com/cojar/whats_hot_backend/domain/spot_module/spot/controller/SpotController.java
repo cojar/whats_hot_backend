@@ -4,13 +4,16 @@ import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.spot_module.category.service.CategoryService;
+import com.cojar.whats_hot_backend.domain.spot_module.menu_item.entity.MenuItem;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.service.MenuItemService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.api_response.SpotApiResponse;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
+import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.entity.SpotHashtag;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.service.SpotHashtagService;
+import com.cojar.whats_hot_backend.domain.spot_module.spot_image.entity.SpotImage;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.service.SpotImageService;
 import com.cojar.whats_hot_backend.global.response.DataModel;
 import com.cojar.whats_hot_backend.global.response.PagedDataModel;
@@ -55,19 +58,33 @@ public class SpotController {
 
         Spot spot = this.spotService.create(request);
 
-        // hashtags 저장
-        if (!request.getHashtags().isEmpty()) this.spotHashtagService.createAll(request.getHashtags(), spot);
-
-        // menu item 저장
-        if (!request.getMenuItems().isEmpty()) this.menuItemService.createAll(request.getMenuItems(), spot);
-
-        // images 저장
-        if (!images.isEmpty()) {
-            List<_File> files = this.fileService.createAll(images, FileDomain.SPOT);
-            this.spotImageService.createAll(files, spot);
+        // hashtags 생성
+        List<SpotHashtag> spotHashtags = null;
+        if (!request.getHashtags().isEmpty()) {
+            spotHashtags = this.spotHashtagService.createAll(request.getHashtags(), spot);
+            spot = this.spotService.updateHashtags(spot, spotHashtags);
         }
 
-        spot = this.spotService.save(spot);
+        // menu item 생성
+        List<MenuItem> menuItems = null;
+        if (!request.getMenuItems().isEmpty()) {
+            menuItems = this.menuItemService.createAll(request.getMenuItems(), spot);
+            spot = this.spotService.updateMenuItems(spot, menuItems);
+        }
+
+        // images 생성
+        List<SpotImage> spotImages = null;
+        if (!images.isEmpty()) {
+            List<_File> files = this.fileService.createAll(images, FileDomain.SPOT);
+            spotImages = this.spotImageService.createAll(files, spot);
+            spot = this.spotService.updateImages(spot, spotImages);
+        }
+
+        // 중간에 Fail, Exception 발생 시 실제 DB에 저장되지 않도록 나중에 저장
+        this.spotHashtagService.saveAll(spotHashtags);
+        this.menuItemService.saveAll(menuItems);
+        this.spotImageService.saveAll(spotImages);
+        this.spotService.save(spot);
 
         ResData resData = ResData.of(
                 HttpStatus.CREATED,

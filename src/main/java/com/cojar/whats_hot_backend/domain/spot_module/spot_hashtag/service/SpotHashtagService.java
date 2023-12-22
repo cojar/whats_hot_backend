@@ -33,9 +33,11 @@ public class SpotHashtagService {
                                 .build()
                 )
                 .collect(Collectors.toList());
-
-        this.spotHashtagRepository.saveAll(spotHashtags);
-        spot.updateHashtags(spotHashtags);
         return spotHashtags;
+    }
+
+    @Transactional
+    public void saveAll(List<SpotHashtag> spotHashtags) {
+        if (spotHashtags != null) this.spotHashtagRepository.saveAll(spotHashtags);
     }
 }
