@@ -49,7 +49,8 @@ class CommentControllerTest extends BaseControllerTest {
     resultActions
         .andExpect(status().isCreated())
         .andExpect(handler().methodName("createComment"))
-        .andExpect(jsonPath("data.id", is(2)))
+        .andExpect(jsonPath("status").value("CREATED"))
+        .andExpect(jsonPath("data.id", is(3)))
         .andExpect(jsonPath("data.createDate").exists())
         .andExpect(jsonPath("data.modifyDate").exists())
         .andExpect(jsonPath("data.author", is("user1")))
@@ -288,6 +289,7 @@ class CommentControllerTest extends BaseControllerTest {
     resultActions
         .andExpect(status().isOk())
         .andExpect(handler().methodName("updateComment"))
+        .andExpect(jsonPath("status").value("OK"))
         .andExpect(jsonPath("data.id", is(1)))
         .andExpect(jsonPath("data.createDate").exists())
         .andExpect(jsonPath("data.modifyDate").exists())

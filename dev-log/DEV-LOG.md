@@ -8,6 +8,7 @@
 - [x] F-04-04-02 TC 작성
 - [x] F-04-04-03 TC 작성
 - [x] update 수정
+- [x] TC 일부 수정
 
 ## 23-12-21
 ### feature/get-api-comments-id
