@@ -1,6 +1,9 @@
 package com.cojar.whats_hot_backend.domain.comment_module.comment.controller;
 
+import com.cojar.whats_hot_backend.domain.comment_module.comment.entity.Comment;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.repository.CommentRepository;
+import com.cojar.whats_hot_backend.domain.comment_module.comment.service.CommentService;
+import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
@@ -9,17 +12,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 class CommentControllerTest extends BaseControllerTest {
 
   @Autowired
   private MemberService memberService;
+
+  @Autowired
+  private CommentService commentService;
 
   @Autowired
   private CommentRepository commentRepository;
@@ -498,6 +508,132 @@ class CommentControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("status").value("BAD_REQUEST"))
         .andExpect(jsonPath("success").value("false"))
         .andExpect(jsonPath("code").value("F-04-05-02"))
+        .andExpect(jsonPath("message").exists());
+  }
+
+  @Test
+  @DisplayName("PATCH /api/comments/{id}/like - Like Comment")
+  void likeComment_OK() throws Exception {
+    // given
+    String username = "admin";
+    String password = "1234";
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            patch("/api/comments/1/like")
+                .header("Authorization", accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("status").value("OK"))
+        .andExpect(jsonPath("success").value("true"))
+        .andExpect(jsonPath("code").value("S-04-06"))
+        .andExpect(jsonPath("message").exists())
+        .andExpect(jsonPath("data.liked").value("1"));
+  }
+
+  @Test
+  @Transactional
+  @DisplayName("PATCH /api/comments/{id}/like - Unlike Comment")
+  void unlikeComment_OK() throws Exception {
+    // given
+
+    Member member = this.memberService.getUserByUsername("admin");
+
+    Comment comment = this.commentService.getCommentById(1L);
+
+    comment = comment.toBuilder()
+        .liked(1L)
+        .likedMember(Set.of(member))
+        .build();
+
+    this.commentRepository.save(comment);
+
+    String username = "admin";
+    String password = "1234";
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            patch("/api/comments/1/like")
+                .header("Authorization", accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("status").value("OK"))
+        .andExpect(jsonPath("success").value("true"))
+        .andExpect(jsonPath("code").value("S-04-06"))
+        .andExpect(jsonPath("message").exists())
+        .andExpect(jsonPath("data.liked").value("0"));
+  }
+
+  @Test
+  @DisplayName("PATCH /api/comments/10/like")
+  void likeComment_BadRequest_CommentNotExist() throws Exception {
+
+    // given
+    String username = "user1";
+    String password = "1234";
+
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    String content = "안녕하세요";
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            patch("/api/comments/10/like")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", accessToken)
+
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("status").value("BAD_REQUEST"))
+        .andExpect(jsonPath("success").value("false"))
+        .andExpect(jsonPath("code").value("F-04-06-01"))
+        .andExpect(jsonPath("message").exists());
+  }
+
+  @Test
+  @DisplayName("PATCH /api/comments/1/like")
+  void likeComment_BadRequest_MatchedUser() throws Exception {
+
+    // given
+    String username = "user1";
+    String password = "1234";
+
+    String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+    // when
+    ResultActions resultActions = mockMvc
+        .perform(
+            patch("/api/comments/1/like")
+                .header("Authorization", accessToken)
+
+        )
+        .andDo(print());
+
+    // then
+    resultActions
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("status").value("BAD_REQUEST"))
+        .andExpect(jsonPath("success").value("false"))
+        .andExpect(jsonPath("code").value("F-04-06-02"))
         .andExpect(jsonPath("message").exists());
   }
 
