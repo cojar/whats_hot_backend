@@ -54,7 +54,6 @@ public class FileService {
         return saveFile;
     }
 
-    @Transactional
     public _File create(MultipartFile _file, FileDomain domain) {
 
         Map<String, Object> fileBits = this.getFileBits(_file);
@@ -78,8 +77,6 @@ public class FileService {
                 .size((Long) fileBits.get("size"))
                 .ext(fileBits.get("ext").toString())
                 .build();
-
-        this.fileRepository.save(file);
 
         return file;
     }
@@ -139,13 +136,14 @@ public class FileService {
         );
     }
 
-    @Transactional
     public List<_File> createAll(List<MultipartFile> images, FileDomain fileDomain) {
         return images.stream()
-                .map(image -> {
-                    _File file = this.create(image, fileDomain);
-                    return this.fileRepository.save(file);
-                })
+                .map(image -> this.create(image, fileDomain))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void saveAll(List<_File> files) {
+        this.fileRepository.saveAll(files);
     }
 }

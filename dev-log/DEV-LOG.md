@@ -7,7 +7,11 @@
 - [x] S-04-06 unlike TC 수정
 - [x] S-04-06 unlike TC 추가 수정
 
+### feature/post-api-spots
+- [x] _File 엔티티도 마지막에 저장되도록 수정
+
 ## 23-12-22
+### feature/patch-api-comments-like-id
 - [x] patch likeComment/id 작성
 - [x] S-04-06 TC 작성
 - [x] F-04-06-01 TC 작성

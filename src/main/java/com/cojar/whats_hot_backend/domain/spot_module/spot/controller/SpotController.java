@@ -73,9 +73,10 @@ public class SpotController {
         }
 
         // images 생성
+        List<_File> files = null;
         List<SpotImage> spotImages = null;
         if (!images.isEmpty()) {
-            List<_File> files = this.fileService.createAll(images, FileDomain.SPOT);
+            files = this.fileService.createAll(images, FileDomain.SPOT);
             spotImages = this.spotImageService.createAll(files, spot);
             spot = this.spotService.updateImages(spot, spotImages);
         }
@@ -83,6 +84,7 @@ public class SpotController {
         // 중간에 Fail, Exception 발생 시 실제 DB에 저장되지 않도록 나중에 저장
         this.spotHashtagService.saveAll(spotHashtags);
         this.menuItemService.saveAll(menuItems);
+        this.fileService.saveAll(files);
         this.spotImageService.saveAll(spotImages);
         this.spotService.save(spot);
 
