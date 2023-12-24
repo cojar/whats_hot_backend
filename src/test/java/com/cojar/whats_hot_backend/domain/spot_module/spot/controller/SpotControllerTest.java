@@ -964,6 +964,70 @@ class SpotControllerTest extends BaseControllerTest {
     }
 
     @Test
+    @DisplayName("patch:/api/spots/{id} - ok partial input only images, S-02-04")
+    public void updateSpot_OK_PartialInput_OnlyImages() throws Exception {
+
+        // given
+        String username = "admin";
+        String password = "1234";
+        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+        Long id = 1L;
+        SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
+                .build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        String fileName = "test";
+        String ext = "png";
+        Resource resource = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(fileName, ext));
+        MockMultipartFile _file1 = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName, ext),
+                MediaType.IMAGE_PNG_VALUE,
+                resource.getInputStream()
+        );
+        MockMultipartFile _file2 = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName, ext),
+                MediaType.IMAGE_PNG_VALUE,
+                resource.getInputStream()
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.PATCH, "/api/spots/%s".formatted(id))
+                        .file(_request)
+                        .file(_file1)
+                        .file(_file2)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("OK"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-02-04"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data.id").value(id))
+                .andExpect(jsonPath("data.createDate").exists())
+                .andExpect(jsonPath("data.modifyDate").exists())
+                .andExpect(jsonPath("data.imageUri[0]").exists())
+                .andExpect(jsonPath("data.imageUri[1]").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+    }
+
+    @Test
     @DisplayName("patch:/api/spots/{id} - bad request not exist, F-02-04-01")
     public void updateSpot_BadRequest_NotExist() throws Exception {
 
