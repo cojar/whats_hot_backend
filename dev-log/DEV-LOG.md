@@ -7,6 +7,7 @@
 - [x] F-02-01-03 TC 작성
 - [x] F-02-01-04 TC 작성
 - [x] F-00-00-01 TC 작성
+- [x] F-00-00-02 TC 작성
 
 ## 23-12-23
 ### feature/patch-api-comments-like-id
