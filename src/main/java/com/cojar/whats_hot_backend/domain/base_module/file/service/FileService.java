@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -134,6 +135,18 @@ public class FileService {
                 "ext", ext,
                 "size", file.getSize()
         );
+    }
+
+    public ResData validateAll(List<MultipartFile> images) {
+
+        Errors errors = new BeanPropertyBindingResult(images, "file");
+
+        return ResData.reduceError(
+                images.stream()
+                        .map(image -> this.validate(image))
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList()),
+                errors);
     }
 
     public List<_File> createAll(List<MultipartFile> images, FileDomain fileDomain) {

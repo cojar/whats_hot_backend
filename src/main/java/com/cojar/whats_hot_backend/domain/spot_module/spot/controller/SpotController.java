@@ -79,6 +79,8 @@ public class SpotController {
         List<_File> files = null;
         List<SpotImage> spotImages = null;
         if (!images.isEmpty()) {
+            resData = this.fileService.validateAll(images);
+            if (resData != null) return ResponseEntity.badRequest().body(resData);
             files = this.fileService.createAll(images, FileDomain.SPOT);
             spotImages = this.spotImageService.createAll(files, spot);
             spot = this.spotService.updateImages(spot, spotImages);
