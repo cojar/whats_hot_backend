@@ -962,4 +962,48 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.profile").exists())
         ;
     }
+
+    @Test
+    @DisplayName("patch:/api/spots/{id} - bad request not exist, F-02-04-01")
+    public void updateSpot_BadRequest_NotExist() throws Exception {
+
+        // given
+        String username = "admin";
+        String password = "1234";
+        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+        Long id = 100000000L;
+        SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
+                .build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.PATCH, "/api/spots/%s".formatted(id))
+                        .file(_request)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-02-04-01"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(id))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
 }

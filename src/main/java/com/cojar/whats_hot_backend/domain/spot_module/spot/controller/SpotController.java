@@ -148,9 +148,12 @@ public class SpotController {
 
     @SpotApiResponse.Update
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity updateSpot(@Valid @RequestPart(value = "request") SpotRequest.UpdateSpot request, Errors errors,
-                                 @RequestPart(value = "images", required = false) List<MultipartFile> images,
-                                 @PathVariable(value = "id") Long id) {
+    public ResponseEntity updateSpot(@Valid @RequestPart(value = "request", required = false) SpotRequest.UpdateSpot request, Errors errors,
+                                     @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                                     @PathVariable(value = "id") Long id) {
+
+        ResData resData = this.spotService.updateValidate(id, request, errors);
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
 
         Spot spot = this.spotService.getSpotById(id);
 
@@ -189,7 +192,7 @@ public class SpotController {
         this.spotImageService.saveAll(newSpotImages, oldSpotImages);
         this.spotService.save(spot);
 
-        ResData resData = ResData.of(
+        resData = ResData.of(
                 HttpStatus.OK,
                 "S-02-04",
                 "장소 수정이 완료되었습니다",

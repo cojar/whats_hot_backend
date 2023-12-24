@@ -124,6 +124,23 @@ public class SpotService {
                 });
     }
 
+    public ResData updateValidate(Long id, SpotRequest.UpdateSpot request, Errors errors) {
+
+        if (!this.spotRepository.existsById(id)) {
+
+            errors.reject("not exist", new Object[]{id}, "spot that has id does not exist");
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-02-04-01",
+                    "해당 아이디를 가진 장소가 존재하지 않습니다",
+                    errors
+            );
+        }
+
+        return null;
+    }
+
     public Spot update(Spot spot, SpotRequest.UpdateSpot request) {
 
         spot = spot.toBuilder()
