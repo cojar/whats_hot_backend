@@ -147,6 +147,21 @@ public class SpotService {
             );
         }
 
+        Category category = this.categoryRepository.findById(request.getCategoryId())
+                .orElse(null);
+
+        if (category == null) {
+
+            errors.rejectValue("categoryId", "not exist", "category that has request id does not exist");
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-02-04-03",
+                    "존재하지 않는 카테고리입니다",
+                    errors
+            );
+        }
+
         return null;
     }
 
