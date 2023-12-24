@@ -138,6 +138,15 @@ public class SpotService {
             );
         }
 
+        if (errors.hasErrors()) {
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-02-04-02",
+                    "요청 값이 올바르지 않습니다",
+                    errors
+            );
+        }
+
         return null;
     }
 
