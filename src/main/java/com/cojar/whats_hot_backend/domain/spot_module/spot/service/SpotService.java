@@ -11,12 +11,15 @@ import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.entity.SpotHashtag;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.entity.SpotImage;
 import com.cojar.whats_hot_backend.global.response.DataModel;
+import com.cojar.whats_hot_backend.global.response.ResData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Errors;
 
 import java.util.List;
 
@@ -42,6 +45,22 @@ public class SpotService {
         this.spotRepository.save(spot);
 
         return spot;
+    }
+
+    public ResData createValidate(SpotRequest.CreateSpot request, Errors errors) {
+
+        if (errors.hasErrors()) {
+            if (errors.hasErrors()) {
+                return ResData.of(
+                        HttpStatus.BAD_REQUEST,
+                        "F-02-01-01",
+                        "요청 값이 올바르지 않습니다",
+                        errors
+                );
+            }
+        }
+
+        return null;
     }
 
     public Spot create(SpotRequest.CreateSpot request) {

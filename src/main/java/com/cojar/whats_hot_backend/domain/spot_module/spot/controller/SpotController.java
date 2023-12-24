@@ -56,6 +56,9 @@ public class SpotController {
     public ResponseEntity createSpot(@Valid @RequestPart(value = "request") SpotRequest.CreateSpot request, Errors errors,
                                      @RequestPart(value = "images", required = false) List<MultipartFile> images) {
 
+        ResData resData = this.spotService.createValidate(request, errors);
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
+
         Spot spot = this.spotService.create(request);
 
         // hashtags 생성
@@ -88,7 +91,7 @@ public class SpotController {
         this.spotImageService.saveAll(spotImages);
         this.spotService.save(spot);
 
-        ResData resData = ResData.of(
+        resData = ResData.of(
                 HttpStatus.CREATED,
                 "S-02-01",
                 "장소 등록이 완료되었습니다",
