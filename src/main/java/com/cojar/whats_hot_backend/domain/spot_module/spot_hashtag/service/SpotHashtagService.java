@@ -40,4 +40,16 @@ public class SpotHashtagService {
     public void saveAll(List<SpotHashtag> spotHashtags) {
         if (spotHashtags != null) this.spotHashtagRepository.saveAll(spotHashtags);
     }
+
+    @Transactional
+    public void saveAll(List<SpotHashtag> newSpotHashtags, List<SpotHashtag> oldSpotHashtags) {
+        if (newSpotHashtags != null) {
+            this.spotHashtagRepository.deleteAll(oldSpotHashtags);
+            this.spotHashtagRepository.saveAll(newSpotHashtags);
+        }
+    }
+
+    public List<SpotHashtag> getAllBySpot(Spot spot) {
+        return this.spotHashtagRepository.findAllBySpot(spot);
+    }
 }

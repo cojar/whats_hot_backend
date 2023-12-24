@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -49,6 +50,21 @@ public class AppConfig {
 
     public static String getBaseFileURL() {
         return getBaseURL() + fileOriginPath;
+    }
+
+    public static String getMediaType(String fileName1) {
+        String ext = fileName1.split("\\.")[1].toLowerCase();
+        switch (ext) {
+            case "jpg", "jpeg" -> {
+                return MediaType.IMAGE_JPEG_VALUE;
+            }
+            case "png" -> {
+                return MediaType.IMAGE_PNG_VALUE;
+            }
+            default -> {
+                return MediaType.ALL_VALUE;
+            }
+        }
     }
 
     public static String getRandomPassword() {

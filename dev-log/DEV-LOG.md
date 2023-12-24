@@ -8,7 +8,10 @@
 - [x] F-02-01-04 TC 작성
 - [x] F-00-00-01 TC 작성
 - [x] F-00-00-02 TC 작성
-- [x] 여러 파일 에러 동시 발생 TC 작성; F-00-00-01, F-00-00-02 
+- [x] 여러 파일 에러 동시 발생 TC 작성; F-00-00-01, F-00-00-02
+
+### feature/patch-api-spots-id
+- [x] S-02-04 TC 작성
 
 ## 23-12-23
 ### feature/patch-api-comments-like-id

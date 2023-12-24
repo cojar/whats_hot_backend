@@ -97,7 +97,7 @@ public class SpotService {
                 .contact(request.getContact())
                 .build();
 
-        return this.spotRepository.save(spot);
+        return spot;
     }
 
     @Transactional
@@ -122,6 +122,19 @@ public class SpotService {
                     );
                     return dataModel;
                 });
+    }
+
+    public Spot update(Spot spot, SpotRequest.Update request) {
+
+        spot = spot.toBuilder()
+                .category(request.getCategoryId() != null ?
+                        this.categoryRepository.findById(request.getCategoryId()).orElse(null) : spot.getCategory())
+                .name(request.getName() != null ? request.getName() : spot.getName())
+                .address(request.getAddress() != null ? request.getAddress() : spot.getAddress())
+                .contact(request.getContact() != null ? request.getContact() : spot.getContact())
+                .build();
+
+        return spot;
     }
 
     public Spot updateHashtags(Spot spot, List<SpotHashtag> spotHashtags) {

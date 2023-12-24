@@ -148,11 +148,46 @@ public class SpotController {
 
     @SpotApiResponse.Update
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity update(@Valid @RequestPart(value = "updateReq") SpotRequest.Update updateReq, Errors errors,
+    public ResponseEntity updateSpot(@Valid @RequestPart(value = "request") SpotRequest.Update request, Errors errors,
                                  @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                  @PathVariable(value = "id") Long id) {
 
-        Spot spot = this.spotService.getSpotById(1L);
+        Spot spot = this.spotService.getSpotById(id);
+
+        spot = this.spotService.update(spot, request);
+
+        // hashtags 수정
+        List<SpotHashtag> oldSpotHashtags = spot.getHashtags();
+        List<SpotHashtag> newSpotHashtags = null;
+        if (!request.getHashtags().isEmpty()) {
+            newSpotHashtags = this.spotHashtagService.createAll(request.getHashtags(), spot);
+            spot = this.spotService.updateHashtags(spot, newSpotHashtags);
+        }
+
+        // menu item 수정
+        List<MenuItem> oldMenuItems = spot.getMenuItems();
+        List<MenuItem> newMenuItems = null;
+        if (!request.getMenuItems().isEmpty()) {
+            newMenuItems = this.menuItemService.createAll(request.getMenuItems(), spot);
+            spot = this.spotService.updateMenuItems(spot, newMenuItems);
+        }
+
+        // images 수정
+        List<_File> newFiles = null;
+        List<SpotImage> oldSpotImages = spot.getImages();
+        List<SpotImage> newSpotImages = null;
+        if (!images.isEmpty()) {
+            newFiles = this.fileService.createAll(images, FileDomain.SPOT);
+            newSpotImages = this.spotImageService.createAll(newFiles, spot);
+            spot = this.spotService.updateImages(spot, newSpotImages);
+        }
+
+        // 중간에 Fail, Exception 발생 시 실제 DB에 저장되지 않도록 나중에 저장
+        this.spotHashtagService.saveAll(newSpotHashtags, oldSpotHashtags);
+        this.menuItemService.saveAll(newMenuItems, oldMenuItems);
+        this.fileService.saveAll(newFiles);
+        this.spotImageService.saveAll(newSpotImages, oldSpotImages);
+        this.spotService.save(spot);
 
         ResData resData = ResData.of(
                 HttpStatus.OK,
