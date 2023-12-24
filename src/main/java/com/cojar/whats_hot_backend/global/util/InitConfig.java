@@ -18,6 +18,7 @@ import com.cojar.whats_hot_backend.domain.spot_module.category.service.CategoryS
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.entity.MenuItem;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.service.MenuItemService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
+import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -77,29 +78,65 @@ public class InitConfig {
             Hashtag hashtag1 = this.hashtagService.create("해시태그1");
             Hashtag hashtag2 = this.hashtagService.create("해시태그2");
 
-            Spot spot1 = this.spotService.create(category3,
-                    "대전 서구 대덕대로 179",
-                    "010-1234-5678");
+            Spot spot1 = this.spotService.create(
+                    SpotRequest.CreateSpot.builder()
+                            .categoryId(category3.getId())
+                            .name("장소1")
+                            .address("대전 서구 대덕대로 179")
+                            .contact("010-1234-5678")
+                            .build()
+            );
+            this.spotService.save(spot1);
 
-            Spot spot2 = this.spotService.create(category3,
-                    "대전 서구 대덕대로 179",
-                    "010-1234-5678");
+            Spot spot2 = this.spotService.create(
+                    SpotRequest.CreateSpot.builder()
+                            .categoryId(category3.getId())
+                            .name("장소2")
+                            .address("대전 서구 대덕대로 179")
+                            .contact("010-1234-5678")
+                            .build()
+            );
+            this.spotService.save(spot2);
 
-            Spot spot3 = this.spotService.create(category3,
-                    "대전 서구 대덕대로 179",
-                    "010-1234-5678");
+            Spot spot3 = this.spotService.create(
+                    SpotRequest.CreateSpot.builder()
+                            .categoryId(category3.getId())
+                            .name("장소3")
+                            .address("대전 서구 대덕대로 179")
+                            .contact("010-1234-5678")
+                            .build()
+            );
+            this.spotService.save(spot3);
 
-            Spot spot4 = this.spotService.create(category3,
-                    "대전 서구 대덕대로 179",
-                    "010-1234-5678");
+            Spot spot4 = this.spotService.create(
+                    SpotRequest.CreateSpot.builder()
+                            .categoryId(category3.getId())
+                            .name("장소4")
+                            .address("대전 서구 대덕대로 179")
+                            .contact("010-1234-5678")
+                            .build()
+            );
+            this.spotService.save(spot4);
 
-            Spot spot5 = this.spotService.create(category3,
-                    "대전 서구 대덕대로 179",
-                    "010-1234-5678");
+            Spot spot5 = this.spotService.create(
+                    SpotRequest.CreateSpot.builder()
+                            .categoryId(category3.getId())
+                            .name("장소5")
+                            .address("대전 서구 대덕대로 179")
+                            .contact("010-1234-5678")
+                            .build()
+            );
+            this.spotService.save(spot5);
 
-            Spot spot6 = this.spotService.create(category3,
-                    "대전 서구 대덕대로 179",
-                    "010-1234-5678");
+            Spot spot6 = this.spotService.create(
+                    SpotRequest.CreateSpot.builder()
+                            .categoryId(category3.getId())
+                            .name("장소6")
+                            .address("대전 서구 대덕대로 179")
+                            .contact("010-1234-5678")
+                            .build()
+            );
+            this.spotService.save(spot6);
 
             MenuItem menuItem1 = this.menuItemService.create("메뉴1", "10000원", spot1);
             MenuItem menuItem2 = this.menuItemService.create("메뉴2", "20000원", spot1);

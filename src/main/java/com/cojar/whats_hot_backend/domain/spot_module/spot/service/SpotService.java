@@ -33,20 +33,6 @@ public class SpotService {
     private final SpotRepository spotRepository;
     private final CategoryRepository categoryRepository;
 
-    @Transactional
-    public Spot create(Category category, String address, String contact) {
-
-        Spot spot = Spot.builder()
-                .category(category)
-                .address(address)
-                .contact(contact)
-                .build();
-
-        this.spotRepository.save(spot);
-
-        return spot;
-    }
-
     public ResData createValidate(SpotRequest.CreateSpot request, Errors errors) {
 
         if (errors.hasErrors()) {
@@ -81,6 +67,20 @@ public class SpotService {
                     HttpStatus.BAD_REQUEST,
                     "F-02-01-03",
                     "소분류 카테고리 아이디를 입력해주세요",
+                    errors
+            );
+        }
+
+        if (this.spotRepository.existsByNameAndAddress(request.getName(), request.getAddress())) {
+
+            errors.reject("duplicated", new Object[]{request.getName(), request.getAddress()}, "spot that has same name and same address is already exist");
+
+            System.out.println(errors);
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-02-01-04",
+                    "같은 이름과 주소를 가진 장소가 이미 존재합니다",
                     errors
             );
         }
