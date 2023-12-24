@@ -25,6 +25,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -699,7 +700,7 @@ class SpotControllerTest extends BaseControllerTest {
                 MenuItemDto.of(menuName2, menuPrice2),
                 MenuItemDto.of(menuName3, menuPrice3)
         );
-        SpotRequest.CreateSpot request = SpotRequest.CreateSpot.builder()
+        SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
                 .categoryId(category.getId())
                 .name(name)
                 .address(address)
@@ -784,5 +785,104 @@ class SpotControllerTest extends BaseControllerTest {
         }
         List<SpotImage> spotImages = this.spotImageService.getAllBySpot(spot);
         assertThat(spotImages.size()).isEqualTo(2);
+    }
+
+    @Transactional
+    @ParameterizedTest
+    @MethodSource("argsFor_updateSpot_OK_PartialInput_Request")
+    @DisplayName("patch:/api/spots/{id} - ok partial input request, S-02-04")
+    public void updateSpot_OK_PartialInput_Request(Long categoryId,
+                                                   String name,
+                                                   String address,
+                                                   String contact,
+                                                   String hashtag,
+                                                   String menuName,
+                                                   String menuPrice) throws Exception {
+
+        // given
+        String username = "admin";
+        String password = "1234";
+        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+        Long id = 1L;
+        Spot spot = this.spotService.getSpotById(id);
+        List<String> hashtags = hashtag != null ? List.of(hashtag) : null;
+        List<MenuItemDto> menuItemDtos = menuName != null & menuPrice != null ? List.of(MenuItemDto.of(menuName, menuPrice)) : null;
+        SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
+                .categoryId(categoryId)
+                .name(name)
+                .address(address)
+                .contact(contact)
+                .hashtags(hashtags)
+                .menuItems(menuItemDtos)
+                .build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        String fileName = "test";
+        String ext = "png";
+        Resource resource = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(fileName, ext));
+        MockMultipartFile _file1 = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName, ext),
+                MediaType.IMAGE_PNG_VALUE,
+                resource.getInputStream()
+        );
+        MockMultipartFile _file2 = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName, ext),
+                MediaType.IMAGE_PNG_VALUE,
+                resource.getInputStream()
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.PATCH, "/api/spots/%s".formatted(id))
+                        .file(_request)
+                        .file(_file1)
+                        .file(_file2)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("OK"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-02-04"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data.id").value(id))
+                .andExpect(jsonPath("data.createDate").exists())
+                .andExpect(jsonPath("data.modifyDate").exists())
+                .andExpect(jsonPath("data.category").value(categoryId != null ? this.categoryService.getCategoryById(categoryId).toLine() : spot.getCategory().toLine()))
+                .andExpect(jsonPath("data.name").value(name != null ? name : spot.getName()))
+                .andExpect(jsonPath("data.address").value(address != null ? address : spot.getAddress()))
+                .andExpect(jsonPath("data.contact").value(contact != null ? contact : spot.getContact()))
+                .andExpect(jsonPath("data.hashtags[0]").value(hashtag != null ? hashtag : spot.getHashtags().get(0).getHashtag().getName()))
+                .andExpect(jsonPath("data.menuItems[0].name").value(menuName != null ? menuName : spot.getMenuItems().get(0).getName()))
+                .andExpect(jsonPath("data.menuItems[0].price").value(menuPrice != null ? menuPrice : spot.getMenuItems().get(0).getPrice()))
+                .andExpect(jsonPath("data.imageUri[0]").exists())
+                .andExpect(jsonPath("data.imageUri[1]").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+    }
+
+    private static Stream<Arguments> argsFor_updateSpot_OK_PartialInput_Request() {
+        return Stream.of(
+                Arguments.of(null, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "20,900원"),
+                Arguments.of(4L, null, "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "20,900원"),
+                Arguments.of(4L, "쿠우쿠우 대전둔산점", null, "042-489-6274", "뷔페", "평일점심", "20,900원"),
+                Arguments.of(4L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", null, "뷔페", "평일점심", "20,900원"),
+                Arguments.of(4L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", null, "평일점심", "20,900원"),
+                Arguments.of(4L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", null, null)
+        );
     }
 }

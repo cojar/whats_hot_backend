@@ -63,14 +63,14 @@ public class SpotController {
 
         // hashtags 생성
         List<SpotHashtag> spotHashtags = null;
-        if (!request.getHashtags().isEmpty()) {
+        if (request.getHashtags() != null) {
             spotHashtags = this.spotHashtagService.createAll(request.getHashtags(), spot);
             spot = this.spotService.updateHashtags(spot, spotHashtags);
         }
 
         // menu item 생성
         List<MenuItem> menuItems = null;
-        if (!request.getMenuItems().isEmpty()) {
+        if (request.getMenuItems() != null) {
             menuItems = this.menuItemService.createAll(request.getMenuItems(), spot);
             spot = this.spotService.updateMenuItems(spot, menuItems);
         }
@@ -78,7 +78,7 @@ public class SpotController {
         // images 생성
         List<_File> files = null;
         List<SpotImage> spotImages = null;
-        if (!images.isEmpty()) {
+        if (images != null) {
             resData = this.fileService.validateAll(images);
             if (resData != null) return ResponseEntity.badRequest().body(resData);
             files = this.fileService.createAll(images, FileDomain.SPOT);
@@ -148,7 +148,7 @@ public class SpotController {
 
     @SpotApiResponse.Update
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity updateSpot(@Valid @RequestPart(value = "request") SpotRequest.Update request, Errors errors,
+    public ResponseEntity updateSpot(@Valid @RequestPart(value = "request") SpotRequest.UpdateSpot request, Errors errors,
                                  @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                  @PathVariable(value = "id") Long id) {
 
@@ -159,7 +159,7 @@ public class SpotController {
         // hashtags 수정
         List<SpotHashtag> oldSpotHashtags = spot.getHashtags();
         List<SpotHashtag> newSpotHashtags = null;
-        if (!request.getHashtags().isEmpty()) {
+        if (request.getHashtags() != null) {
             newSpotHashtags = this.spotHashtagService.createAll(request.getHashtags(), spot);
             spot = this.spotService.updateHashtags(spot, newSpotHashtags);
         }
@@ -167,7 +167,7 @@ public class SpotController {
         // menu item 수정
         List<MenuItem> oldMenuItems = spot.getMenuItems();
         List<MenuItem> newMenuItems = null;
-        if (!request.getMenuItems().isEmpty()) {
+        if (request.getMenuItems() != null) {
             newMenuItems = this.menuItemService.createAll(request.getMenuItems(), spot);
             spot = this.spotService.updateMenuItems(spot, newMenuItems);
         }
@@ -176,7 +176,7 @@ public class SpotController {
         List<_File> newFiles = null;
         List<SpotImage> oldSpotImages = spot.getImages();
         List<SpotImage> newSpotImages = null;
-        if (!images.isEmpty()) {
+        if (images != null) {
             newFiles = this.fileService.createAll(images, FileDomain.SPOT);
             newSpotImages = this.spotImageService.createAll(newFiles, spot);
             spot = this.spotService.updateImages(spot, newSpotImages);

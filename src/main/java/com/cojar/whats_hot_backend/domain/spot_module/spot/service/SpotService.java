@@ -124,7 +124,7 @@ public class SpotService {
                 });
     }
 
-    public Spot update(Spot spot, SpotRequest.Update request) {
+    public Spot update(Spot spot, SpotRequest.UpdateSpot request) {
 
         spot = spot.toBuilder()
                 .category(request.getCategoryId() != null ?

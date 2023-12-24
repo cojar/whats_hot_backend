@@ -42,7 +42,7 @@ public class SpotRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class Update {
+    public static class UpdateSpot {
 
         private Long categoryId;
 
