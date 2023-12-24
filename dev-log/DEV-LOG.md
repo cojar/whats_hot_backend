@@ -18,6 +18,7 @@
 - [x] S-02-04 partial input only images TC 작성
 - [x] F-02-04-02 TC 작성
 - [x] F-02-04-03 TC 작성
+- [x] F-02-04-04 TC 작성
 
 ## 23-12-23
 ### feature/patch-api-comments-like-id
