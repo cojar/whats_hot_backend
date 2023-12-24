@@ -1227,4 +1227,53 @@ class SpotControllerTest extends BaseControllerTest {
                 Arguments.of(2L)
         );
     }
+
+    @Test
+    @DisplayName("patch:/api/spots/{id} - bad request duplicated name and address, F-02-04-05")
+    public void updateSpot_BadRequest_DuplicatedNameAndAddress() throws Exception {
+
+        // given
+        String username = "admin";
+        String password = "1234";
+        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+        Long id = 1L;
+        String name = "장소2";
+        String address = "대전 서구 대덕대로 179";
+        SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
+                .name(name)
+                .address(address)
+                .build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.PATCH, "/api/spots/%s".formatted(id))
+                        .file(_request)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-02-04-05"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(name))
+                .andExpect(jsonPath("data[0].rejectedValue[1]").value(address))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
 }

@@ -147,29 +147,47 @@ public class SpotService {
             );
         }
 
-        Category category = this.categoryRepository.findById(request.getCategoryId())
-                .orElse(null);
+        if (request.getCategoryId() != null) {
 
-        if (category == null) {
+            Category category = this.categoryRepository.findById(request.getCategoryId())
+                    .orElse(null);
 
-            errors.rejectValue("categoryId", "not exist", "category that has request id does not exist");
+            if (category == null) {
 
-            return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-02-04-03",
-                    "존재하지 않는 카테고리입니다",
-                    errors
-            );
+                errors.rejectValue("categoryId", "not exist", "category that has request id does not exist");
+
+                return ResData.of(
+                        HttpStatus.BAD_REQUEST,
+                        "F-02-04-03",
+                        "존재하지 않는 카테고리입니다",
+                        errors
+                );
+            }
+
+            if (category.getDepth() != 3) {
+
+                errors.rejectValue("categoryId", "invalid", "category that has request id is invalid");
+
+                return ResData.of(
+                        HttpStatus.BAD_REQUEST,
+                        "F-02-04-04",
+                        "소분류 카테고리 아이디를 입력해주세요",
+                        errors
+                );
+            }
         }
 
-        if (category.getDepth() != 3) {
+        if (this.spotRepository.existsByNameAndAddress(request.getName(), request.getAddress())
+                && this.spotRepository.findByNameAndAddress(request.getName(), request.getAddress()).orElse(null).getId() != id) {
 
-            errors.rejectValue("categoryId", "invalid", "category that has request id is invalid");
+            errors.reject("duplicated", new Object[]{request.getName(), request.getAddress()}, "spot that has same name and same address is already exist");
+
+            System.out.println(errors);
 
             return ResData.of(
                     HttpStatus.BAD_REQUEST,
-                    "F-02-04-04",
-                    "소분류 카테고리 아이디를 입력해주세요",
+                    "F-02-04-05",
+                    "같은 이름과 주소를 가진 장소가 이미 존재합니다",
                     errors
             );
         }
