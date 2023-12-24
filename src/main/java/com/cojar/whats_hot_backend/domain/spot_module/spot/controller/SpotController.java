@@ -180,6 +180,8 @@ public class SpotController {
         List<SpotImage> oldSpotImages = spot.getImages();
         List<SpotImage> newSpotImages = null;
         if (images != null) {
+            resData = this.fileService.validateAll(images);
+            if (resData != null) return ResponseEntity.badRequest().body(resData);
             newFiles = this.fileService.createAll(images, FileDomain.SPOT);
             newSpotImages = this.spotImageService.createAll(newFiles, spot);
             spot = this.spotService.updateImages(spot, newSpotImages);
