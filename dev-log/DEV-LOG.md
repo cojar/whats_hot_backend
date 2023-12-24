@@ -3,6 +3,7 @@
 ## 23-12-24
 ### feature/post-api-spots
 - [x] F-02-01-01 TC 작성
+- [x] F-02-01-02 TC 작성
 
 ## 23-12-23
 ### feature/patch-api-comments-like-id

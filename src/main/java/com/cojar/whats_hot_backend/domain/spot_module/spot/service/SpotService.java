@@ -50,14 +50,27 @@ public class SpotService {
     public ResData createValidate(SpotRequest.CreateSpot request, Errors errors) {
 
         if (errors.hasErrors()) {
-            if (errors.hasErrors()) {
-                return ResData.of(
-                        HttpStatus.BAD_REQUEST,
-                        "F-02-01-01",
-                        "요청 값이 올바르지 않습니다",
-                        errors
-                );
-            }
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-02-01-01",
+                    "요청 값이 올바르지 않습니다",
+                    errors
+            );
+        }
+
+        Category category = this.categoryRepository.findById(request.getCategoryId())
+                .orElse(null);
+
+        if (category == null) {
+
+            errors.rejectValue("categoryId", "not exist", "category that has request id does not exist");
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-02-01-02",
+                    "존재하지 않는 카테고리입니다",
+                    errors
+            );
         }
 
         return null;
