@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 23-12-25
+### feature/post-api-reviews
+- [x] ReviewRequest.CreateReview 수정
+
 ## 23-12-24
 ### feature/post-api-spots
 - [x] F-02-01-01 TC 작성

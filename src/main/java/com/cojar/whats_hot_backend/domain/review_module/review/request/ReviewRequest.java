@@ -19,7 +19,13 @@ public class ReviewRequest {
         private Long spotId;
 
         @NotNull
-        private LocalDateTime visitDate;
+        private int year;
+
+        @NotNull
+        private int month;
+
+        @NotNull
+        private int day;
 
         @Schema(example = "리뷰제목1")
         @NotBlank
@@ -33,9 +39,8 @@ public class ReviewRequest {
         @NotNull
         private Double score;
 
-        @Schema(example = "PUBLIC")
-        @NotNull
-        private ReviewStatus status;
+        @Schema(example = "true")
+        private boolean isPrivate;
     }
 
     @Getter
