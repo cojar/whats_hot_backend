@@ -4,7 +4,10 @@ import com.cojar.whats_hot_backend.domain.review_module.review.entity.ReviewStat
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +15,9 @@ import java.time.LocalDateTime;
 public class ReviewRequest {
 
     @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class CreateReview {
 
         @Schema(example = "1")
