@@ -73,6 +73,18 @@ public class SpotService {
             );
         }
 
+        if (category.getDepth() != 3) {
+
+            errors.rejectValue("categoryId", "invalid", "category that has request id is invalid");
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-02-01-03",
+                    "소분류 카테고리 아이디를 입력해주세요",
+                    errors
+            );
+        }
+
         return null;
     }
 
