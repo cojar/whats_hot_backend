@@ -1,8 +1,7 @@
 package com.cojar.whats_hot_backend.domain.spot_module.spot.dto;
 
-import com.cojar.whats_hot_backend.domain.base_module.hashtag.dto.HashtagDto;
-import com.cojar.whats_hot_backend.domain.spot_module.menu_item.dto.MenuItemDto;
 import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewDto;
+import com.cojar.whats_hot_backend.domain.spot_module.menu_item.dto.MenuItemDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,13 +29,15 @@ public class SpotDto {
 
     private final String category;
 
+    private final String name;
+
     private final String address;
 
     private final String contact;
 
     private final Double averageScore;
 
-    private final List<HashtagDto> hashtags;
+    private final List<String> hashtags;
 
     private final List<MenuItemDto> menuItems;
 
@@ -44,16 +45,17 @@ public class SpotDto {
 
     private final List<ReviewDto> reviews;
 
-    public SpotDto (Spot spot) {
+    public SpotDto(Spot spot) {
         this.id = spot.getId();
         this.createDate = spot.getCreateDate();
         this.modifyDate = spot.getModifyDate();
         this.category = spot.getCategory().toLine();
+        this.name = spot.getName();
         this.address = spot.getAddress();
         this.contact = spot.getContact();
         this.averageScore = spot.getAverageScore();
         this.hashtags = spot.getHashtags().stream()
-                .map(HashtagDto::of)
+                .map(h -> h.getHashtag().getName())
                 .collect(Collectors.toList());
         this.menuItems = spot.getMenuItems().stream()
                 .map(MenuItemDto::of)
@@ -64,6 +66,11 @@ public class SpotDto {
         this.reviews = spot.getReviews().stream()
                 .map(ReviewDto::of)
                 .collect(Collectors.toList());
+    }
+
+    public List<String> getHashtags() {
+        if (this.hashtags.isEmpty()) return null;
+        else return this.hashtags;
     }
 
     public List<MenuItemDto> getMenuItems() {

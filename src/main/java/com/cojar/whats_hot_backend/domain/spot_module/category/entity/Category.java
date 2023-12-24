@@ -1,10 +1,7 @@
 package com.cojar.whats_hot_backend.domain.spot_module.category.entity;
 
 import com.cojar.whats_hot_backend.global.jpa.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -22,7 +19,7 @@ public class Category extends BaseEntity {
 
     private Integer depth;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Category parent;
 
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, orphanRemoval = true)

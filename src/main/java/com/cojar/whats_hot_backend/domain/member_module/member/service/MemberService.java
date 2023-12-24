@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 
-import java.io.IOException;
 import java.util.List;
 
 @Transactional(readOnly = true)
@@ -36,7 +35,7 @@ public class MemberService {
         return this.memberRepository.save(member);
     }
 
-    public Member signup(MemberRequest.Signup request, List<MemberRole> authorities) throws IOException {
+    public Member signup(MemberRequest.Signup request, List<MemberRole> authorities) {
 
         Member member = Member.builder()
                 .username(request.getUsername())

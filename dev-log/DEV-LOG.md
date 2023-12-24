@@ -1,5 +1,15 @@
 # What's Hot Dev-Log
 
+## 23-12-24
+### feature/post-api-spots
+- [x] F-02-01-01 TC 작성
+- [x] F-02-01-02 TC 작성
+- [x] F-02-01-03 TC 작성
+- [x] F-02-01-04 TC 작성
+- [x] F-00-00-01 TC 작성
+- [x] F-00-00-02 TC 작성
+- [x] 여러 파일 에러 동시 발생 TC 작성; F-00-00-01, F-00-00-02 
+
 ## 23-12-23
 ### feature/patch-api-comments-like-id
 - [x] toggleLike 추가 수정
@@ -7,7 +17,11 @@
 - [x] S-04-06 unlike TC 수정
 - [x] S-04-06 unlike TC 추가 수정
 
+### feature/post-api-spots
+- [x] _File 엔티티도 마지막에 저장되도록 수정
+
 ## 23-12-22
+### feature/patch-api-comments-like-id
 - [x] patch likeComment/id 작성
 - [x] S-04-06 TC 작성
 - [x] F-04-06-01 TC 작성
@@ -31,7 +45,10 @@
 - [x] TC 일부 수정
 - [x] F-04-04-01 TC 수정
 - [x] TC 추가 수정 및 오류 메시지 수정
-- [x] validate 수정 
+- [x] validate 수정
+
+### feature/post-api-spots
+- [x] fail, exception 발생 시 db 저장되지 않도록 변경, update 로직 service 코드로 이전
 
 ## 23-12-21
 ### feature/get-api-comments-id
@@ -47,6 +64,9 @@
 ### feature/post-api-members
 - [x] F-00-00-01 TC 작성
 - [x] F-00-00-02 TC 작성
+
+### feature/post-api-spots
+- [x] S-02-01 TC 작성 및 관련 엔티티, DTO 수정
 
 ## 23-12-20
 ### feature/get-api-comments

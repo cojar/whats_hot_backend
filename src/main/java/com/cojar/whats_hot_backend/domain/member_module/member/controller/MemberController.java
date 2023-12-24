@@ -31,7 +31,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -50,7 +49,7 @@ public class MemberController {
     @MemberApiResponse.Signup
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity signup(@Valid @RequestPart(value = "request") MemberRequest.Signup request, Errors errors,
-                                 @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
+                                 @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
 
         ResData resData = this.memberService.signupValidate(request, errors);
         if (resData != null) return ResponseEntity.badRequest().body(resData);

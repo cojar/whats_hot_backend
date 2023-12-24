@@ -1,7 +1,7 @@
 package com.cojar.whats_hot_backend.domain.spot_module.spot.dto;
 
-import com.cojar.whats_hot_backend.domain.base_module.hashtag.dto.HashtagDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
+import com.cojar.whats_hot_backend.global.util.AppConfig;
 import lombok.Getter;
 
 import java.util.List;
@@ -14,24 +14,32 @@ public class SpotListDto {
 
     private final String category;
 
+    private final String name;
+
     private final String address;
 
     private final String contact;
 
     private final Double averageScore;
 
-    private final List<HashtagDto> hashtags;
+    private final List<String> hashtags;
+
+    private final List<String> imageUri;
 
     private final Integer reviews;
 
     public SpotListDto (Spot spot) {
         this.id = spot.getId();
         this.category = spot.getCategory().toLine();
+        this.name = spot.getName();
         this.address = spot.getAddress();
         this.contact = spot.getContact();
         this.averageScore = spot.getAverageScore();
         this.hashtags = spot.getHashtags().stream()
-                .map(HashtagDto::of)
+                .map(h -> h.getHashtag().getName())
+                .collect(Collectors.toList());
+        this.imageUri = spot.getImages().stream()
+                .map(image -> image.getImage().toUri(AppConfig.getBaseFileURL()))
                 .collect(Collectors.toList());
         this.reviews = spot.getReviews().size();
     }
