@@ -11,9 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.Errors;
 
 import java.net.URI;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -121,8 +121,8 @@ public class ResData<T> extends RepresentationModel {
 
     public static ResData reduceError(List<ResData> resDataList, Errors errors) {
 
-        Set<String> codeSet = new TreeSet<>();
-        Set<String> messageSet = new TreeSet<>();
+        Set<String> codeSet = new LinkedHashSet<>();
+        Set<String> messageSet = new LinkedHashSet<>();
 
         resDataList.stream()
                 .forEach(resData -> {
