@@ -8,6 +8,7 @@
 - [x] S-03-01 TC - status private 작성
 - [x] S-03-01 TC - without hashtags 작성
 - [x] S-03-01 TC - without images 작성
+- [x] F-03-01-01 TC 작성
 
 ## 23-12-24
 ### feature/post-api-spots

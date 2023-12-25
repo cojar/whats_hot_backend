@@ -12,12 +12,15 @@ import com.cojar.whats_hot_backend.domain.spot_module.spot.controller.SpotContro
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.repository.SpotRepository;
 import com.cojar.whats_hot_backend.global.response.DataModel;
+import com.cojar.whats_hot_backend.global.response.ResData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Errors;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -54,6 +57,23 @@ public class ReviewService {
         this.reviewRepository.save(review);
 
         return review;
+    }
+
+    public ResData createValidate(ReviewRequest.CreateReview request, Errors errors) {
+
+        if (!this.spotRepository.existsById(request.getSpotId())) {
+
+            errors.rejectValue("spotId", "not exist", "spot that has id does not exist");
+
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-03-01-01",
+                    "해당 아이디를 가진 장소가 존재하지 않습니다",
+                    errors
+            );
+        }
+
+        return null;
     }
 
     public Review create(ReviewRequest.CreateReview request, Spot spot, Member author) {

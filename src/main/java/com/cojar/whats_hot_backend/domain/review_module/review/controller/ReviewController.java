@@ -58,6 +58,9 @@ public class ReviewController {
                                        @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                        @AuthenticationPrincipal User user) {
 
+        ResData resData = this.reviewService.createValidate(request, errors);
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
+
         Spot spot = this.spotService.getSpotById(request.getSpotId());
         Member author = this.memberService.getUserByUsername(user.getUsername());
 
@@ -86,7 +89,7 @@ public class ReviewController {
         this.reviewService.save(review);
         this.spotService.save(spot);
 
-        ResData resData = ResData.of(
+        resData = ResData.of(
                 HttpStatus.CREATED,
                 "S-03-01",
                 "리뷰 등록이 완료되었습니다",
