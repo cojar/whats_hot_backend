@@ -70,6 +70,8 @@ public class ReviewController {
         // hashtags 생성
         List<ReviewHashtag> reviewHashtags = null;
         if (request.getHashtags() != null) {
+            resData = this.fileService.validateAll(images);
+            if (resData != null) return ResponseEntity.badRequest().body(resData);
             reviewHashtags = this.reviewHashtagService.createAll(request.getHashtags(), review);
             review = this.reviewService.updateHashtags(review, reviewHashtags);
         }
@@ -78,6 +80,7 @@ public class ReviewController {
         List<_File> files = null;
         List<ReviewImage> reviewImages = null;
         if (images != null) {
+
             files = this.fileService.createAll(images, FileDomain.REVIEW);
             reviewImages = this.reviewImageService.createAll(files, review);
             review = this.reviewService.updateImages(review, reviewImages);

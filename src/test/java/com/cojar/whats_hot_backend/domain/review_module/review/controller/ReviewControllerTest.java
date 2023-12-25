@@ -18,7 +18,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -40,7 +39,6 @@ class ReviewControllerTest extends BaseControllerTest {
     @Autowired
     private ReviewImageService reviewImageService;
 
-    @Transactional
     @Test
     @DisplayName("post:/api/reviews - created, S-03-01")
     public void createReview_Created() throws Exception {
@@ -131,7 +129,6 @@ class ReviewControllerTest extends BaseControllerTest {
         ;
     }
 
-    @Transactional
     @Test
     @DisplayName("post:/api/reviews - created status private, S-03-01")
     public void createReview_Created_StatusPrivate() throws Exception {
@@ -224,7 +221,6 @@ class ReviewControllerTest extends BaseControllerTest {
         ;
     }
 
-    @Transactional
     @Test
     @DisplayName("post:/api/reviews - created without hashtags, S-03-01")
     public void createReview_Created_WithoutHashtags() throws Exception {
@@ -312,7 +308,6 @@ class ReviewControllerTest extends BaseControllerTest {
         ;
     }
 
-    @Transactional
     @Test
     @DisplayName("post:/api/reviews - created without images, S-03-01")
     public void createReview_Created_WithoutImages() throws Exception {
@@ -384,7 +379,6 @@ class ReviewControllerTest extends BaseControllerTest {
         ;
     }
 
-    @Transactional
     @ParameterizedTest
     @MethodSource("argsFor_createReview_BadRequest_NotBlank")
     @DisplayName("post:/api/reviews - bad request spot not exist, F-03-01-01")
@@ -461,7 +455,6 @@ class ReviewControllerTest extends BaseControllerTest {
         );
     }
 
-    @Transactional
     @Test
     @DisplayName("post:/api/reviews - bad request spot not exist, F-03-01-02")
     public void createReview_BadRequest_SpotNotExist() throws Exception {
@@ -535,6 +528,74 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
                 .andExpect(jsonPath("data[0].rejectedValue").value(spotId))
                 .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    @Test
+    @DisplayName("post:/api/reviews - bad request content type, F-00-00-01")
+    public void createReview_BadRequest_ContentType() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+        Long spotId = 1L;
+        Integer year = 2023, month = 12, day = 25;
+        String title = "리뷰 제목";
+        String content = "리뷰 내용";
+        Double score = 4.5;
+        String hashtag1 = "해시태그1", hashtag2 = "해시태그2";
+        ReviewRequest.CreateReview request = ReviewRequest.CreateReview.builder()
+                .spotId(spotId)
+                .year(year)
+                .month(month)
+                .day(day)
+                .title(title)
+                .content(content)
+                .score(score)
+                .hashtags(List.of(hashtag1, hashtag2))
+                .build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        String fileName = "test";
+        String ext = "png";
+        Resource resource = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(fileName, ext));
+        MockMultipartFile _file1 = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName, ext),
+                MediaType.TEXT_MARKDOWN_VALUE,
+                resource.getInputStream()
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.POST, "/api/reviews")
+                        .file(_request)
+                        .file(_file1)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code[0]").value("F-00-00-01"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(MediaType.TEXT_MARKDOWN_VALUE))
         ;
     }
 }
