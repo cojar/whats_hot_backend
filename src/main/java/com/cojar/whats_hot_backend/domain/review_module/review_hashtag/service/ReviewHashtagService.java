@@ -23,12 +23,17 @@ public class ReviewHashtagService {
     public List<ReviewHashtag> createAll(List<String> hashtags, Review review) {
 
         List<ReviewHashtag> reviewHashtags = hashtags.stream()
-                .map(hashtag ->
-                        ReviewHashtag.builder()
-                                .hashtag(this.hashtagRepository.findByName(hashtag)
-                                        .orElse(this.hashtagRepository.save(Hashtag.builder().name(hashtag).build())))
-                                .review(review)
-                                .build()
+                .map(hashtag -> {
+                            Hashtag _hashtag = this.hashtagRepository.findByName(hashtag).orElse(null);
+                            if (_hashtag == null) {
+                                _hashtag = Hashtag.builder().name(hashtag).build();
+                                this.hashtagRepository.save(_hashtag);
+                            }
+                            return ReviewHashtag.builder()
+                                    .hashtag(_hashtag)
+                                    .review(review)
+                                    .build();
+                        }
                 )
                 .collect(Collectors.toList());
         return reviewHashtags;

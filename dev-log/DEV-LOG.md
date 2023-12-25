@@ -11,6 +11,7 @@
 - [x] F-03-01-01 TC 작성
 - [x] F-03-01-01 -> F-03-01-02 수정
 - [x] F-03-01-01 TC 작성
+- [x] ReviewHashTag.createAll 로직 변경
 
 ## 23-12-24
 ### feature/post-api-spots
