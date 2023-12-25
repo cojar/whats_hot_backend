@@ -14,6 +14,7 @@
 - [x] ReviewHashTag.createAll 로직 변경
 - [x] F-00-00-01 TC 작성
 - [x] F-00-00-02 TC 작성
+- [x] 여러 파일 에러 동시 발생 TC 작성; F-00-00-01, F-00-00-02
 
 ## 23-12-24
 ### feature/post-api-spots
