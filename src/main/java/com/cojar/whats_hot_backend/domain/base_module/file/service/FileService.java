@@ -156,6 +156,6 @@ public class FileService {
 
     @Transactional
     public void saveAll(List<_File> files) {
-        this.fileRepository.saveAll(files);
+        if (files != null) this.fileRepository.saveAll(files);
     }
 }

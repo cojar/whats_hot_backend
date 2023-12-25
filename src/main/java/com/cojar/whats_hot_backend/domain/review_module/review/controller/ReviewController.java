@@ -74,7 +74,7 @@ public class ReviewController {
         // images 생성
         List<_File> files = null;
         List<ReviewImage> reviewImages = null;
-        if (!images.isEmpty()) {
+        if (images != null) {
             files = this.fileService.createAll(images, FileDomain.REVIEW);
             reviewImages = this.reviewImageService.createAll(files, review);
             review = this.reviewService.updateImages(review, reviewImages);
