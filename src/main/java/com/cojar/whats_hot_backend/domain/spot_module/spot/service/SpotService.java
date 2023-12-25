@@ -97,7 +97,7 @@ public class SpotService {
                 .contact(request.getContact())
                 .build();
 
-        return spot;
+        return this.spotRepository.save(spot);
     }
 
     @Transactional

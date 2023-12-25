@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 23-12-25
+### feature/patch-api-spots-id
+- [x] SpotService.create 롤백
+
 ## 23-12-24
 ### feature/post-api-spots
 - [x] F-02-01-01 TC 작성
