@@ -3,6 +3,7 @@
 ## 23-12-25
 ### feature/patch-api-spots-id
 - [x] SpotService.create 롤백
+- [x] SpotHashtagService.createAll 로직 변경
 
 ## 23-12-24
 ### feature/post-api-spots
