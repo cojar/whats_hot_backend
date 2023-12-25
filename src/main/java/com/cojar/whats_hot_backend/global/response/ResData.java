@@ -132,6 +132,8 @@ public class ResData<T> extends RepresentationModel {
                     errors.addAllErrors(resErrors);
                 });
 
+        if (codeSet.size() == 0 && messageSet.size() == 0) return null;
+
         return ResData.of(
                 HttpStatus.BAD_REQUEST,
                 codeSet,

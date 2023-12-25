@@ -4,6 +4,7 @@
 ### feature/post-api-reviews
 - [x] ReviewRequest.CreateReview 수정
 - [x] 연관 엔티티 수정
+- [x] S-03-01 TC 작성, ResData.reduceError 수정
 
 ## 23-12-24
 ### feature/post-api-spots

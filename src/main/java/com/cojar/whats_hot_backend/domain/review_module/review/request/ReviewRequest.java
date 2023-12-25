@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 public class ReviewRequest {
@@ -25,13 +26,13 @@ public class ReviewRequest {
         private Long spotId;
 
         @NotNull
-        private int year;
+        private Integer year;
 
         @NotNull
-        private int month;
+        private Integer month;
 
         @NotNull
-        private int day;
+        private Integer day;
 
         @Schema(example = "리뷰제목1")
         @NotBlank
@@ -45,8 +46,11 @@ public class ReviewRequest {
         @NotNull
         private Double score;
 
+        private List<@NotBlank String> hashtags;
+
         @Schema(example = "true")
-        private boolean isPrivate;
+        @Builder.Default
+        private boolean lock = false;
     }
 
     @Getter

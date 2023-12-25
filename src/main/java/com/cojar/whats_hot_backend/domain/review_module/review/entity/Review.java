@@ -50,8 +50,9 @@ public class Review extends BaseEntity {
 
     private boolean validated;
 
+    @Builder.Default
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder.Default
     private Long liked = 0L;

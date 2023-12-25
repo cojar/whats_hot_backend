@@ -4,10 +4,8 @@ import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewDto;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.dto.MenuItemDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,10 +14,6 @@ import java.util.stream.Collectors;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 public class SpotDto {
-
-    @JsonIgnore
-    @Value("${file.origin.path}")
-    private String origin;
 
     private final Long id;
 

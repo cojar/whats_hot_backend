@@ -2,6 +2,7 @@ package com.cojar.whats_hot_backend.domain.review_module.review.dto;
 
 import com.cojar.whats_hot_backend.domain.comment_module.comment.dto.CommentDto;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
+import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotAbbrDto;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
@@ -20,6 +21,8 @@ public class ReviewDto {
 
     private final LocalDateTime modifyDate;
 
+    private final SpotAbbrDto spot;
+
     private final String author;
 
     private final LocalDateTime visitDate;
@@ -29,6 +32,8 @@ public class ReviewDto {
     private final String content;
 
     private final Double score;
+
+    private final List<String> hashtags;
 
     private final List<String> imageUri;
 
@@ -40,15 +45,19 @@ public class ReviewDto {
 
     private final List<CommentDto> comments;
 
-    public ReviewDto (Review review) {
+    public ReviewDto(Review review) {
         this.id = review.getId();
         this.createDate = review.getCreateDate();
         this.modifyDate = review.getModifyDate();
+        this.spot = SpotAbbrDto.of(review.getSpot());
         this.author = review.getAuthor().getUsername();
         this.visitDate = review.getVisitDate();
         this.title = review.getTitle();
         this.content = review.getContent();
         this.score = review.getScore();
+        this.hashtags = review.getHashtags().stream()
+                .map(h -> h.getHashtag().getName())
+                .collect(Collectors.toList());
         this.imageUri = review.getImages().stream()
                 .map(image -> image.getImage().toUri(AppConfig.getBaseFileURL()))
                 .collect(Collectors.toList());
@@ -58,6 +67,11 @@ public class ReviewDto {
         this.comments = review.getComments().stream()
                 .map(CommentDto::of)
                 .collect(Collectors.toList());
+    }
+
+    public List<String> getHashtags() {
+        if (this.hashtags.isEmpty()) return null;
+        else return this.hashtags;
     }
 
     public List<String> getImageUri() {
