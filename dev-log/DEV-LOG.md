@@ -5,6 +5,7 @@
 - [x] ReviewRequest.CreateReview 수정
 - [x] 연관 엔티티 수정
 - [x] S-03-01 TC 작성, ResData.reduceError 수정
+- [x] S-03-01 TC - status private 작성
 
 ## 23-12-24
 ### feature/post-api-spots
@@ -14,7 +15,7 @@
 - [x] F-02-01-04 TC 작성
 - [x] F-00-00-01 TC 작성
 - [x] F-00-00-02 TC 작성
-- [x] 여러 파일 에러 동시 발생 TC 작성; F-00-00-01, F-00-00-02 
+- [x] 여러 파일 에러 동시 발생 TC 작성; F-00-00-01, F-00-00-02
 
 ## 23-12-23
 ### feature/patch-api-comments-like-id
