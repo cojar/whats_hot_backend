@@ -61,6 +61,15 @@ public class ReviewService {
 
     public ResData createValidate(ReviewRequest.CreateReview request, Errors errors) {
 
+        if (errors.hasErrors()) {
+            return ResData.of(
+                    HttpStatus.BAD_REQUEST,
+                    "F-03-01-01",
+                    "요청 값이 올바르지 않습니다",
+                    errors
+            );
+        }
+
         if (!this.spotRepository.existsById(request.getSpotId())) {
 
             errors.rejectValue("spotId", "not exist", "spot that has id does not exist");

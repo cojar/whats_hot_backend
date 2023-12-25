@@ -8,6 +8,9 @@ import com.cojar.whats_hot_backend.domain.review_module.review_image.service.Rev
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.hateoas.MediaTypes;
@@ -15,9 +18,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -35,6 +40,7 @@ class ReviewControllerTest extends BaseControllerTest {
     @Autowired
     private ReviewImageService reviewImageService;
 
+    @Transactional
     @Test
     @DisplayName("post:/api/reviews - created, S-03-01")
     public void createReview_Created() throws Exception {
@@ -45,7 +51,7 @@ class ReviewControllerTest extends BaseControllerTest {
         String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
         Long spotId = 1L;
-        int year = 2023, month = 12, day = 25;
+        Integer year = 2023, month = 12, day = 25;
         String title = "리뷰 제목";
         String content = "리뷰 내용";
         Double score = 4.5;
@@ -125,6 +131,7 @@ class ReviewControllerTest extends BaseControllerTest {
         ;
     }
 
+    @Transactional
     @Test
     @DisplayName("post:/api/reviews - created status private, S-03-01")
     public void createReview_Created_StatusPrivate() throws Exception {
@@ -135,7 +142,7 @@ class ReviewControllerTest extends BaseControllerTest {
         String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
         Long spotId = 1L;
-        int year = 2023, month = 12, day = 25;
+        Integer year = 2023, month = 12, day = 25;
         String title = "리뷰 제목";
         String content = "리뷰 내용";
         Double score = 4.5;
@@ -217,6 +224,7 @@ class ReviewControllerTest extends BaseControllerTest {
         ;
     }
 
+    @Transactional
     @Test
     @DisplayName("post:/api/reviews - created without hashtags, S-03-01")
     public void createReview_Created_WithoutHashtags() throws Exception {
@@ -227,7 +235,7 @@ class ReviewControllerTest extends BaseControllerTest {
         String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
         Long spotId = 1L;
-        int year = 2023, month = 12, day = 25;
+        Integer year = 2023, month = 12, day = 25;
         String title = "리뷰 제목";
         String content = "리뷰 내용";
         Double score = 4.5;
@@ -304,6 +312,7 @@ class ReviewControllerTest extends BaseControllerTest {
         ;
     }
 
+    @Transactional
     @Test
     @DisplayName("post:/api/reviews - created without images, S-03-01")
     public void createReview_Created_WithoutImages() throws Exception {
@@ -314,7 +323,7 @@ class ReviewControllerTest extends BaseControllerTest {
         String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
         Long spotId = 1L;
-        int year = 2023, month = 12, day = 25;
+        Integer year = 2023, month = 12, day = 25;
         String title = "리뷰 제목";
         String content = "리뷰 내용";
         Double score = 4.5;
@@ -375,6 +384,84 @@ class ReviewControllerTest extends BaseControllerTest {
         ;
     }
 
+    @Transactional
+    @ParameterizedTest
+    @MethodSource("argsFor_createReview_BadRequest_NotBlank")
+    @DisplayName("post:/api/reviews - bad request spot not exist, F-03-01-01")
+    public void createReview_BadRequest_NotBlank(Long spotId,
+                                                 Integer year,
+                                                 Integer month,
+                                                 Integer day,
+                                                 String title,
+                                                 String content,
+                                                 Double score,
+                                                 String hashtag) throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+        ReviewRequest.CreateReview request = ReviewRequest.CreateReview.builder()
+                .spotId(spotId)
+                .year(year)
+                .month(month)
+                .day(day)
+                .title(title)
+                .content(content)
+                .score(score)
+                .hashtags(List.of(hashtag))
+                .build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.POST, "/api/reviews")
+                        .file(_request)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-01-01"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+
+        if (spotId == null || year == null || month == null || day == null || score == null)
+            resultActions.andExpect(jsonPath("data[0].rejectedValue").doesNotExist());
+        else resultActions.andExpect(jsonPath("data[0].rejectedValue").value(""));
+    }
+
+    private static Stream<Arguments> argsFor_createReview_BadRequest_NotBlank() {
+        return Stream.of(
+                Arguments.of(null, 2023, 12, 25, "리뷰 제목", "리뷰 내용", 4.5, "해시태그"),
+                Arguments.of(1L, null, 12, 25, "리뷰 제목", "리뷰 내용", 4.5, "해시태그"),
+                Arguments.of(1L, 2023, null, 25, "리뷰 제목", "리뷰 내용", 4.5, "해시태그"),
+                Arguments.of(1L, 2023, 12, null, "리뷰 제목", "리뷰 내용", 4.5, "해시태그"),
+                Arguments.of(1L, 2023, 12, 25, "", "리뷰 내용", 4.5, "해시태그"),
+                Arguments.of(1L, 2023, 12, 25, "리뷰 제목", "", 4.5, "해시태그"),
+                Arguments.of(1L, 2023, 12, 25, "리뷰 제목", "리뷰 내용", null, "해시태그"),
+                Arguments.of(1L, 2023, 12, 25, "리뷰 제목", "리뷰 내용", 4.5, "")
+        );
+    }
+
+    @Transactional
     @Test
     @DisplayName("post:/api/reviews - bad request spot not exist, F-03-01-02")
     public void createReview_BadRequest_SpotNotExist() throws Exception {
