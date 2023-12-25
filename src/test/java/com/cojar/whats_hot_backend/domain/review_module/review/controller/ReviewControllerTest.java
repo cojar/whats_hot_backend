@@ -598,4 +598,72 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue").value(MediaType.TEXT_MARKDOWN_VALUE))
         ;
     }
+
+    @Test
+    @DisplayName("post:/api/reviews - bad request extension, F-00-00-02")
+    public void createReview_BadRequest_Extension() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+        Long spotId = 1L;
+        Integer year = 2023, month = 12, day = 25;
+        String title = "리뷰 제목";
+        String content = "리뷰 내용";
+        Double score = 4.5;
+        String hashtag1 = "해시태그1", hashtag2 = "해시태그2";
+        ReviewRequest.CreateReview request = ReviewRequest.CreateReview.builder()
+                .spotId(spotId)
+                .year(year)
+                .month(month)
+                .day(day)
+                .title(title)
+                .content(content)
+                .score(score)
+                .hashtags(List.of(hashtag1, hashtag2))
+                .build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        String fileName = "test";
+        String ext = "gif";
+        Resource resource = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(fileName, ext));
+        MockMultipartFile _file1 = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName, ext),
+                MediaType.IMAGE_GIF_VALUE,
+                resource.getInputStream()
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.POST, "/api/reviews")
+                        .file(_request)
+                        .file(_file1)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code[0]").value("F-00-00-02"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(MediaType.IMAGE_GIF_VALUE))
+        ;
+    }
 }
