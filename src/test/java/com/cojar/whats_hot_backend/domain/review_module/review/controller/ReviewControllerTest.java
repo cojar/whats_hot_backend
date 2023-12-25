@@ -376,7 +376,7 @@ class ReviewControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("post:/api/reviews - bad request spot not exist, F-03-01-01")
+    @DisplayName("post:/api/reviews - bad request spot not exist, F-03-01-02")
     public void createReview_BadRequest_SpotNotExist() throws Exception {
 
         // given
@@ -440,7 +440,7 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("success").value("false"))
-                .andExpect(jsonPath("code").value("F-03-01-01"))
+                .andExpect(jsonPath("code").value("F-03-01-02"))
                 .andExpect(jsonPath("message").exists())
                 .andExpect(jsonPath("data[0].field").exists())
                 .andExpect(jsonPath("data[0].objectName").exists())

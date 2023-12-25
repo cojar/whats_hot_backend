@@ -9,6 +9,7 @@
 - [x] S-03-01 TC - without hashtags 작성
 - [x] S-03-01 TC - without images 작성
 - [x] F-03-01-01 TC 작성
+- [x] F-03-01-01 -> F-03-01-02 수정
 
 ## 23-12-24
 ### feature/post-api-spots

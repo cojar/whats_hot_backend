@@ -67,7 +67,7 @@ public class ReviewService {
 
             return ResData.of(
                     HttpStatus.BAD_REQUEST,
-                    "F-03-01-01",
+                    "F-03-01-02",
                     "해당 아이디를 가진 장소가 존재하지 않습니다",
                     errors
             );
