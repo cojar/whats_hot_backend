@@ -1,5 +1,10 @@
 # What's Hot Dev-Log
 
+## 23-12-25
+### feature/patch-api-spots-id
+- [x] SpotService.create 롤백
+- [x] SpotHashtagService.createAll 로직 변경
+
 ## 23-12-24
 ### feature/post-api-spots
 - [x] F-02-01-01 TC 작성
@@ -8,7 +13,21 @@
 - [x] F-02-01-04 TC 작성
 - [x] F-00-00-01 TC 작성
 - [x] F-00-00-02 TC 작성
-- [x] 여러 파일 에러 동시 발생 TC 작성; F-00-00-01, F-00-00-02 
+- [x] 여러 파일 에러 동시 발생 TC 작성; F-00-00-01, F-00-00-02
+
+### feature/patch-api-spots-id
+- [x] S-02-04 TC 작성
+- [x] S-02-04 partial input request TC 작성
+- [x] S-02-04 partial input images TC 작성
+- [x] F-02-04-01 TC 작성
+- [x] S-02-04 partial input only images TC 작성
+- [x] F-02-04-02 TC 작성
+- [x] F-02-04-03 TC 작성
+- [x] F-02-04-04 TC 작성
+- [x] F-02-04-05 TC 작성
+- [x] F-00-00-01 TC 작성
+- [x] F-00-00-02 TC 작성
+- [x] 여러 파일 에러 동시 발생 TC 작성; F-00-00-01, F-00-00-02
 
 ## 23-12-23
 ### feature/patch-api-comments-like-id

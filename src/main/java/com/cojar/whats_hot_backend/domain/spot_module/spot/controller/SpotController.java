@@ -63,14 +63,14 @@ public class SpotController {
 
         // hashtags 생성
         List<SpotHashtag> spotHashtags = null;
-        if (!request.getHashtags().isEmpty()) {
+        if (request.getHashtags() != null) {
             spotHashtags = this.spotHashtagService.createAll(request.getHashtags(), spot);
             spot = this.spotService.updateHashtags(spot, spotHashtags);
         }
 
         // menu item 생성
         List<MenuItem> menuItems = null;
-        if (!request.getMenuItems().isEmpty()) {
+        if (request.getMenuItems() != null) {
             menuItems = this.menuItemService.createAll(request.getMenuItems(), spot);
             spot = this.spotService.updateMenuItems(spot, menuItems);
         }
@@ -78,7 +78,7 @@ public class SpotController {
         // images 생성
         List<_File> files = null;
         List<SpotImage> spotImages = null;
-        if (!images.isEmpty()) {
+        if (images != null) {
             resData = this.fileService.validateAll(images);
             if (resData != null) return ResponseEntity.badRequest().body(resData);
             files = this.fileService.createAll(images, FileDomain.SPOT);
@@ -148,13 +148,53 @@ public class SpotController {
 
     @SpotApiResponse.Update
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity update(@Valid @RequestPart(value = "updateReq") SpotRequest.Update updateReq, Errors errors,
-                                 @RequestPart(value = "images", required = false) List<MultipartFile> images,
-                                 @PathVariable(value = "id") Long id) {
+    public ResponseEntity updateSpot(@Valid @RequestPart(value = "request", required = false) SpotRequest.UpdateSpot request, Errors errors,
+                                     @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                                     @PathVariable(value = "id") Long id) {
 
-        Spot spot = this.spotService.getSpotById(1L);
+        ResData resData = this.spotService.updateValidate(id, request, errors);
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
 
-        ResData resData = ResData.of(
+        Spot spot = this.spotService.getSpotById(id);
+
+        spot = this.spotService.update(spot, request);
+
+        // hashtags 수정
+        List<SpotHashtag> oldSpotHashtags = spot.getHashtags();
+        List<SpotHashtag> newSpotHashtags = null;
+        if (request.getHashtags() != null) {
+            newSpotHashtags = this.spotHashtagService.createAll(request.getHashtags(), spot);
+            spot = this.spotService.updateHashtags(spot, newSpotHashtags);
+        }
+
+        // menu item 수정
+        List<MenuItem> oldMenuItems = spot.getMenuItems();
+        List<MenuItem> newMenuItems = null;
+        if (request.getMenuItems() != null) {
+            newMenuItems = this.menuItemService.createAll(request.getMenuItems(), spot);
+            spot = this.spotService.updateMenuItems(spot, newMenuItems);
+        }
+
+        // images 수정
+        List<_File> newFiles = null;
+        List<SpotImage> oldSpotImages = spot.getImages();
+        List<SpotImage> newSpotImages = null;
+        if (images != null) {
+            resData = this.fileService.validateAll(images);
+            if (resData != null) return ResponseEntity.badRequest().body(resData);
+            newFiles = this.fileService.createAll(images, FileDomain.SPOT);
+            newSpotImages = this.spotImageService.createAll(newFiles, spot);
+            spot = this.spotService.updateImages(spot, newSpotImages);
+        }
+
+        // 중간에 Fail, Exception 발생 시 실제 DB에 저장되지 않도록 나중에 저장
+        this.spotHashtagService.saveAll(newSpotHashtags, oldSpotHashtags);
+        this.menuItemService.saveAll(newMenuItems, oldMenuItems);
+        this.fileService.saveAll(newFiles);
+        this.spotImageService.saveAll(newSpotImages, oldSpotImages);
+        this.spotService.save(spot);
+
+        resData = ResData.of(
                 HttpStatus.OK,
                 "S-02-04",
                 "장소 수정이 완료되었습니다",

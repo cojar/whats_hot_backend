@@ -20,6 +20,6 @@ public class SpotHashtag extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Spot spot;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Hashtag hashtag;
 }

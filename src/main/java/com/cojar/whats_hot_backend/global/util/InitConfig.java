@@ -1,8 +1,8 @@
 package com.cojar.whats_hot_backend.global.util;
 
+import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
-import com.cojar.whats_hot_backend.domain.base_module.hashtag.entity.Hashtag;
 import com.cojar.whats_hot_backend.domain.base_module.hashtag.service.HashtagService;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.entity.Comment;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.service.CommentService;
@@ -15,16 +15,25 @@ import com.cojar.whats_hot_backend.domain.review_module.review.entity.ReviewStat
 import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
 import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.category.service.CategoryService;
+import com.cojar.whats_hot_backend.domain.spot_module.menu_item.dto.MenuItemDto;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.entity.MenuItem;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.service.MenuItemService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
+import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.entity.SpotHashtag;
+import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.service.SpotHashtagService;
+import com.cojar.whats_hot_backend.domain.spot_module.spot_image.entity.SpotImage;
+import com.cojar.whats_hot_backend.domain.spot_module.spot_image.service.SpotImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,6 +51,9 @@ public class InitConfig {
     private final SpotService spotService;
     private final ReviewService reviewService;
     private final CommentService commentService;
+    private final SpotHashtagService spotHashtagService;
+    private final ResourceLoader resourceLoader;
+    private final SpotImageService spotImageService;
 
     @Bean
     public ApplicationRunner runner() {
@@ -54,6 +66,7 @@ public class InitConfig {
 
             log.info("데이터 초기화 실행");
 
+            // member init data
             Member admin = this.memberService.signup(
                     MemberRequest.Signup.builder()
                             .username("admin")
@@ -62,6 +75,7 @@ public class InitConfig {
                             .build(),
                     List.of(MemberRole.ADMIN, MemberRole.USER));
             this.memberService.save(admin);
+
             Member user1 = this.memberService.signup(
                     MemberRequest.Signup.builder()
                             .username("user1")
@@ -73,11 +87,10 @@ public class InitConfig {
 
             Category category1 = this.categoryService.create("맛집", 1, -1L);
             Category category2 = this.categoryService.create("2차", 2, category1.getId());
-            Category category3 = this.categoryService.create("3차", 3, category2.getId());
+            Category category3 = this.categoryService.create("3차-1", 3, category2.getId());
+            Category category4 = this.categoryService.create("3차-2", 3, category2.getId());
 
-            Hashtag hashtag1 = this.hashtagService.create("해시태그1");
-            Hashtag hashtag2 = this.hashtagService.create("해시태그2");
-
+            // spot init data
             Spot spot1 = this.spotService.create(
                     SpotRequest.CreateSpot.builder()
                             .categoryId(category3.getId())
@@ -87,6 +100,37 @@ public class InitConfig {
                             .build()
             );
             this.spotService.save(spot1);
+
+            List<SpotHashtag> spotHashtags1 = this.spotHashtagService.createAll(
+                    List.of(
+                            "해시태그1",
+                            "해시태그2"
+                    ),
+                    spot1);
+            this.spotHashtagService.saveAll(spotHashtags1);
+
+            List<MenuItem> menuItems1 = this.menuItemService.createAll(
+                    List.of(
+                            MenuItemDto.of("메뉴1", "10,000원"),
+                            MenuItemDto.of("메뉴2", "20,000원"),
+                            MenuItemDto.of("메뉴3", "30,000원")
+                    ),
+                    spot1);
+            this.menuItemService.saveAll(menuItems1);
+
+            String fileName1 = "test.png";
+            Resource resource = resourceLoader.getResource("classpath:/static/image/%s".formatted(fileName1));
+            MultipartFile _file1 = new MockMultipartFile(
+                    "images",
+                    fileName1,
+                    AppConfig.getMediaType(fileName1),
+                    resource.getInputStream()
+            );
+            List<MultipartFile> _files1 = List.of(_file1);
+            List<_File> files1 = this.fileService.createAll(_files1, FileDomain.SPOT);
+            this.fileService.saveAll(files1);
+            List<SpotImage> images1 = this.spotImageService.createAll(files1, spot1);
+            this.spotImageService.saveAll(images1);
 
             Spot spot2 = this.spotService.create(
                     SpotRequest.CreateSpot.builder()
@@ -138,10 +182,6 @@ public class InitConfig {
             );
             this.spotService.save(spot6);
 
-            MenuItem menuItem1 = this.menuItemService.create("메뉴1", "10000원", spot1);
-            MenuItem menuItem2 = this.menuItemService.create("메뉴2", "20000원", spot1);
-            MenuItem menuItem3 = this.menuItemService.create("메뉴3", "30000원", spot1);
-
             MenuItem menuItem4 = this.menuItemService.create("메뉴1", "10000원", spot2);
             MenuItem menuItem5 = this.menuItemService.create("메뉴2", "20000원", spot2);
             MenuItem menuItem6 = this.menuItemService.create("메뉴3", "30000원", spot2);
@@ -149,10 +189,6 @@ public class InitConfig {
             MenuItem menuItem7 = this.menuItemService.create("메뉴1", "10000원", spot3);
             MenuItem menuItem8 = this.menuItemService.create("메뉴2", "20000원", spot3);
             MenuItem menuItem9 = this.menuItemService.create("메뉴3", "30000원", spot3);
-
-            _File image1 = this.fileService.create(spot1);
-            _File image2 = this.fileService.create(spot1);
-            _File image3 = this.fileService.create(spot1);
 
             _File image4 = this.fileService.create(spot2);
             _File image5 = this.fileService.create(spot2);

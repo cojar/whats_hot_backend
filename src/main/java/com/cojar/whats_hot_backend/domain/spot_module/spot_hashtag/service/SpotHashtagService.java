@@ -25,19 +25,37 @@ public class SpotHashtagService {
     public List<SpotHashtag> createAll(List<String> hashtags, Spot spot) {
 
         List<SpotHashtag> spotHashtags = hashtags.stream()
-                .map(hashtag ->
-                        SpotHashtag.builder()
-                                .hashtag(this.hashtagRepository.findByName(hashtag)
-                                        .orElse(this.hashtagRepository.save(Hashtag.builder().name(hashtag).build())))
-                                .spot(spot)
-                                .build()
+                .map(hashtag -> {
+                            Hashtag _hashtag = this.hashtagRepository.findByName(hashtag).orElse(null);
+                            if (_hashtag == null) {
+                                _hashtag = Hashtag.builder().name(hashtag).build();
+                                this.hashtagRepository.save(_hashtag);
+                            }
+                            return SpotHashtag.builder()
+                                    .hashtag(_hashtag)
+                                    .spot(spot)
+                                    .build();
+                        }
                 )
                 .collect(Collectors.toList());
+
         return spotHashtags;
     }
 
     @Transactional
     public void saveAll(List<SpotHashtag> spotHashtags) {
         if (spotHashtags != null) this.spotHashtagRepository.saveAll(spotHashtags);
+    }
+
+    @Transactional
+    public void saveAll(List<SpotHashtag> newSpotHashtags, List<SpotHashtag> oldSpotHashtags) {
+        if (newSpotHashtags != null) {
+            this.spotHashtagRepository.deleteAll(oldSpotHashtags);
+            this.spotHashtagRepository.saveAll(newSpotHashtags);
+        }
+    }
+
+    public List<SpotHashtag> getAllBySpot(Spot spot) {
+        return this.spotHashtagRepository.findAllBySpot(spot);
     }
 }

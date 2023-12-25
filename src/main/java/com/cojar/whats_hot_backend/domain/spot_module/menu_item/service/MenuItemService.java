@@ -49,4 +49,16 @@ public class MenuItemService {
     public void saveAll(List<MenuItem> menuItems) {
         if (menuItems != null) this.menuItemRepository.saveAll(menuItems);
     }
+
+    @Transactional
+    public void saveAll(List<MenuItem> newMenuItems, List<MenuItem> oldMenuItems) {
+        if (newMenuItems != null) {
+            this.menuItemRepository.deleteAll(oldMenuItems);
+            this.menuItemRepository.saveAll(newMenuItems);
+        }
+    }
+
+    public List<MenuItem> getAllBySpot(Spot spot) {
+        return this.menuItemRepository.findAllBySpot(spot);
+    }
 }

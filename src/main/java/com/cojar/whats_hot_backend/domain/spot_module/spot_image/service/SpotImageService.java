@@ -34,4 +34,16 @@ public class SpotImageService {
     public void saveAll(List<SpotImage> spotImages) {
         if (spotImages != null) this.spotImageRepository.saveAll(spotImages);
     }
+
+    @Transactional
+    public void saveAll(List<SpotImage> newSpotImages, List<SpotImage> oldSpotImages) {
+        if (newSpotImages != null) {
+            this.spotImageRepository.deleteAll(oldSpotImages);
+            this.spotImageRepository.saveAll(newSpotImages);
+        }
+    }
+
+    public List<SpotImage> getAllBySpot(Spot spot) {
+        return this.spotImageRepository.findAllBySpot(spot);
+    }
 }
