@@ -10,6 +10,7 @@ import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberSer
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.controller.SpotController;
+import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,7 +18,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,7 +41,7 @@ public class CommentController {
     private final ReviewService reviewService;
 
     @CommentApiResponse.Create
-    @PostMapping(value = "",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity createComment(@Valid @RequestBody CommentRequest.CreateComment request,
                                         Errors errors,
                                         @AuthenticationPrincipal User user) {
@@ -59,15 +59,13 @@ public class CommentController {
         Comment comment = this.commentService.create(author, review, request.getContent(), tag);
 
         resData = ResData.of(
-            HttpStatus.CREATED,
-            "S-04-01",
-            "댓글 등록이 완료되었습니다",
-            CommentDto.of(comment),
-            linkTo(SpotController.class).slash(comment.getId())
+                ResCode.S_04_01,
+                CommentDto.of(comment),
+                linkTo(SpotController.class).slash(comment.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/createComment").withRel("profile"));
         return ResponseEntity.created(resData.getSelfUri())
-            .body(resData);
+                .body(resData);
     }
 
     @CommentApiResponse.Detail
@@ -81,15 +79,13 @@ public class CommentController {
         Comment comment = this.commentService.getCommentById(id);
 
         resData = ResData.of(
-            HttpStatus.OK,
-            "S-04-02",
-            "요청하신 댓글 정보를 반환합니다",
-            CommentDto.of(comment),
-            linkTo(this.getClass()).slash(comment.getId())
+                ResCode.S_04_02,
+                CommentDto.of(comment),
+                linkTo(this.getClass()).slash(comment.getId())
         );
 
         return ResponseEntity.ok()
-            .body(resData);
+                .body(resData);
     }
 
 
@@ -106,14 +102,12 @@ public class CommentController {
         if (resData != null) return ResponseEntity.badRequest().body(resData);
 
         List<CommentDto> commentDtos = comments.stream()
-            .map(CommentDto::of)
-            .collect(Collectors.toList());
+                .map(CommentDto::of)
+                .collect(Collectors.toList());
 
         resData = ResData.of(
-            HttpStatus.OK,
-            "S-04-03",
-            "요청하신 댓글 리스트입니다.",
-            commentDtos
+                ResCode.S_04_03,
+                commentDtos
         );
 
         return ResponseEntity.ok().body(resData);
@@ -135,16 +129,14 @@ public class CommentController {
         this.commentService.update(comment, request.getContent());
 
         resData = ResData.of(
-            HttpStatus.OK,
-            "S-04-04",
-            "댓글 수정이 완료되었습니다",
-            CommentDto.of(comment),
-            linkTo(this.getClass()).slash(comment.getId())
+                ResCode.S_04_04,
+                CommentDto.of(comment),
+                linkTo(this.getClass()).slash(comment.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/updateComment").withRel("profile"));
 
         return ResponseEntity.ok()
-            .body(resData);
+                .body(resData);
     }
 
 
@@ -162,9 +154,7 @@ public class CommentController {
         this.commentService.delete(comment);
 
         resData = ResData.of(
-                HttpStatus.OK,
-                "S-04-05",
-                "댓글 삭제가 완료되었습니다"
+                ResCode.S_04_05
         );
 
         return ResponseEntity.ok()
@@ -187,9 +177,7 @@ public class CommentController {
         this.commentService.toggleLike(comment, author);
 
         resData = ResData.of(
-                HttpStatus.OK,
-                "S-04-06",
-                "댓글 좋아요 상태가 변경되었습니다",
+                ResCode.S_04_06,
                 CommentDto.of(comment),
                 linkTo(this.getClass()).slash(comment.getId())
         );

@@ -14,6 +14,7 @@ import com.cojar.whats_hot_backend.domain.member_module.member.response.MemberRe
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.cojar.whats_hot_backend.domain.member_module.member_image.entity.MemberImage;
 import com.cojar.whats_hot_backend.domain.member_module.member_image.service.MemberImageService;
+import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +23,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -67,9 +67,7 @@ public class MemberController {
         member = this.memberService.save(member);
 
         resData = ResData.of(
-                HttpStatus.CREATED,
-                "S-01-01",
-                "회원가입을 완료했습니다",
+                ResCode.S_01_01,
                 MemberDto.of(member),
                 linkTo(this.getClass()).slash("login")
         );
@@ -88,9 +86,7 @@ public class MemberController {
         String accessToken = this.memberService.getAccessToken(loginReq);
 
         resData = ResData.of(
-                HttpStatus.OK,
-                "S-01-02",
-                "액세스 토큰이 생성되었습니다",
+                ResCode.S_01_02,
                 new MemberResponse.Login(accessToken),
                 linkTo(IndexController.class).slash("/api/index")
         );
@@ -107,9 +103,7 @@ public class MemberController {
         this.memberService.logout(member);
 
         ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-01-03",
-                "로그아웃이 완료되었습니다",
+                ResCode.S_01_03,
                 linkTo(IndexController.class).slash("/api/index")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/logout").withRel("profile"));
@@ -124,9 +118,7 @@ public class MemberController {
         Member member = this.memberService.getUserByUsername(user.getUsername());
 
         ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-01-04",
-                "로그인된 회원 정보를 반환합니다",
+                ResCode.S_01_04,
                 new MemberResponse.Me(MemberDto.of(member)),
                 linkTo(this.getClass()).slash("me")
         );
@@ -148,9 +140,7 @@ public class MemberController {
         this.memberService.updatePassword(request, member);
 
         resData = ResData.of(
-                HttpStatus.OK,
-                "S-01-05",
-                "비밀번호 변경을 완료했습니다",
+                ResCode.S_01_05,
                 linkTo(this.getClass()).slash("me")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/updatePassword").withRel("profile"));
@@ -168,9 +158,7 @@ public class MemberController {
         Member member = this.memberService.getUserByEmail(request.getEmail());
 
         resData = ResData.of(
-                HttpStatus.OK,
-                "S-01-06",
-                "요청하신 아이디를 반환합니다",
+                ResCode.S_01_06,
                 new MemberResponse.FindUsername(member.getUsername()),
                 linkTo(this.getClass()).slash("login")
         );
@@ -193,9 +181,7 @@ public class MemberController {
         this.memberService.updatePassword(member, resetPassword);
 
         resData = ResData.of(
-                HttpStatus.OK,
-                "S-01-07",
-                "이메일로 임시비밀번호를 발송했습니다",
+                ResCode.S_01_07,
                 linkTo(this.getClass()).slash("login")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/findPassword").withRel("profile"));

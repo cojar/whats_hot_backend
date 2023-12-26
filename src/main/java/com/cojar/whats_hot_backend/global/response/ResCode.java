@@ -8,6 +8,9 @@ import java.util.Arrays;
 @Getter
 public enum ResCode {
 
+    // index controller success codes
+    S_00_00(HttpStatus.OK, "S-00-00", "인덱스 링크 목록을 반환합니다"),
+
     // member controller success codes
     S_01_01(HttpStatus.CREATED, "S-01-01", "회원가입을 완료했습니다"),
     S_01_02(HttpStatus.OK, "S-01-02", "액세스 토큰이 생성되었습니다"),
