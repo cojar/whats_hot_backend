@@ -51,7 +51,7 @@ class FileServiceTest {
         );
 
         // when
-        ResData resData = this.fileService.validate(_file);
+        ResData resData = this.fileService.validateUnit(_file);
 
         // then
         assertThat(resData).isNull();
@@ -81,7 +81,7 @@ class FileServiceTest {
         );
 
         // when
-        ResData resData = this.fileService.validate(_file);
+        ResData resData = this.fileService.validateUnit(_file);
 
         // then
         assertThat(resData).isNotNull();
@@ -117,7 +117,7 @@ class FileServiceTest {
         );
 
         // when
-        ResData resData = this.fileService.validate(_file);
+        ResData resData = this.fileService.validateUnit(_file);
 
         // then
         assertThat(resData).isNotNull();

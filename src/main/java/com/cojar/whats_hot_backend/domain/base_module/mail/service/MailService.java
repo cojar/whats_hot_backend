@@ -1,5 +1,8 @@
 package com.cojar.whats_hot_backend.domain.base_module.mail.service;
 
+import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
+import com.cojar.whats_hot_backend.global.response.ResCode;
+import com.cojar.whats_hot_backend.global.response.ResData;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +38,7 @@ public class MailService {
             this.javaMailSender.send(mimeMessage);
 
         } catch (MessagingException e) {
-            throw new RuntimeException("F-00-02-01", e);
+            throw new ApiResponseException(ResData.of(ResCode.F_00_02_01));
         }
     }
 }
