@@ -5,6 +5,7 @@ import com.cojar.whats_hot_backend.domain.member_module.member.entity.MemberRole
 import com.cojar.whats_hot_backend.domain.member_module.member.repository.MemberRepository;
 import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
 import com.cojar.whats_hot_backend.domain.member_module.member_image.entity.MemberImage;
+import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.jwt.JwtProvider;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
@@ -50,9 +51,12 @@ public class MemberService {
     public ResData signupValidate(MemberRequest.Signup request, Errors errors) {
 
         if (errors.hasErrors()) {
-            return ResData.of(
-                    ResCode.F_01_01_01,
-                    errors
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_01_01_01,
+                            errors
+                    )
             );
         }
 
@@ -60,9 +64,11 @@ public class MemberService {
 
             errors.rejectValue("passwordConfirm", "not matched", "passwordConfirm does not matched with password");
 
-            return ResData.of(
-                    ResCode.F_01_01_02,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_01_01_02,
+                            errors
+                    )
             );
         }
 
@@ -70,9 +76,11 @@ public class MemberService {
 
             errors.rejectValue("username", "unique violation", "username unique violation");
 
-            return ResData.of(
-                    ResCode.F_01_01_03,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_01_01_03,
+                            errors
+                    )
             );
         }
 
@@ -80,9 +88,11 @@ public class MemberService {
 
             errors.rejectValue("email", "unique violation", "email unique violation");
 
-            return ResData.of(
-                    ResCode.F_01_01_04,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_01_01_04,
+                            errors
+                    )
             );
         }
 
@@ -97,9 +107,12 @@ public class MemberService {
     public ResData loginValidate(MemberRequest.Login loginReq, Errors errors) {
 
         if (errors.hasErrors()) {
-            return ResData.of(
-                    ResCode.F_01_02_01,
-                    errors
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_01_02_01,
+                            errors
+                    )
             );
         }
 
@@ -109,9 +122,11 @@ public class MemberService {
 
             errors.rejectValue("username", "not exist", "member does not exist");
 
-            return ResData.of(
-                    ResCode.F_01_02_02,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_01_02_02,
+                            errors
+                    )
             );
         }
 
@@ -119,9 +134,11 @@ public class MemberService {
 
             errors.rejectValue("password", "not matched", "password is not matched");
 
-            return ResData.of(
-                    ResCode.F_01_02_03,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_01_02_03,
+                            errors
+                    )
             );
         }
 
@@ -168,9 +185,12 @@ public class MemberService {
     public ResData updatePasswordValidate(MemberRequest.UpdatePassword request, Member member, Errors errors) {
 
         if (errors.hasErrors()) {
-            return ResData.of(
-                    ResCode.F_01_05_01,
-                    errors
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_01_05_01,
+                            errors
+                    )
             );
         }
 
@@ -178,9 +198,11 @@ public class MemberService {
 
             errors.rejectValue("oldPassword", "not matched", "oldPassword is not matched");
 
-            return ResData.of(
-                    ResCode.F_01_05_02,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_01_05_02,
+                            errors
+                    )
             );
         }
 
@@ -188,9 +210,11 @@ public class MemberService {
 
             errors.rejectValue("newPasswordConfirm", "not matched", "newPassword is not matched");
 
-            return ResData.of(
-                    ResCode.F_01_05_03,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_01_05_03,
+                            errors
+                    )
             );
         }
 
@@ -210,9 +234,11 @@ public class MemberService {
     public ResData findUsernameValidate(MemberRequest.FindUsername request, Errors errors) {
 
         if (errors.hasErrors()) {
-            return ResData.of(
-                    ResCode.F_01_06_01,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_01_06_01,
+                            errors
+                    )
             );
         }
 
@@ -220,9 +246,11 @@ public class MemberService {
 
             errors.rejectValue("email", "not exist", "member that has email does not exist");
 
-            return ResData.of(
-                    ResCode.F_01_06_02,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_01_06_02,
+                            errors
+                    )
             );
         }
 
@@ -238,9 +266,11 @@ public class MemberService {
     public ResData findPasswordValidate(MemberRequest.FindPassword request, Errors errors) {
 
         if (errors.hasErrors()) {
-            return ResData.of(
-                    ResCode.F_01_07_01,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_01_07_01,
+                            errors
+                    )
             );
         }
 
@@ -254,9 +284,11 @@ public class MemberService {
                 errors.rejectValue("email", "not exist", "member that has email does not exist");
             }
 
-            return ResData.of(
-                    ResCode.F_01_07_02,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_01_07_02,
+                            errors
+                    )
             );
         }
 

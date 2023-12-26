@@ -11,6 +11,7 @@ import com.cojar.whats_hot_backend.domain.review_module.review_image.entity.Revi
 import com.cojar.whats_hot_backend.domain.spot_module.spot.controller.SpotController;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.repository.SpotRepository;
+import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.DataModel;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
@@ -62,9 +63,11 @@ public class ReviewService {
     public ResData createValidate(ReviewRequest.CreateReview request, Errors errors) {
 
         if (errors.hasErrors()) {
-            return ResData.of(
-                    ResCode.F_03_01_01,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_01_01,
+                            errors
+                    )
             );
         }
 
@@ -72,9 +75,11 @@ public class ReviewService {
 
             errors.rejectValue("spotId", "not exist", "spot that has id does not exist");
 
-            return ResData.of(
-                    ResCode.F_03_01_02,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_01_02,
+                            errors
+                    )
             );
         }
 

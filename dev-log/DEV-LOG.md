@@ -15,6 +15,7 @@
 
 ### feature/errors-exception_handler
 - [x] ApiGlobalExceptionHandler 생성
+- [x] fail case 모두 ApiResponseException 던지도록 수정
 
 ## 23-12-25
 ### feature/patch-api-spots-id

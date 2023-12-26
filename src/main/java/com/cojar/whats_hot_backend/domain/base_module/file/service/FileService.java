@@ -5,6 +5,7 @@ import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.repository.FileRepository;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
+import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import lombok.RequiredArgsConstructor;
@@ -70,7 +71,7 @@ public class FileService {
         try {
             _file.transferTo(new File(saveFilePath));
         } catch (IOException e) {
-            throw new RuntimeException("F-00-00-03", e);
+            throw new ApiResponseException(ResData.of(ResCode.F_00_00_03));
         }
 
         _File file = _File.builder()
@@ -82,34 +83,6 @@ public class FileService {
                 .build();
 
         return file;
-    }
-
-    public ResData validate(MultipartFile file) {
-
-        Map<String, Object> fileBits = this.getFileBits(file);
-        Errors errors = new BeanPropertyBindingResult(file, "file");
-
-        if (!fileBits.get("type").equals("image")) {
-
-            errors.rejectValue("contentType", "not allowed", "content type is not allowed");
-
-            return ResData.of(
-                    ResCode.F_00_00_01,
-                    errors
-            );
-        }
-
-        if (fileBits.get("ext").equals("etc")) {
-
-            errors.rejectValue("contentType", "not allowed", "file extension is not allowed");
-
-            return ResData.of(
-                    ResCode.F_00_00_02,
-                    errors
-            );
-        }
-
-        return null;
     }
 
     private Map<String, Object> getFileBits(MultipartFile file) {
@@ -135,16 +108,57 @@ public class FileService {
         );
     }
 
-    public ResData validateAll(List<MultipartFile> images) {
+    public ResData validateUnit(MultipartFile file) {
 
-        Errors errors = new BeanPropertyBindingResult(images, "file");
+        ResData resData = this.validate(file);
 
-        return ResData.reduceError(
-                images.stream()
-                        .map(image -> this.validate(image))
+        if (resData != null) throw new ApiResponseException(resData);
+
+        return null;
+    }
+
+    public ResData validateAll(List<MultipartFile> files) {
+
+        Errors errors = new BeanPropertyBindingResult(files, "file");
+
+        ResData resData = ResData.reduceError(
+                files.stream()
+                        .map(file -> this.validate(file))
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList()),
                 errors);
+
+        if (resData != null) throw new ApiResponseException(resData);
+
+        return null;
+    }
+
+    private ResData validate(MultipartFile file) {
+
+        Map<String, Object> fileBits = this.getFileBits(file);
+        Errors errors = new BeanPropertyBindingResult(file, "file");
+
+        if (!fileBits.get("type").equals("image")) {
+
+            errors.rejectValue("contentType", "not allowed", "content type is not allowed");
+
+            return ResData.of(
+                    ResCode.F_00_00_01,
+                    errors
+            );
+        }
+
+        if (fileBits.get("ext").equals("etc")) {
+
+            errors.rejectValue("contentType", "not allowed", "file extension is not allowed");
+
+            return ResData.of(
+                    ResCode.F_00_00_02,
+                    errors
+            );
+        }
+
+        return null;
     }
 
     public List<_File> createAll(List<MultipartFile> images, FileDomain fileDomain) {

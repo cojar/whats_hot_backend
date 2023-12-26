@@ -11,6 +11,7 @@ import com.cojar.whats_hot_backend.domain.spot_module.spot.repository.SpotReposi
 import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.entity.SpotHashtag;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.entity.SpotImage;
+import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.DataModel;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
@@ -37,9 +38,11 @@ public class SpotService {
     public ResData createValidate(SpotRequest.CreateSpot request, Errors errors) {
 
         if (errors.hasErrors()) {
-            return ResData.of(
-                    ResCode.F_02_01_01,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_01_01,
+                            errors
+                    )
             );
         }
 
@@ -50,9 +53,11 @@ public class SpotService {
 
             errors.rejectValue("categoryId", "not exist", "category that has request id does not exist");
 
-            return ResData.of(
-                    ResCode.F_02_01_02,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_01_02,
+                            errors
+                    )
             );
         }
 
@@ -60,9 +65,11 @@ public class SpotService {
 
             errors.rejectValue("categoryId", "invalid", "category that has request id is invalid");
 
-            return ResData.of(
-                    ResCode.F_02_01_03,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_01_03,
+                            errors
+                    )
             );
         }
 
@@ -70,11 +77,11 @@ public class SpotService {
 
             errors.reject("duplicated", new Object[]{request.getName(), request.getAddress()}, "spot that has same name and same address is already exist");
 
-            System.out.println(errors);
-
-            return ResData.of(
-                    ResCode.F_02_01_04,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_01_04,
+                            errors
+                    )
             );
         }
 
@@ -123,16 +130,20 @@ public class SpotService {
 
             errors.reject("not exist", new Object[]{id}, "spot that has id does not exist");
 
-            return ResData.of(
-                    ResCode.F_02_04_01,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_04_01,
+                            errors
+                    )
             );
         }
 
         if (errors.hasErrors()) {
-            return ResData.of(
-                    ResCode.F_02_04_02,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_04_02,
+                            errors
+                    )
             );
         }
 
@@ -145,9 +156,11 @@ public class SpotService {
 
                 errors.rejectValue("categoryId", "not exist", "category that has request id does not exist");
 
-                return ResData.of(
-                        ResCode.F_02_04_03,
-                        errors
+                throw new  ApiResponseException(
+                        ResData.of(
+                                ResCode.F_02_04_03,
+                                errors
+                        )
                 );
             }
 
@@ -155,9 +168,11 @@ public class SpotService {
 
                 errors.rejectValue("categoryId", "invalid", "category that has request id is invalid");
 
-                return ResData.of(
-                        ResCode.F_02_04_04,
-                        errors
+                throw new ApiResponseException(
+                        ResData.of(
+                                ResCode.F_02_04_04,
+                                errors
+                        )
                 );
             }
         }
@@ -167,11 +182,11 @@ public class SpotService {
 
             errors.reject("duplicated", new Object[]{request.getName(), request.getAddress()}, "spot that has same name and same address is already exist");
 
-            System.out.println(errors);
-
-            return ResData.of(
-                    ResCode.F_02_04_05,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_04_05,
+                            errors
+                    )
             );
         }
 

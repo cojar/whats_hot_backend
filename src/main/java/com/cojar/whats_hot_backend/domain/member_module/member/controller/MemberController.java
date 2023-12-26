@@ -57,7 +57,7 @@ public class MemberController {
         Member member = this.memberService.signup(request, List.of(MemberRole.USER));
 
         if (profileImage != null) {
-            resData = this.fileService.validate(profileImage);
+            resData = this.fileService.validateUnit(profileImage);
             if (resData != null) return ResponseEntity.badRequest().body(resData);
             _File file = this.fileService.create(profileImage, FileDomain.MEMBER);
             MemberImage _profileImage = this.memberImageService.create(member, file);

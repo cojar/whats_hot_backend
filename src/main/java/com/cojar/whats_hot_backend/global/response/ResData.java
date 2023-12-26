@@ -35,7 +35,7 @@ public class ResData<T> extends RepresentationModel {
         this.status = resCode.getStatus();
         this.success = status.is2xxSuccessful();
         this.code = resCode.getCode();
-        this.message = resCode.getStatus();
+        this.message = resCode.getMessage();
         this.data = data;
     }
 

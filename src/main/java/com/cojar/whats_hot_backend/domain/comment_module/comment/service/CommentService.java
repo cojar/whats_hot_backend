@@ -6,6 +6,7 @@ import com.cojar.whats_hot_backend.domain.comment_module.comment.request.Comment
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
+import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import lombok.RequiredArgsConstructor;
@@ -49,9 +50,12 @@ public class CommentService {
     public ResData createValidate(CommentRequest.CreateComment request, Errors errors) {
 
         if (errors.hasErrors()) {
-            return ResData.of(
-                    ResCode.F_04_01_02,
-                    errors
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_04_01_02,
+                            errors
+                    )
             );
         }
 
@@ -60,8 +64,10 @@ public class CommentService {
         if (review == null) {
             errors.rejectValue("reviewId", "not exist", "존재하지 않는 리뷰입니다.");
 
-            return ResData.of(
-                    ResCode.F_04_01_01
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_04_01_01
+                    )
             );
         }
         return null;
@@ -70,8 +76,11 @@ public class CommentService {
     public ResData getValidate(Long commentId) {
 
         if (!this.commentRepository.existsById(commentId)) {
-            return ResData.of(
-                    ResCode.F_04_02_01
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_04_02_01
+                    )
             );
         }
         return null;
@@ -81,8 +90,11 @@ public class CommentService {
     public ResData getMyCommentsValidate(Member author) {
 
         if (this.commentRepository.countByAuthor(author) == 0) {
-            return ResData.of(
-                    ResCode.F_04_03_01
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_04_03_01
+                    )
             );
         }
         return null;
@@ -90,24 +102,31 @@ public class CommentService {
 
     public ResData updateValidate(User user, Comment comment, Errors errors) {
         if (errors.hasErrors()) {
-            return ResData.of(
-                    ResCode.F_04_04_01,
-                    errors
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_04_04_01,
+                            errors
+                    )
             );
         }
 
         if (comment == null) {
 
-            return ResData.of(
-                    ResCode.F_04_04_02
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_04_04_02
+                    )
             );
         }
 
         if (!comment.getAuthor().getUsername().equals(user.getUsername())) {
 
-            return ResData.of(
-                    ResCode.F_04_04_03,
-                    errors
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_04_04_03,
+                            errors
+                    )
             );
         }
 
@@ -117,32 +136,46 @@ public class CommentService {
     public ResData deleteValidate(User user, Comment comment) {
 
         if (comment == null) {
-            return ResData.of(
-                    ResCode.F_04_05_01
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_04_05_01
+                    )
             );
         }
 
         if (!comment.getAuthor().getUsername().equals(user.getUsername())) {
-            return ResData.of(
-                    ResCode.F_04_05_02
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_04_05_02
+                    )
             );
         }
+
         return null;
     }
 
     public ResData likeValidate(User user, Comment comment) {
 
         if (comment == null) {
-            return ResData.of(
-                    ResCode.F_04_06_01
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_04_06_01
+                    )
             );
         }
 
         if (comment.getAuthor().getUsername().equals(user.getUsername())) {
-            return ResData.of(
-                    ResCode.F_04_06_02
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_04_06_02
+                    )
             );
         }
+
         return null;
     }
 
