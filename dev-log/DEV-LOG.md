@@ -7,6 +7,7 @@
 ### feature/response
 - [x] ResCode 생성
 - [x] ResData 매개변수 수정
+- [x] ResCode 성공 케이스 정리
 
 ## 23-12-25
 ### feature/patch-api-spots-id

@@ -9,13 +9,36 @@ import java.util.Arrays;
 public enum ResCode {
 
     // member controller success codes
-
+    S_01_01(HttpStatus.CREATED, "S-01-01", "회원가입을 완료했습니다"),
+    S_01_02(HttpStatus.OK, "S-01-02", "액세스 토큰이 생성되었습니다"),
+    S_01_03(HttpStatus.OK, "S-01-03", "로그아웃이 완료되었습니다"),
+    S_01_04(HttpStatus.OK, "S-01-04", "로그인된 회원 정보를 반환합니다"),
+    S_01_05(HttpStatus.OK, "S-01-05", "비밀번호 변경을 완료했습니다"),
+    S_01_06(HttpStatus.OK, "S-01-06", "요청하신 아이디를 반환합니다"),
+    S_01_07(HttpStatus.OK, "S-01-07", "이메일로 임시비밀번호를 발송했습니다"),
 
     // spot controller success codes
+    S_02_01(HttpStatus.CREATED, "S-02-01", "장소 등록이 완료되었습니다"),
+    S_02_02(HttpStatus.OK, "S-02-02", "요청하신 장소 목록을 반환합니다"),
+    S_02_03(HttpStatus.OK, "S-02-03", "요청하신 장소 정보를 반환합니다"),
+    S_02_04(HttpStatus.OK, "S-02-04", "장소 수정이 완료되었습니다"),
+    S_02_05(HttpStatus.OK, "S-02-05", "장소 삭제가 완료되었습니다"),
 
     // review controller success codes
+    S_03_01(HttpStatus.CREATED, "S-03-01", "리뷰 등록이 완료되었습니다"),
+    S_03_02(HttpStatus.OK, "S-03-02", "요청하신 리뷰 목록을 반환합니다"),
+    S_03_03(HttpStatus.OK, "S-03-03", "요청하신 리뷰 정보를 반환합니다"),
+    S_03_04(HttpStatus.OK, "S-03-04", "리뷰 수정이 완료되었습니다"),
+    S_03_05(HttpStatus.OK, "S-03-05", "리뷰 삭제가 완료되었습니다"),
+    S_03_06(HttpStatus.OK, "S-03-06", "리뷰 좋아요 상태가 변경되었습니다"),
 
     // comment controller success codes
+    S_04_01(HttpStatus.CREATED, "S-04-01", "댓글 등록이 완료되었습니다"),
+    S_04_02(HttpStatus.OK, "S-04-02", "요청하신 댓글 정보를 반환합니다"),
+    S_04_03(HttpStatus.OK, "S-04-03", "요청하신 댓글 목록을 반환합니다"),
+    S_04_04(HttpStatus.OK, "S-04-04", "댓글 수정이 완료되었습니다"),
+    S_04_05(HttpStatus.OK, "S-04-05", "댓글 삭제가 완료되었습니다"),
+    S_04_06(HttpStatus.OK, "S-04-06", "댓글 좋아요 상태가 변경되었습니다"),
 
     // file service fail codes
     F_00_00_01(HttpStatus.BAD_REQUEST, "F-00-00-01", "이미지 형식만 업로드할 수 있습니다"),
