@@ -13,6 +13,9 @@
 ### feature/errors-exception
 - [x] ApiResponseException 생성
 
+### feature/errors-exception_handler
+- [x] ApiGlobalExceptionHandler 생성
+
 ## 23-12-25
 ### feature/patch-api-spots-id
 - [x] SpotService.create 롤백
