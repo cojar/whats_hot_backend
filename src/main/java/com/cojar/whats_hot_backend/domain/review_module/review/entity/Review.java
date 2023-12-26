@@ -2,6 +2,7 @@ package com.cojar.whats_hot_backend.domain.review_module.review.entity;
 
 import com.cojar.whats_hot_backend.domain.comment_module.comment.entity.Comment;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
+import com.cojar.whats_hot_backend.domain.review_module.review_hashtag.entity.ReviewHashtag;
 import com.cojar.whats_hot_backend.domain.review_module.review_image.entity.ReviewImage;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.global.jpa.BaseEntity;
@@ -10,6 +11,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -35,16 +37,22 @@ public class Review extends BaseEntity {
 
     private Double score;
 
+    @Builder.Default
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
-    private List<ReviewImage> images;
+    private List<ReviewHashtag> hashtags = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
+    private List<ReviewImage> images = new ArrayList<>();
 
     @Enumerated(value = EnumType.STRING)
     private ReviewStatus status;
 
     private boolean validated;
 
+    @Builder.Default
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder.Default
     private Long liked = 0L;

@@ -1,5 +1,6 @@
 package com.cojar.whats_hot_backend.domain.spot_module.spot.service;
 
+import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.category.repository.CategoryRepository;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.entity.MenuItem;
@@ -223,6 +224,18 @@ public class SpotService {
     public Spot updateImages(Spot spot, List<SpotImage> spotImages) {
         return spot.toBuilder()
                 .images(spotImages)
+                .build();
+    }
+
+    public Spot updateReview(Spot spot, Review review) {
+
+        List<Review> reviews = spot.getReviews();
+        reviews.add(review);
+        Double averageScore = (spot.getAverageScore() + review.getScore()) / reviews.size();
+
+        return spot.toBuilder()
+                .averageScore(averageScore)
+                .reviews(reviews)
                 .build();
     }
 }

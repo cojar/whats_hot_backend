@@ -1,9 +1,28 @@
 # What's Hot Dev-Log
 
+## 23-12-26
+### feature/post-api-reviews
+- [x] conflict issue 해결
+
 ## 23-12-25
 ### feature/patch-api-spots-id
 - [x] SpotService.create 롤백
 - [x] SpotHashtagService.createAll 로직 변경
+
+### feature/post-api-reviews
+- [x] ReviewRequest.CreateReview 수정
+- [x] 연관 엔티티 수정
+- [x] S-03-01 TC 작성, ResData.reduceError 수정
+- [x] S-03-01 TC - status private 작성
+- [x] S-03-01 TC - without hashtags 작성
+- [x] S-03-01 TC - without images 작성
+- [x] F-03-01-01 TC 작성
+- [x] F-03-01-01 -> F-03-01-02 수정
+- [x] F-03-01-01 TC 작성
+- [x] ReviewHashTag.createAll 로직 변경
+- [x] F-00-00-01 TC 작성
+- [x] F-00-00-02 TC 작성
+- [x] 여러 파일 에러 동시 발생 TC 작성; F-00-00-01, F-00-00-02
 
 ## 23-12-24
 ### feature/post-api-spots
@@ -14,6 +33,8 @@
 - [x] F-00-00-01 TC 작성
 - [x] F-00-00-02 TC 작성
 - [x] 여러 파일 에러 동시 발생 TC 작성; F-00-00-01, F-00-00-02
+<<<<<<< HEAD
+=======
 
 ### feature/patch-api-spots-id
 - [x] S-02-04 TC 작성
@@ -28,6 +49,7 @@
 - [x] F-00-00-01 TC 작성
 - [x] F-00-00-02 TC 작성
 - [x] 여러 파일 에러 동시 발생 TC 작성; F-00-00-01, F-00-00-02
+>>>>>>> a0afbcac8fd6fe1dbb156dab4924ca53ce70c5eb
 
 ## 23-12-23
 ### feature/patch-api-comments-like-id

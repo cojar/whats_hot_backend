@@ -1,5 +1,8 @@
 package com.cojar.whats_hot_backend.domain.review_module.review.controller;
 
+import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
+import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
+import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.cojar.whats_hot_backend.domain.review_module.review.api_response.ReviewApiResponse;
@@ -7,7 +10,12 @@ import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewDto;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.review_module.review.request.ReviewRequest;
 import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
-import com.cojar.whats_hot_backend.domain.spot_module.spot.controller.SpotController;
+import com.cojar.whats_hot_backend.domain.review_module.review_hashtag.entity.ReviewHashtag;
+import com.cojar.whats_hot_backend.domain.review_module.review_hashtag.service.ReviewHashtagService;
+import com.cojar.whats_hot_backend.domain.review_module.review_image.entity.ReviewImage;
+import com.cojar.whats_hot_backend.domain.review_module.review_image.service.ReviewImageService;
+import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
+import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
 import com.cojar.whats_hot_backend.global.response.DataModel;
 import com.cojar.whats_hot_backend.global.response.PagedDataModel;
 import com.cojar.whats_hot_backend.global.response.ResData;
@@ -38,7 +46,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final SpotService spotService;
     private final MemberService memberService;
+    private final ReviewHashtagService reviewHashtagService;
+    private final FileService fileService;
+    private final ReviewImageService reviewImageService;
 
     @ReviewApiResponse.Create
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -46,16 +58,45 @@ public class ReviewController {
                                        @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                        @AuthenticationPrincipal User user) {
 
+        ResData resData = this.reviewService.createValidate(request, errors);
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
+
+        Spot spot = this.spotService.getSpotById(request.getSpotId());
         Member author = this.memberService.getUserByUsername(user.getUsername());
 
-        Review review = this.reviewService.getReviewById(1L);
+        Review review = this.reviewService.create(request, spot, author);
+        spot = this.spotService.updateReview(spot, review);
 
-        ResData resData = ResData.of(
+        // hashtags 생성
+        List<ReviewHashtag> reviewHashtags = null;
+        if (request.getHashtags() != null) {
+            reviewHashtags = this.reviewHashtagService.createAll(request.getHashtags(), review);
+            review = this.reviewService.updateHashtags(review, reviewHashtags);
+        }
+
+        // images 생성
+        List<_File> files = null;
+        List<ReviewImage> reviewImages = null;
+        if (images != null) {
+            resData = this.fileService.validateAll(images);
+            if (resData != null) return ResponseEntity.badRequest().body(resData);
+            files = this.fileService.createAll(images, FileDomain.REVIEW);
+            reviewImages = this.reviewImageService.createAll(files, review);
+            review = this.reviewService.updateImages(review, reviewImages);
+        }
+
+        this.reviewHashtagService.saveAll(reviewHashtags);
+        this.fileService.saveAll(files);
+        this.reviewImageService.saveAll(reviewImages);
+        this.reviewService.save(review);
+        this.spotService.save(spot);
+
+        resData = ResData.of(
                 HttpStatus.CREATED,
                 "S-03-01",
                 "리뷰 등록이 완료되었습니다",
                 ReviewDto.of(review),
-                linkTo(SpotController.class).slash(review.getId())
+                linkTo(ReviewController.class).slash(review.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/createReview").withRel("profile"));
         return ResponseEntity.created(resData.getSelfUri())

@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .securityMatcher("/api/**") // 아래의 모든 설정 /api/** 경로에만 적용
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers(HttpMethod.GET, "/api/index").permitAll() // get:/api/index 아무나 접속 가능
-                        .requestMatchers(HttpMethod.POST, "/api/members").permitAll() // post:/api/members/signup 아무나 접속 가능
+                        .requestMatchers(HttpMethod.POST, "/api/members").permitAll() // post:/api/members 아무나 접속 가능
                         .requestMatchers(HttpMethod.POST, "/api/members/login").permitAll() // post:/api/members/login 아무나 접속 가능
                         .requestMatchers(HttpMethod.POST, "/api/members/username").permitAll() // post:/api/members/me/username 아무나 접속 가능
                         .requestMatchers(HttpMethod.POST, "/api/members/password").permitAll() // post:/api/members/me/username 아무나 접속 가능

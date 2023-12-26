@@ -4,14 +4,21 @@ import com.cojar.whats_hot_backend.domain.review_module.review.entity.ReviewStat
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 public class ReviewRequest {
 
     @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class CreateReview {
 
         @Schema(example = "1")
@@ -19,7 +26,13 @@ public class ReviewRequest {
         private Long spotId;
 
         @NotNull
-        private LocalDateTime visitDate;
+        private Integer year;
+
+        @NotNull
+        private Integer month;
+
+        @NotNull
+        private Integer day;
 
         @Schema(example = "리뷰제목1")
         @NotBlank
@@ -33,9 +46,11 @@ public class ReviewRequest {
         @NotNull
         private Double score;
 
-        @Schema(example = "PUBLIC")
-        @NotNull
-        private ReviewStatus status;
+        private List<@NotBlank String> hashtags;
+
+        @Schema(example = "true")
+        @Builder.Default
+        private boolean lock = false;
     }
 
     @Getter
