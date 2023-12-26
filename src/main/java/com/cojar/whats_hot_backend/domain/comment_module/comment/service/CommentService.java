@@ -6,9 +6,9 @@ import com.cojar.whats_hot_backend.domain.comment_module.comment.request.Comment
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
+import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,12 +48,10 @@ public class CommentService {
 
     public ResData createValidate(CommentRequest.CreateComment request, Errors errors) {
 
-        if (errors.hasErrors()){
+        if (errors.hasErrors()) {
             return ResData.of(
-                HttpStatus.BAD_REQUEST,
-                "F-04-01-02",
-                "댓글을 작성해주십시오.",
-                errors
+                    ResCode.F_04_01_02,
+                    errors
             );
         }
 
@@ -63,9 +61,7 @@ public class CommentService {
             errors.rejectValue("reviewId", "not exist", "존재하지 않는 리뷰입니다.");
 
             return ResData.of(
-                HttpStatus.BAD_REQUEST,
-                "F-04-01-01",
-                "존재하지 않는 리뷰입니다."
+                    ResCode.F_04_01_01
             );
         }
         return null;
@@ -75,9 +71,7 @@ public class CommentService {
 
         if (!this.commentRepository.existsById(commentId)) {
             return ResData.of(
-                HttpStatus.BAD_REQUEST,
-                "F-04-02-01",
-                "존재하지 않는 댓글입니다."
+                    ResCode.F_04_02_01
             );
         }
         return null;
@@ -88,9 +82,7 @@ public class CommentService {
 
         if (this.commentRepository.countByAuthor(author) == 0) {
             return ResData.of(
-                HttpStatus.BAD_REQUEST,
-                "F-04-03-01",
-                "작성한 댓글이 없습니다."
+                    ResCode.F_04_03_01
             );
         }
         return null;
@@ -99,29 +91,23 @@ public class CommentService {
     public ResData updateValidate(User user, Comment comment, Errors errors) {
         if (errors.hasErrors()) {
             return ResData.of(
-                HttpStatus.BAD_REQUEST,
-                "F-04-04-01",
-                "올바르지 않은 입력값입니다.",
-                errors
+                    ResCode.F_04_04_01,
+                    errors
             );
         }
 
-        if (comment == null){
+        if (comment == null) {
 
             return ResData.of(
-                HttpStatus.BAD_REQUEST,
-                "F-04-04-02",
-                "존재하지 않는 댓글입니다."
+                    ResCode.F_04_04_02
             );
         }
 
-        if (!comment.getAuthor().getUsername().equals(user.getUsername())){
+        if (!comment.getAuthor().getUsername().equals(user.getUsername())) {
 
             return ResData.of(
-                HttpStatus.BAD_REQUEST,
-                "F-04-04-03",
-                "수정 권한이 없습니다.",
-                errors
+                    ResCode.F_04_04_03,
+                    errors
             );
         }
 
@@ -130,19 +116,15 @@ public class CommentService {
 
     public ResData deleteValidate(User user, Comment comment) {
 
-        if (comment == null){
+        if (comment == null) {
             return ResData.of(
-                HttpStatus.BAD_REQUEST,
-                "F-04-05-01",
-                "존재하지 않는 댓글입니다."
+                    ResCode.F_04_05_01
             );
         }
 
-        if (!comment.getAuthor().getUsername().equals(user.getUsername())){
+        if (!comment.getAuthor().getUsername().equals(user.getUsername())) {
             return ResData.of(
-                HttpStatus.BAD_REQUEST,
-                "F-04-05-02",
-                "삭제 권한이 없습니다."
+                    ResCode.F_04_05_02
             );
         }
         return null;
@@ -150,19 +132,15 @@ public class CommentService {
 
     public ResData likeValidate(User user, Comment comment) {
 
-        if (comment == null){
+        if (comment == null) {
             return ResData.of(
-                HttpStatus.BAD_REQUEST,
-                "F-04-06-01",
-                "존재하지 않는 댓글입니다."
+                    ResCode.F_04_06_01
             );
         }
 
-        if (comment.getAuthor().getUsername().equals(user.getUsername())){
+        if (comment.getAuthor().getUsername().equals(user.getUsername())) {
             return ResData.of(
-                HttpStatus.BAD_REQUEST,
-                "F-04-06-02",
-                "작성자는 좋아요를 누를 수 없습니다."
+                    ResCode.F_04_06_02
             );
         }
         return null;
@@ -171,9 +149,9 @@ public class CommentService {
     @Transactional
     public void update(Comment comment, String content) {
         comment = comment.toBuilder()
-            .content(content)
-            .modifyDate(LocalDateTime.now())
-            .build();
+                .content(content)
+                .modifyDate(LocalDateTime.now())
+                .build();
         this.commentRepository.save(comment);
     }
 
@@ -188,21 +166,21 @@ public class CommentService {
 
 
     @Transactional
-    public void toggleLike(Comment comment, Member user){
+    public void toggleLike(Comment comment, Member user) {
 
         if (comment.getLikedMember().contains(user)) {
 
             comment = comment.toBuilder()
-                .liked(comment.getLiked() - 1)
-                .build();
+                    .liked(comment.getLiked() - 1)
+                    .build();
             comment.getLikedMember().remove(user);
             this.commentRepository.save(comment);
 
         } else {
 
             comment = comment.toBuilder()
-                .liked(comment.getLiked() + 1)
-                .build();
+                    .liked(comment.getLiked() + 1)
+                    .build();
             comment.getLikedMember().add(user);
             this.commentRepository.save(comment);
 

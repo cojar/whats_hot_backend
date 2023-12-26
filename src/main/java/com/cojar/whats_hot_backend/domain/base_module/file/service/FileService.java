@@ -5,11 +5,11 @@ import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.repository.FileRepository;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
+import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -18,7 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -91,9 +94,7 @@ public class FileService {
             errors.rejectValue("contentType", "not allowed", "content type is not allowed");
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-00-00-01",
-                    "이미지 형식만 업로드할 수 있습니다",
+                    ResCode.F_00_00_01,
                     errors
             );
         }
@@ -103,9 +104,7 @@ public class FileService {
             errors.rejectValue("contentType", "not allowed", "file extension is not allowed");
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-00-00-02",
-                    "JPG, JPEG, PNG 확장자만 업로드할 수 있습니다",
+                    ResCode.F_00_00_02,
                     errors
             );
         }

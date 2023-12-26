@@ -6,9 +6,9 @@ import com.cojar.whats_hot_backend.domain.member_module.member.repository.Member
 import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
 import com.cojar.whats_hot_backend.domain.member_module.member_image.entity.MemberImage;
 import com.cojar.whats_hot_backend.global.jwt.JwtProvider;
+import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,9 +51,7 @@ public class MemberService {
 
         if (errors.hasErrors()) {
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-01-01-01",
-                    "요청 값이 올바르지 않습니다",
+                    ResCode.F_01_01_01,
                     errors
             );
         }
@@ -63,9 +61,7 @@ public class MemberService {
             errors.rejectValue("passwordConfirm", "not matched", "passwordConfirm does not matched with password");
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-01-01-02",
-                    "비밀번호가 서로 일치하지 않습니",
+                    ResCode.F_01_01_02,
                     errors
             );
         }
@@ -75,9 +71,7 @@ public class MemberService {
             errors.rejectValue("username", "unique violation", "username unique violation");
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-01-01-03",
-                    "이미 존재하는 아이디입니다",
+                    ResCode.F_01_01_03,
                     errors
             );
         }
@@ -87,9 +81,7 @@ public class MemberService {
             errors.rejectValue("email", "unique violation", "email unique violation");
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-01-01-04",
-                    "이미 존재하는 이메일입니다",
+                    ResCode.F_01_01_04,
                     errors
             );
         }
@@ -106,9 +98,7 @@ public class MemberService {
 
         if (errors.hasErrors()) {
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-01-02-01",
-                    "요청 값이 올바르지 않습니다",
+                    ResCode.F_01_02_01,
                     errors
             );
         }
@@ -120,9 +110,7 @@ public class MemberService {
             errors.rejectValue("username", "not exist", "member does not exist");
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-01-02-02",
-                    "존재하지 않는 회원입니다",
+                    ResCode.F_01_02_02,
                     errors
             );
         }
@@ -132,9 +120,7 @@ public class MemberService {
             errors.rejectValue("password", "not matched", "password is not matched");
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-01-02-03",
-                    "비밀번호가 일치하지 않습니다",
+                    ResCode.F_01_02_03,
                     errors
             );
         }
@@ -183,9 +169,7 @@ public class MemberService {
 
         if (errors.hasErrors()) {
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-01-05-01",
-                    "요청 값이 올바르지 않습니다",
+                    ResCode.F_01_05_01,
                     errors
             );
         }
@@ -195,9 +179,7 @@ public class MemberService {
             errors.rejectValue("oldPassword", "not matched", "oldPassword is not matched");
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-01-05-02",
-                    "기존 비밀번호가 일치하지 않습니다",
+                    ResCode.F_01_05_02,
                     errors
             );
         }
@@ -207,9 +189,7 @@ public class MemberService {
             errors.rejectValue("newPasswordConfirm", "not matched", "newPassword is not matched");
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-01-05-03",
-                    "새 비밀번호가 일치하지 않습니다",
+                    ResCode.F_01_05_03,
                     errors
             );
         }
@@ -231,9 +211,7 @@ public class MemberService {
 
         if (errors.hasErrors()) {
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-01-06-01",
-                    "요청 값이 올바르지 않습니다",
+                    ResCode.F_01_06_01,
                     errors
             );
         }
@@ -243,9 +221,7 @@ public class MemberService {
             errors.rejectValue("email", "not exist", "member that has email does not exist");
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-01-06-02",
-                    "해당 이메일을 보유한 회원이 존재하지 않습니다",
+                    ResCode.F_01_06_02,
                     errors
             );
         }
@@ -263,9 +239,7 @@ public class MemberService {
 
         if (errors.hasErrors()) {
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-01-07-01",
-                    "요청 값이 올바르지 않습니다",
+                    ResCode.F_01_07_01,
                     errors
             );
         }
@@ -281,9 +255,7 @@ public class MemberService {
             }
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-01-07-02",
-                    "해당 아이디 또는 이메일을 보유한 회원이 존재하지 않습니다",
+                    ResCode.F_01_07_02,
                     errors
             );
         }

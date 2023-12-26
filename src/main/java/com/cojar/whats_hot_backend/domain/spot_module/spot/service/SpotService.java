@@ -12,12 +12,12 @@ import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.entity.SpotHashtag;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.entity.SpotImage;
 import com.cojar.whats_hot_backend.global.response.DataModel;
+import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
@@ -38,9 +38,7 @@ public class SpotService {
 
         if (errors.hasErrors()) {
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-02-01-01",
-                    "요청 값이 올바르지 않습니다",
+                    ResCode.F_02_01_01,
                     errors
             );
         }
@@ -53,9 +51,7 @@ public class SpotService {
             errors.rejectValue("categoryId", "not exist", "category that has request id does not exist");
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-02-01-02",
-                    "존재하지 않는 카테고리입니다",
+                    ResCode.F_02_01_02,
                     errors
             );
         }
@@ -65,9 +61,7 @@ public class SpotService {
             errors.rejectValue("categoryId", "invalid", "category that has request id is invalid");
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-02-01-03",
-                    "소분류 카테고리 아이디를 입력해주세요",
+                    ResCode.F_02_01_03,
                     errors
             );
         }
@@ -79,9 +73,7 @@ public class SpotService {
             System.out.println(errors);
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-02-01-04",
-                    "같은 이름과 주소를 가진 장소가 이미 존재합니다",
+                    ResCode.F_02_01_04,
                     errors
             );
         }
@@ -132,18 +124,14 @@ public class SpotService {
             errors.reject("not exist", new Object[]{id}, "spot that has id does not exist");
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-02-04-01",
-                    "해당 아이디를 가진 장소가 존재하지 않습니다",
+                    ResCode.F_02_04_01,
                     errors
             );
         }
 
         if (errors.hasErrors()) {
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-02-04-02",
-                    "요청 값이 올바르지 않습니다",
+                    ResCode.F_02_04_02,
                     errors
             );
         }
@@ -158,9 +146,7 @@ public class SpotService {
                 errors.rejectValue("categoryId", "not exist", "category that has request id does not exist");
 
                 return ResData.of(
-                        HttpStatus.BAD_REQUEST,
-                        "F-02-04-03",
-                        "존재하지 않는 카테고리입니다",
+                        ResCode.F_02_04_03,
                         errors
                 );
             }
@@ -170,9 +156,7 @@ public class SpotService {
                 errors.rejectValue("categoryId", "invalid", "category that has request id is invalid");
 
                 return ResData.of(
-                        HttpStatus.BAD_REQUEST,
-                        "F-02-04-04",
-                        "소분류 카테고리 아이디를 입력해주세요",
+                        ResCode.F_02_04_04,
                         errors
                 );
             }
@@ -186,9 +170,7 @@ public class SpotService {
             System.out.println(errors);
 
             return ResData.of(
-                    HttpStatus.BAD_REQUEST,
-                    "F-02-04-05",
-                    "같은 이름과 주소를 가진 장소가 이미 존재합니다",
+                    ResCode.F_02_04_05,
                     errors
             );
         }

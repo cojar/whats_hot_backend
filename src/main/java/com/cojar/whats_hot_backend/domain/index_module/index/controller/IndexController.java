@@ -1,12 +1,12 @@
 package com.cojar.whats_hot_backend.domain.index_module.index.controller;
 
+import com.cojar.whats_hot_backend.domain.index_module.index.api_response.IndexApiResponse;
+import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
-import com.cojar.whats_hot_backend.domain.index_module.index.api_response.IndexApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,9 +24,7 @@ public class IndexController {
     public ResponseEntity index() {
 
         ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-00-00",
-                "인덱스 링크 목록을 반환합니다",
+                ResCode.S_00_00,
                 linkTo(this.getClass()).slash("api/index")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html").withRel("profile"));

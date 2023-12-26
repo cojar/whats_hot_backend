@@ -18,6 +18,7 @@ import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
 import com.cojar.whats_hot_backend.global.response.DataModel;
 import com.cojar.whats_hot_backend.global.response.PagedDataModel;
+import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -92,9 +92,7 @@ public class ReviewController {
         this.spotService.save(spot);
 
         resData = ResData.of(
-                HttpStatus.CREATED,
-                "S-03-01",
-                "리뷰 등록이 완료되었습니다",
+                ResCode.S_03_01,
                 ReviewDto.of(review),
                 linkTo(ReviewController.class).slash(review.getId())
         );
@@ -111,9 +109,7 @@ public class ReviewController {
         Page<DataModel> reviewList = this.reviewService.getReviewList(page, size);
 
         ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-03-02",
-                "요청하신 리뷰 목록을 반환합니다",
+                ResCode.S_03_02,
                 PagedDataModel.of(reviewList),
                 linkTo(this.getClass()).slash("?page=%s&size=%s".formatted(page, size))
         );
@@ -131,9 +127,7 @@ public class ReviewController {
         Review review = this.reviewService.getReviewById(id);
 
         ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-03-03",
-                "요청하신 리뷰 정보를 반환합니다",
+                ResCode.S_03_03,
                 ReviewDto.of(review),
                 linkTo(this.getClass()).slash(review.getId())
         );
@@ -153,9 +147,7 @@ public class ReviewController {
         Review review = this.reviewService.getReviewById(id);
 
         ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-03-04",
-                "리뷰 수정이 완료되었습니다",
+                ResCode.S_03_04,
                 ReviewDto.of(review),
                 linkTo(this.getClass()).slash(review.getId())
         );
@@ -171,9 +163,7 @@ public class ReviewController {
                                        @AuthenticationPrincipal User user) {
 
         ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-03-05",
-                "리뷰 삭제가 완료되었습니다",
+                ResCode.S_03_05,
                 linkTo(this.getClass())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/deleteReview").withRel("profile"));
@@ -190,9 +180,7 @@ public class ReviewController {
         Review review = this.reviewService.getReviewById(id);
 
         ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-03-06",
-                "리뷰 좋아요 상태가 변경되었습니다",
+                ResCode.S_03_06,
                 ReviewDto.of(review),
                 linkTo(this.getClass()).slash(review.getId())
         );

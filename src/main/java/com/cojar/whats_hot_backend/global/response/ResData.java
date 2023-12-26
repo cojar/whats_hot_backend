@@ -14,6 +14,8 @@ import java.net.URI;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -28,35 +30,36 @@ public class ResData<T> extends RepresentationModel {
     private final Object message;
     private final T data;
 
-    public ResData(HttpStatus status,
-                   String code,
-                   String message,
+    public ResData(ResCode resCode,
                    T data) {
-        this.status = status;
+        this.status = resCode.getStatus();
         this.success = status.is2xxSuccessful();
-        this.code = code;
-        this.message = message;
+        this.code = resCode.getCode();
+        this.message = resCode.getStatus();
         this.data = data;
     }
 
-    public ResData(HttpStatus status,
-                   Set<String> code,
-                   Set<String> message,
+    public ResData(Set<ResCode> resCodeSet,
                    T data) {
-        this.status = status;
+        this.status = resCodeSet.stream()
+                .map(resCode -> resCode.getStatus())
+                .collect(Collectors.toCollection(LinkedHashSet::new))
+                .stream().findFirst().orElse(null);
         this.success = status.is2xxSuccessful();
-        this.code = code;
-        this.message = message;
+        this.code = resCodeSet.stream()
+                .map(resCode -> resCode.getCode())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        this.message = resCodeSet.stream()
+                .map(resCode -> resCode.getMessage())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
         this.data = data;
     }
 
-    public static <T> ResData<T> of(HttpStatus status,
-                                    String code,
-                                    String message,
+    public static <T> ResData<T> of(ResCode resCode,
                                     T data,
                                     WebMvcLinkBuilder selfLink) {
 
-        ResData resData = new ResData<>(status, code, message, data);
+        ResData resData = new ResData<>(resCode, data);
 
         if (data instanceof Errors) {
             resData.add(linkTo(methodOn(IndexController.class).index()).withRel("index"));
@@ -69,13 +72,11 @@ public class ResData<T> extends RepresentationModel {
         return resData;
     }
 
-    public static <T> ResData<T> of(HttpStatus status,
-                                    Set<String> code,
-                                    Set<String> message,
+    public static <T> ResData<T> of(Set<ResCode> resCodeSet,
                                     T data,
                                     WebMvcLinkBuilder selfLink) {
 
-        ResData resData = new ResData<>(status, code, message, data);
+        ResData resData = new ResData<>(resCodeSet, data);
 
         if (data instanceof Errors) {
             resData.add(linkTo(methodOn(IndexController.class).index()).withRel("index"));
@@ -88,56 +89,44 @@ public class ResData<T> extends RepresentationModel {
         return resData;
     }
 
-    public static <T> ResData<T> of(HttpStatus status,
-                                    String code,
-                                    String message) {
+    public static <T> ResData<T> of(ResCode resCode) {
 
-        return ResData.of(status, code, message, null, null);
+        return ResData.of(resCode, null, null);
     }
 
-    public static <T> ResData<T> of(HttpStatus status,
-                                    String code,
-                                    String message,
+    public static <T> ResData<T> of(ResCode resCode,
                                     T data) {
 
-        return ResData.of(status, code, message, data, null);
+        return ResData.of(resCode, data, null);
     }
 
-    public static <T> ResData<T> of(HttpStatus status,
-                                    String code,
-                                    String message,
+    public static <T> ResData<T> of(ResCode resCode,
                                     WebMvcLinkBuilder selfLink) {
 
-        return ResData.of(status, code, message, null, selfLink);
+        return ResData.of(resCode, null, selfLink);
     }
 
-    private static <T> ResData<T> of(HttpStatus status,
-                                     Set<String> code,
-                                     Set<String> message,
+    private static <T> ResData<T> of(Set<ResCode> resCode,
                                      T data) {
 
-        return ResData.of(status, code, message, data, null);
+        return ResData.of(resCode, data, null);
     }
 
     public static ResData reduceError(List<ResData> resDataList, Errors errors) {
 
-        Set<String> codeSet = new LinkedHashSet<>();
-        Set<String> messageSet = new LinkedHashSet<>();
+        Set<ResCode> resCodeSet = new TreeSet<>();
 
         resDataList.stream()
                 .forEach(resData -> {
-                    codeSet.add(resData.getCode().toString());
-                    messageSet.add(resData.getMessage().toString());
+                    resCodeSet.add(ResCode.fromCode(resData.getCode().toString()));
                     Errors resErrors = (Errors) resData.getData();
                     errors.addAllErrors(resErrors);
                 });
 
-        if (codeSet.size() == 0 && messageSet.size() == 0) return null;
+        if (resCodeSet.size() == 0) return null;
 
         return ResData.of(
-                HttpStatus.BAD_REQUEST,
-                codeSet,
-                messageSet,
+                resCodeSet,
                 errors
         );
     }

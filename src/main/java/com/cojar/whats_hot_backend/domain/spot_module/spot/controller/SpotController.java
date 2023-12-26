@@ -17,6 +17,7 @@ import com.cojar.whats_hot_backend.domain.spot_module.spot_image.entity.SpotImag
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.service.SpotImageService;
 import com.cojar.whats_hot_backend.global.response.DataModel;
 import com.cojar.whats_hot_backend.global.response.PagedDataModel;
+import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -94,9 +94,7 @@ public class SpotController {
         this.spotService.save(spot);
 
         resData = ResData.of(
-                HttpStatus.CREATED,
-                "S-02-01",
-                "장소 등록이 완료되었습니다",
+                ResCode.S_02_01,
                 SpotDto.of(spot),
                 linkTo(this.getClass()).slash(spot.getId())
         );
@@ -114,9 +112,7 @@ public class SpotController {
         Page<DataModel> spotList = this.spotService.getSpotList(page, size);
 
         ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-02-02",
-                "요청하신 장소 목록을 반환합니다",
+                ResCode.S_02_02,
                 PagedDataModel.of(spotList),
                 linkTo(this.getClass()).slash("?page=%s&size=%s".formatted(page, size))
         );
@@ -134,9 +130,7 @@ public class SpotController {
         Spot spot = this.spotService.getSpotById(id);
 
         ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-02-03",
-                "요청하신 장소 정보를 반환합니다",
+                ResCode.S_02_03,
                 SpotDto.of(spot),
                 linkTo(this.getClass()).slash(spot.getId())
         );
@@ -195,9 +189,7 @@ public class SpotController {
         this.spotService.save(spot);
 
         resData = ResData.of(
-                HttpStatus.OK,
-                "S-02-04",
-                "장소 수정이 완료되었습니다",
+                ResCode.S_02_04,
                 SpotDto.of(spot),
                 linkTo(this.getClass()).slash(spot.getId())
         );
@@ -212,9 +204,7 @@ public class SpotController {
     public ResponseEntity delete(@PathVariable(value = "id") Long id) {
 
         ResData resData = ResData.of(
-                HttpStatus.OK,
-                "S-02-05",
-                "장소 삭제가 완료되었습니다",
+                ResCode.S_02_05,
                 linkTo(this.getClass())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Spot/delete").withRel("profile"));
