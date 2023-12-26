@@ -3,8 +3,19 @@ package com.cojar.whats_hot_backend.global.response;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+import java.util.Arrays;
+
 @Getter
 public enum ResCode {
+
+    // member controller success codes
+
+
+    // spot controller success codes
+
+    // review controller success codes
+
+    // comment controller success codes
 
     // file service fail codes
     F_00_00_01(HttpStatus.BAD_REQUEST, "F-00-00-01", "이미지 형식만 업로드할 수 있습니다"),
@@ -67,5 +78,12 @@ public enum ResCode {
         this.status = status;
         this.code = code;
         this.message = message;
+    }
+
+    public static ResCode fromCode(String code) {
+        return Arrays.stream(ResCode.values())
+                .filter(resCode -> resCode.getCode().equals(code))
+                .findFirst()
+                .orElse(null);
     }
 }
