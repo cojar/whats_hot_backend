@@ -16,6 +16,7 @@
 ### feature/errors-exception_handler
 - [x] ApiGlobalExceptionHandler 생성
 - [x] fail case 모두 ApiResponseException 던지도록 수정
+- [x] mailService fail case에 수정사항 반영
 
 ## 23-12-25
 ### feature/patch-api-spots-id
