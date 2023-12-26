@@ -65,7 +65,7 @@ public class MemberService {
             return ResData.of(
                     HttpStatus.BAD_REQUEST,
                     "F-01-01-02",
-                    "비밀번호가 서로 일치하지 않습니",
+                    "비밀번호가 서로 일치하지 않습니다",
                     errors
             );
         }

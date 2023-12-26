@@ -4,6 +4,9 @@
 ### feature/post-api-reviews
 - [x] conflict issue 해결
 
+### feature/response
+- [x] ResCode 생성
+
 ## 23-12-25
 ### feature/patch-api-spots-id
 - [x] SpotService.create 롤백
