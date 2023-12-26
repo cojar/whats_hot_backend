@@ -10,6 +10,9 @@
 - [x] ResCode 성공 케이스 정리
 - [x] 연관 컨트롤러, 서비스 로직 수정
 
+### feature/errors-exception
+- [x] ApiResponseException 생성
+
 ## 23-12-25
 ### feature/patch-api-spots-id
 - [x] SpotService.create 롤백
