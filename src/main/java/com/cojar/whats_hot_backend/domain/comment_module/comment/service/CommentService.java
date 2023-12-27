@@ -137,6 +137,8 @@ public class CommentService {
 
         if (!comment.getAuthor().getUsername().equals(user.getUsername())) {
 
+            errors.reject("miss match", new Object[]{user.getUsername()}, "Author' username and user's username is miss match ");
+
             throw new ApiResponseException(
                     ResData.of(
                             ResCode.F_04_04_03,
@@ -151,10 +153,14 @@ public class CommentService {
     public ResData deleteValidate(User user, Comment comment) {
 
         if (comment == null) {
+            Errors errors = new BeanPropertyBindingResult(null,"comment");
+
+            errors.reject("not exist", new Object[]{"NULL"}, "Comment that has id does not exist");
 
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_04_05_01
+                            ResCode.F_04_05_01,
+                        errors
                     )
             );
         }
