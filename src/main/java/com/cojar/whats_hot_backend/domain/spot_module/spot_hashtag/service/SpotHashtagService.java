@@ -62,4 +62,8 @@ public class SpotHashtagService {
     public List<SpotHashtag> getAllBySpot(Spot spot) {
         return this.spotHashtagRepository.findAllBySpot(spot);
     }
+
+    public Long count() {
+        return this.spotHashtagRepository.count();
+    }
 }

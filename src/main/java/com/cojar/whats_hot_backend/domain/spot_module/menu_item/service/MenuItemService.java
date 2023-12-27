@@ -65,4 +65,8 @@ public class MenuItemService {
     public List<MenuItem> getAllBySpot(Spot spot) {
         return this.menuItemRepository.findAllBySpot(spot);
     }
+
+    public Long count() {
+        return this.menuItemRepository.count();
+    }
 }

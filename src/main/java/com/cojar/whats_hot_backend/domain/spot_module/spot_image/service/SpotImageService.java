@@ -50,4 +50,8 @@ public class SpotImageService {
     public List<SpotImage> getAllBySpot(Spot spot) {
         return this.spotImageRepository.findAllBySpot(spot);
     }
+
+    public Long count() {
+        return this.spotImageRepository.count();
+    }
 }

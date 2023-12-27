@@ -177,4 +177,8 @@ public class FileService {
     public void saveAll(List<_File> files) {
         if (files != null) this.fileRepository.saveAll(files);
     }
+
+    public Long count() {
+        return this.fileRepository.count();
+    }
 }
