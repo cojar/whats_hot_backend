@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
 import java.time.LocalDateTime;
@@ -75,11 +76,17 @@ public class CommentService {
 
     public ResData getValidate(Long commentId) {
 
+        Errors errors = new BeanPropertyBindingResult(null,"comment");
+
+        errors.reject("not exist", new Object[]{commentId}, "Comment that has id does not exist");
+
+
         if (!this.commentRepository.existsById(commentId)) {
 
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_04_02_01
+                            ResCode.F_04_02_01,
+                        errors
                     )
             );
         }
@@ -89,11 +96,16 @@ public class CommentService {
 
     public ResData getMyCommentsValidate(Member author) {
 
+        Errors errors = new BeanPropertyBindingResult(null,"comment");
+
+        errors.reject("not exist", new Object[]{author.getId()}, "Author's comments does not exist");
+
         if (this.commentRepository.countByAuthor(author) == 0) {
 
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_04_03_01
+                            ResCode.F_04_03_01,
+                        errors
                     )
             );
         }
@@ -113,14 +125,19 @@ public class CommentService {
 
         if (comment == null) {
 
+            errors.reject("not exist", new Object[]{"NULL"}, "Comment that has id does not exist");
+
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_04_04_02
+                            ResCode.F_04_04_02,
+                        errors
                     )
             );
         }
 
         if (!comment.getAuthor().getUsername().equals(user.getUsername())) {
+
+            errors.reject("miss match", new Object[]{user.getUsername()}, "Author' username and user's username is miss match ");
 
             throw new ApiResponseException(
                     ResData.of(
@@ -136,19 +153,27 @@ public class CommentService {
     public ResData deleteValidate(User user, Comment comment) {
 
         if (comment == null) {
+            Errors errors = new BeanPropertyBindingResult(null,"comment");
+
+            errors.reject("not exist", new Object[]{"NULL"}, "Comment that has id does not exist");
 
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_04_05_01
+                            ResCode.F_04_05_01,
+                        errors
                     )
             );
         }
 
         if (!comment.getAuthor().getUsername().equals(user.getUsername())) {
+            Errors errors = new BeanPropertyBindingResult(null, "comment");
+
+            errors.reject("miss match", new Object[]{user.getUsername()}, "Author' username and user's username is miss match ");
 
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_04_05_02
+                            ResCode.F_04_05_02,
+                        errors
                     )
             );
         }
@@ -159,19 +184,27 @@ public class CommentService {
     public ResData likeValidate(User user, Comment comment) {
 
         if (comment == null) {
+            Errors errors = new BeanPropertyBindingResult(null, "comment");
+
+            errors.reject("not exist", new Object[]{"NULL"}, "Comment that has id does not exist");
 
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_04_06_01
+                            ResCode.F_04_06_01,
+                        errors
                     )
             );
         }
 
         if (comment.getAuthor().getUsername().equals(user.getUsername())) {
+            Errors errors = new BeanPropertyBindingResult(null, "comment");
+
+            errors.reject("like not allowed", new Object[]{user.getUsername()}, "Author can not like their own comment");
 
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_04_06_02
+                            ResCode.F_04_06_02,
+                        errors
                     )
             );
         }
