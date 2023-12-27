@@ -107,7 +107,6 @@ public class InitConfig {
                             "해시태그2"
                     ),
                     spot1);
-            this.spotHashtagService.saveAll(spotHashtags1);
 
             List<MenuItem> menuItems1 = this.menuItemService.createAll(
                     List.of(
@@ -116,7 +115,6 @@ public class InitConfig {
                             MenuItemDto.of("메뉴3", "30,000원")
                     ),
                     spot1);
-            this.menuItemService.saveAll(menuItems1);
 
             String fileName1 = "test.png";
             Resource resource = resourceLoader.getResource("classpath:/static/image/%s".formatted(fileName1));
@@ -130,7 +128,6 @@ public class InitConfig {
             List<_File> files1 = this.fileService.createAll(_files1, FileDomain.SPOT);
             this.fileService.saveAll(files1);
             List<SpotImage> images1 = this.spotImageService.createAll(files1, spot1);
-            this.spotImageService.saveAll(images1);
 
             Spot spot2 = this.spotService.create(
                     SpotRequest.CreateSpot.builder()
@@ -181,14 +178,6 @@ public class InitConfig {
                             .build()
             );
             this.spotService.save(spot6);
-
-            MenuItem menuItem4 = this.menuItemService.create("메뉴1", "10000원", spot2);
-            MenuItem menuItem5 = this.menuItemService.create("메뉴2", "20000원", spot2);
-            MenuItem menuItem6 = this.menuItemService.create("메뉴3", "30000원", spot2);
-
-            MenuItem menuItem7 = this.menuItemService.create("메뉴1", "10000원", spot3);
-            MenuItem menuItem8 = this.menuItemService.create("메뉴2", "20000원", spot3);
-            MenuItem menuItem9 = this.menuItemService.create("메뉴3", "30000원", spot3);
 
             _File image4 = this.fileService.create(spot2);
             _File image5 = this.fileService.create(spot2);

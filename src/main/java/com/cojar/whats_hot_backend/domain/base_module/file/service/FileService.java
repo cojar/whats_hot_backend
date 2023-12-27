@@ -8,6 +8,7 @@ import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
+import com.cojar.whats_hot_backend.global.util.AppConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -178,7 +179,16 @@ public class FileService {
         if (files != null) this.fileRepository.saveAll(files);
     }
 
-    public Long count() {
+    public long count() {
         return this.fileRepository.count();
+    }
+
+    public void deleteFile(List<_File> files) {
+        files.stream()
+                .forEach(file -> {
+                    String deleteDirPath = file.toPath(AppConfig.getBaseFilePath());
+                    File target = new File(deleteDirPath);
+                    target.delete();
+                });
     }
 }

@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
@@ -51,6 +52,10 @@ public class SpotService {
     private final SpotImageService spotImageService;
 
     private final EntityManager entityManager;
+
+    public long count() {
+        return this.spotRepository.count();
+    }
 
     @Transactional
     public Spot create(SpotRequest.CreateSpot request, List<MultipartFile> images, Errors errors) {
@@ -86,10 +91,6 @@ public class SpotService {
         entityManager.refresh(spot);
 
         return spot;
-    }
-
-    public long count() {
-        return this.spotRepository.count();
     }
 
     private void createValidate(SpotRequest.CreateSpot request, Errors errors) {
@@ -179,7 +180,34 @@ public class SpotService {
                 });
     }
 
-    public ResData updateValidate(Long id, SpotRequest.UpdateSpot request, Errors errors) {
+    @Transactional
+    public Spot update(Long id, SpotRequest.UpdateSpot request, List<MultipartFile> images, Errors errors) {
+
+        // request 에러 검증
+        this.updateValidate(id, request, errors);
+
+        // images 에러 검증
+        this.fileService.validateAll(images);
+
+        // 검증 단계에서 에러 걸러짐
+        Spot spot = this.getSpotById(id);
+
+        // hashtags 수정
+        this.spotHashtagService.updateAll(request.getHashtags(), spot);
+
+        // menu item 수정
+        this.menuItemService.updateAll(request.getMenuItems(), spot);
+
+        // images 수정
+        List<_File> files = this.fileService.createAll(images, FileDomain.SPOT);
+        this.spotImageService.updateAll(files, spot);
+
+        entityManager.refresh(spot);
+
+        return spot;
+    }
+
+    private void updateValidate(Long id, SpotRequest.UpdateSpot request, Errors errors) {
 
         if (!this.spotRepository.existsById(id)) {
 
@@ -244,8 +272,6 @@ public class SpotService {
                     )
             );
         }
-
-        return null;
     }
 
     public Spot update(Spot spot, SpotRequest.UpdateSpot request) {

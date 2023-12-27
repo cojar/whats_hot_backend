@@ -1,4 +1,9 @@
 # What's Hot Dev-Log
+
+## 23-12-28
+### feature/patch-api-spots-id
+- [x] 수정 로직 수정
+
 ## 23-12-27
 ### feature/comment_module-comment
 - [x] getValidate 오류 메시지 출력 내용 수정

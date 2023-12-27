@@ -1,19 +1,14 @@
 package com.cojar.whats_hot_backend.domain.spot_module.spot.controller;
 
-import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
-import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.spot_module.category.service.CategoryService;
-import com.cojar.whats_hot_backend.domain.spot_module.menu_item.entity.MenuItem;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.service.MenuItemService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.api_response.SpotApiResponse;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
-import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.entity.SpotHashtag;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.service.SpotHashtagService;
-import com.cojar.whats_hot_backend.domain.spot_module.spot_image.entity.SpotImage;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.service.SpotImageService;
 import com.cojar.whats_hot_backend.global.response.DataModel;
 import com.cojar.whats_hot_backend.global.response.PagedDataModel;
@@ -111,49 +106,9 @@ public class SpotController {
                                      @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                      @PathVariable(value = "id") Long id) {
 
-        ResData resData = this.spotService.updateValidate(id, request, errors);
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
+        Spot spot = this.spotService.update(id, request, images, errors);
 
-        Spot spot = this.spotService.getSpotById(id);
-
-        spot = this.spotService.update(spot, request);
-
-        // hashtags 수정
-        List<SpotHashtag> oldSpotHashtags = spot.getHashtags();
-        List<SpotHashtag> newSpotHashtags = null;
-        if (request.getHashtags() != null) {
-            newSpotHashtags = this.spotHashtagService.createAll(request.getHashtags(), spot);
-            spot = this.spotService.updateHashtags(spot, newSpotHashtags);
-        }
-
-        // menu item 수정
-        List<MenuItem> oldMenuItems = spot.getMenuItems();
-        List<MenuItem> newMenuItems = null;
-        if (request.getMenuItems() != null) {
-            newMenuItems = this.menuItemService.createAll(request.getMenuItems(), spot);
-            spot = this.spotService.updateMenuItems(spot, newMenuItems);
-        }
-
-        // images 수정
-        List<_File> newFiles = null;
-        List<SpotImage> oldSpotImages = spot.getImages();
-        List<SpotImage> newSpotImages = null;
-        if (images != null) {
-            resData = this.fileService.validateAll(images);
-            if (resData != null) return ResponseEntity.badRequest().body(resData);
-            newFiles = this.fileService.createAll(images, FileDomain.SPOT);
-            newSpotImages = this.spotImageService.createAll(newFiles, spot);
-            spot = this.spotService.updateImages(spot, newSpotImages);
-        }
-
-        // 중간에 Fail, Exception 발생 시 실제 DB에 저장되지 않도록 나중에 저장
-        this.spotHashtagService.saveAll(newSpotHashtags, oldSpotHashtags);
-        this.menuItemService.saveAll(newMenuItems, oldMenuItems);
-        this.fileService.saveAll(newFiles);
-        this.spotImageService.saveAll(newSpotImages, oldSpotImages);
-        this.spotService.save(spot);
-
-        resData = ResData.of(
+        ResData resData = ResData.of(
                 ResCode.S_02_04,
                 SpotDto.of(spot),
                 linkTo(this.getClass()).slash(spot.getId())
