@@ -6,6 +6,7 @@
 - [x] updateValidate 오류 메시지 출력 내용 수정
 - [x] updateValidate 오류 메시지 출력 내용 중 rejectValue 수정
 - [x] updateValidate missMatchedUser 오류 메시지 출력 내용 수정
+- [x] deleteValidate 오류 메시지 출력 내용 수정
 
 ## 23-12-26
 ### feature/post-api-reviews

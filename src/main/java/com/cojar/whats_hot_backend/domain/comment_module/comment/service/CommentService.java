@@ -166,10 +166,14 @@ public class CommentService {
         }
 
         if (!comment.getAuthor().getUsername().equals(user.getUsername())) {
+            Errors errors = new BeanPropertyBindingResult(null, "comment");
+
+            errors.reject("miss match", new Object[]{user.getUsername()}, "Author' username and user's username is miss match ");
 
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_04_05_02
+                            ResCode.F_04_05_02,
+                        errors
                     )
             );
         }
