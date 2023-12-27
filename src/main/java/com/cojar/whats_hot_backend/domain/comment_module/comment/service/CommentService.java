@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
 import java.time.LocalDateTime;
@@ -74,6 +75,11 @@ public class CommentService {
     }
 
     public ResData getValidate(Long commentId) {
+
+        Errors errors = new BeanPropertyBindingResult(null,"comment");
+
+        errors.reject("not exist", new Object[]{commentId}, "Comment that has id does not exist");
+
 
         if (!this.commentRepository.existsById(commentId)) {
 

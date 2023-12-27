@@ -1,4 +1,7 @@
 # What's Hot Dev-Log
+## 23-12-27
+### feature/comment_module-comment
+- [x] getValidate 오류 메시지 출력 내용 수정
 
 ## 23-12-26
 ### feature/post-api-reviews
@@ -47,8 +50,6 @@
 - [x] F-00-00-01 TC 작성
 - [x] F-00-00-02 TC 작성
 - [x] 여러 파일 에러 동시 발생 TC 작성; F-00-00-01, F-00-00-02
-<<<<<<< HEAD
-=======
 
 ### feature/patch-api-spots-id
 - [x] S-02-04 TC 작성
@@ -63,7 +64,6 @@
 - [x] F-00-00-01 TC 작성
 - [x] F-00-00-02 TC 작성
 - [x] 여러 파일 에러 동시 발생 TC 작성; F-00-00-01, F-00-00-02
->>>>>>> a0afbcac8fd6fe1dbb156dab4924ca53ce70c5eb
 
 ## 23-12-23
 ### feature/patch-api-comments-like-id
