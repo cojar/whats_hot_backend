@@ -184,19 +184,27 @@ public class CommentService {
     public ResData likeValidate(User user, Comment comment) {
 
         if (comment == null) {
+            Errors errors = new BeanPropertyBindingResult(null, "comment");
+
+            errors.reject("not exist", new Object[]{"NULL"}, "Comment that has id does not exist");
 
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_04_06_01
+                            ResCode.F_04_06_01,
+                        errors
                     )
             );
         }
 
         if (comment.getAuthor().getUsername().equals(user.getUsername())) {
+            Errors errors = new BeanPropertyBindingResult(null, "comment");
+
+            errors.reject("like not allowed", new Object[]{user.getUsername()}, "Author can not like their own comment");
 
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_04_06_02
+                            ResCode.F_04_06_02,
+                        errors
                     )
             );
         }
