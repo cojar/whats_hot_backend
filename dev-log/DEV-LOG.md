@@ -2,6 +2,7 @@
 ## 23-12-27
 ### feature/comment_module-comment
 - [x] getValidate 오류 메시지 출력 내용 수정
+- [x] getMyValidate 오류 메시지 출력 내용 수정
 
 ## 23-12-26
 ### feature/post-api-reviews

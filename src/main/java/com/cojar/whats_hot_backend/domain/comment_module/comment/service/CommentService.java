@@ -95,11 +95,16 @@ public class CommentService {
 
     public ResData getMyCommentsValidate(Member author) {
 
+        Errors errors = new BeanPropertyBindingResult(null,"comment");
+
+        errors.reject("not exist", new Object[]{author}, "Author's comments does not exist");
+
         if (this.commentRepository.countByAuthor(author) == 0) {
 
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_04_03_01
+                            ResCode.F_04_03_01,
+                        errors
                     )
             );
         }
