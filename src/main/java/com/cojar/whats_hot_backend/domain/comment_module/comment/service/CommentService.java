@@ -124,9 +124,14 @@ public class CommentService {
 
         if (comment == null) {
 
+            Errors error = new BeanPropertyBindingResult(null,"comment");
+
+            error.reject("not exist", new Object[]{}, "Comment that has id does not exist");
+
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_04_04_02
+                            ResCode.F_04_04_02,
+                        error
                     )
             );
         }
