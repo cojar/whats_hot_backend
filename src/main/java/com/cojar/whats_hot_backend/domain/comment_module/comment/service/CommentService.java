@@ -85,7 +85,8 @@ public class CommentService {
 
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_04_02_01
+                            ResCode.F_04_02_01,
+                        errors
                     )
             );
         }
@@ -97,7 +98,7 @@ public class CommentService {
 
         Errors errors = new BeanPropertyBindingResult(null,"comment");
 
-        errors.reject("not exist", new Object[]{author}, "Author's comments does not exist");
+        errors.reject("not exist", new Object[]{author.getId()}, "Author's comments does not exist");
 
         if (this.commentRepository.countByAuthor(author) == 0) {
 
@@ -124,14 +125,12 @@ public class CommentService {
 
         if (comment == null) {
 
-            Errors error = new BeanPropertyBindingResult(null,"comment");
-
-            error.reject("not exist", new Object[]{}, "Comment that has id does not exist");
+            errors.reject("not exist", new Object[]{"NULL"}, "Comment that has id does not exist");
 
             throw new ApiResponseException(
                     ResData.of(
                             ResCode.F_04_04_02,
-                        error
+                        errors
                     )
             );
         }
