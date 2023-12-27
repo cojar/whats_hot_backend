@@ -24,6 +24,8 @@ public class SpotHashtagService {
     @Transactional
     public List<SpotHashtag> createAll(List<String> hashtags, Spot spot) {
 
+        if (hashtags == null) return null;
+
         List<SpotHashtag> spotHashtags = hashtags.stream()
                 .map(hashtag -> {
                             Hashtag _hashtag = this.hashtagRepository.findByName(hashtag).orElse(null);
@@ -38,6 +40,8 @@ public class SpotHashtagService {
                         }
                 )
                 .collect(Collectors.toList());
+
+        this.spotHashtagRepository.saveAll(spotHashtags);
 
         return spotHashtags;
     }
@@ -57,5 +61,9 @@ public class SpotHashtagService {
 
     public List<SpotHashtag> getAllBySpot(Spot spot) {
         return this.spotHashtagRepository.findAllBySpot(spot);
+    }
+
+    public Long count() {
+        return this.spotHashtagRepository.count();
     }
 }

@@ -9,6 +9,11 @@
 - [x] deleteValidate 오류 메시지 출력 내용 수정
 - [x] likeValidate 오류 메시지 출력 내용 수정
 
+### feature/post-api-spots
+- [x] 생성 로직 수정
+- [x] 자식 엔티티 저장 후 refresh 되도록 수정
+- [x] 생성 TC 중 Bad Request 부분에서 엔티티 미생성 확인 추가
+
 ## 23-12-26
 ### feature/post-api-reviews
 - [x] conflict issue 해결

@@ -1,20 +1,28 @@
 package com.cojar.whats_hot_backend.domain.spot_module.spot.service;
 
+import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
+import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
+import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.category.repository.CategoryRepository;
+import com.cojar.whats_hot_backend.domain.spot_module.category.service.CategoryService;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.entity.MenuItem;
+import com.cojar.whats_hot_backend.domain.spot_module.menu_item.service.MenuItemService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.controller.SpotController;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotListDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.repository.SpotRepository;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.entity.SpotHashtag;
+import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.service.SpotHashtagService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.entity.SpotImage;
+import com.cojar.whats_hot_backend.domain.spot_module.spot_image.service.SpotImageService;
 import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.DataModel;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -35,7 +44,55 @@ public class SpotService {
     private final SpotRepository spotRepository;
     private final CategoryRepository categoryRepository;
 
-    public ResData createValidate(SpotRequest.CreateSpot request, Errors errors) {
+    private final FileService fileService;
+    private final CategoryService categoryService;
+    private final SpotHashtagService spotHashtagService;
+    private final MenuItemService menuItemService;
+    private final SpotImageService spotImageService;
+
+    private final EntityManager entityManager;
+
+    @Transactional
+    public Spot create(SpotRequest.CreateSpot request, List<MultipartFile> images, Errors errors) {
+
+        // request 에러 검증
+        this.createValidate(request, errors);
+
+        // images 에러 검증
+        this.fileService.validateAll(images);
+
+        // 검증 단계에서 에러 걸러짐
+        Category category = this.categoryService.getCategoryById(request.getCategoryId());
+
+        Spot spot = Spot.builder()
+                .category(category)
+                .name(request.getName())
+                .address(request.getAddress())
+                .contact(request.getContact())
+                .build();
+
+        this.spotRepository.save(spot);
+
+        // hashtags 생성
+        this.spotHashtagService.createAll(request.getHashtags(), spot);
+
+        // menu item 생성
+        this.menuItemService.createAll(request.getMenuItems(), spot);
+
+        // images 생성
+        List<_File> files = this.fileService.createAll(images, FileDomain.SPOT);
+        this.spotImageService.createAll(files, spot);
+
+        entityManager.refresh(spot);
+
+        return spot;
+    }
+
+    public long count() {
+        return this.spotRepository.count();
+    }
+
+    private void createValidate(SpotRequest.CreateSpot request, Errors errors) {
 
         if (errors.hasErrors()) {
             throw new ApiResponseException(
@@ -84,8 +141,6 @@ public class SpotService {
                     )
             );
         }
-
-        return null;
     }
 
     public Spot create(SpotRequest.CreateSpot request) {

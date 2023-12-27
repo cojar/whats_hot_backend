@@ -56,44 +56,9 @@ public class SpotController {
     public ResponseEntity createSpot(@Valid @RequestPart(value = "request") SpotRequest.CreateSpot request, Errors errors,
                                      @RequestPart(value = "images", required = false) List<MultipartFile> images) {
 
-        ResData resData = this.spotService.createValidate(request, errors);
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
+        Spot spot = this.spotService.create(request, images, errors);
 
-        Spot spot = this.spotService.create(request);
-
-        // hashtags 생성
-        List<SpotHashtag> spotHashtags = null;
-        if (request.getHashtags() != null) {
-            spotHashtags = this.spotHashtagService.createAll(request.getHashtags(), spot);
-            spot = this.spotService.updateHashtags(spot, spotHashtags);
-        }
-
-        // menu item 생성
-        List<MenuItem> menuItems = null;
-        if (request.getMenuItems() != null) {
-            menuItems = this.menuItemService.createAll(request.getMenuItems(), spot);
-            spot = this.spotService.updateMenuItems(spot, menuItems);
-        }
-
-        // images 생성
-        List<_File> files = null;
-        List<SpotImage> spotImages = null;
-        if (images != null) {
-            resData = this.fileService.validateAll(images);
-            if (resData != null) return ResponseEntity.badRequest().body(resData);
-            files = this.fileService.createAll(images, FileDomain.SPOT);
-            spotImages = this.spotImageService.createAll(files, spot);
-            spot = this.spotService.updateImages(spot, spotImages);
-        }
-
-        // 중간에 Fail, Exception 발생 시 실제 DB에 저장되지 않도록 나중에 저장
-        this.spotHashtagService.saveAll(spotHashtags);
-        this.menuItemService.saveAll(menuItems);
-        this.fileService.saveAll(files);
-        this.spotImageService.saveAll(spotImages);
-        this.spotService.save(spot);
-
-        resData = ResData.of(
+        ResData resData = ResData.of(
                 ResCode.S_02_01,
                 SpotDto.of(spot),
                 linkTo(this.getClass()).slash(spot.getId())
