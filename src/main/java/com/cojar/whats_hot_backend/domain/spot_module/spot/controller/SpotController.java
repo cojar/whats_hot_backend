@@ -55,11 +55,8 @@ public class SpotController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity createSpot(@Valid @RequestPart(value = "request") SpotRequest.CreateSpot request, Errors errors,
                                      @RequestPart(value = "images", required = false) List<MultipartFile> images) {
-        log.info("=== controller start ===");
 
         Spot spot = this.spotService.create(request, images, errors);
-        Spot createdSpot = this.spotService.getSpotById(spot.getId());
-        log.info("Created Spot: {}", createdSpot);
 
         ResData resData = ResData.of(
                 ResCode.S_02_01,

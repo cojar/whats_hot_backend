@@ -11,6 +11,7 @@
 
 ### feature/post-api-spots
 - [x] 생성 로직 수정
+- [x] 자식 엔티티 저장 후 refresh 되도록 수정
 
 ## 23-12-26
 ### feature/post-api-reviews

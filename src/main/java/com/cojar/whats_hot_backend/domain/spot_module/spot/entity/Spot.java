@@ -10,7 +10,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -37,19 +36,15 @@ public class Spot extends BaseEntity {
     @Builder.Default
     private Double averageScore = 0.0;
 
-    @Builder.Default
     @OneToMany(mappedBy = "spot", cascade = CascadeType.REMOVE)
-    private List<SpotHashtag> hashtags = new ArrayList<>();
+    private List<SpotHashtag> hashtags;
 
-    @Builder.Default
     @OneToMany(mappedBy = "spot", cascade = CascadeType.REMOVE)
-    private List<MenuItem> menuItems = new ArrayList<>();
+    private List<MenuItem> menuItems;
 
-    @Builder.Default
     @OneToMany(mappedBy = "spot", cascade = CascadeType.REMOVE)
-    private List<SpotImage> images = new ArrayList<>();
+    private List<SpotImage> images;
 
-    @Builder.Default
     @OneToMany(mappedBy = "spot", cascade = CascadeType.REMOVE)
-    private List<Review> reviews = new ArrayList<>();
+    private List<Review> reviews;
 }

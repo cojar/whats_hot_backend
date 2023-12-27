@@ -118,13 +118,6 @@ class SpotControllerTest extends BaseControllerTest {
                 )
                 .andDo(print());
 
-//        resultActions = this.mockMvc
-//                .perform(get("/api/spots/%s".formatted(this.spotService.count()))
-//                        .contentType(MediaType.ALL)
-//                        .accept(MediaTypes.HAL_JSON)
-//                )
-//                .andDo(print());
-
         // then
         resultActions
                 .andExpect(status().isCreated())
