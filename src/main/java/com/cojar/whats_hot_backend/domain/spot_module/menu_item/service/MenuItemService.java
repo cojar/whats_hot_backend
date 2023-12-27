@@ -32,6 +32,7 @@ public class MenuItemService {
         return menuItem;
     }
 
+    @Transactional
     public List<MenuItem> createAll(List<MenuItemDto> items, Spot spot) {
 
         List<MenuItem> menuItems = items.stream()
@@ -42,6 +43,9 @@ public class MenuItemService {
                         .build()
                 )
                 .collect(Collectors.toList());
+
+        this.menuItemRepository.saveAll(menuItems);
+
         return menuItems;
     }
 

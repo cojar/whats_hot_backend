@@ -37,4 +37,18 @@ public class Category extends BaseEntity {
 
         return String.join(" > ", names);
     }
+
+    @Override
+    public String toString() {
+
+        Category category = this;
+        String[] names = new String[category.getDepth()];
+
+        while(category != null) {
+            names[category.getDepth() - 1] = category.getName();
+            category = category.getParent();
+        }
+
+        return String.join(" > ", names);
+    }
 }

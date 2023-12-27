@@ -9,6 +9,9 @@
 - [x] deleteValidate 오류 메시지 출력 내용 수정
 - [x] likeValidate 오류 메시지 출력 내용 수정
 
+### feature/post-api-spots
+- [x] 생성 로직 수정
+
 ## 23-12-26
 ### feature/post-api-reviews
 - [x] conflict issue 해결

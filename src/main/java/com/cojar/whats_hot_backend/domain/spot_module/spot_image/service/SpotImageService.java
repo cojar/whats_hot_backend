@@ -17,6 +17,7 @@ public class SpotImageService {
 
     private final SpotImageRepository spotImageRepository;
 
+    @Transactional
     public List<SpotImage> createAll(List<_File> files, Spot spot) {
 
         List<SpotImage> spotImages = files.stream()
@@ -27,6 +28,9 @@ public class SpotImageService {
                                 .build()
                 )
                 .collect(Collectors.toList());
+
+        this.spotImageRepository.saveAll(spotImages);
+
         return spotImages;
     }
 

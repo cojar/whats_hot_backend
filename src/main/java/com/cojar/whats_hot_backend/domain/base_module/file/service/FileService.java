@@ -161,10 +161,16 @@ public class FileService {
         return null;
     }
 
+    @Transactional
     public List<_File> createAll(List<MultipartFile> images, FileDomain fileDomain) {
-        return images.stream()
+
+        List<_File> files = images.stream()
                 .map(image -> this.create(image, fileDomain))
                 .collect(Collectors.toList());
+
+        this.fileRepository.saveAll(files);
+
+        return files;
     }
 
     @Transactional
