@@ -7,16 +7,13 @@ import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.category.repository.CategoryRepository;
 import com.cojar.whats_hot_backend.domain.spot_module.category.service.CategoryService;
-import com.cojar.whats_hot_backend.domain.spot_module.menu_item.entity.MenuItem;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.service.MenuItemService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.controller.SpotController;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotListDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.repository.SpotRepository;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
-import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.entity.SpotHashtag;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.service.SpotHashtagService;
-import com.cojar.whats_hot_backend.domain.spot_module.spot_image.entity.SpotImage;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.service.SpotImageService;
 import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.DataModel;
@@ -285,37 +282,6 @@ public class SpotService {
         }
     }
 
-    public Spot update(Spot spot, SpotRequest.UpdateSpot request) {
-
-        spot = spot.toBuilder()
-                .category(request.getCategoryId() != null ?
-                        this.categoryRepository.findById(request.getCategoryId()).orElse(null) : spot.getCategory())
-                .name(request.getName() != null ? request.getName() : spot.getName())
-                .address(request.getAddress() != null ? request.getAddress() : spot.getAddress())
-                .contact(request.getContact() != null ? request.getContact() : spot.getContact())
-                .build();
-
-        return spot;
-    }
-
-    public Spot updateHashtags(Spot spot, List<SpotHashtag> spotHashtags) {
-        return spot.toBuilder()
-                .hashtags(spotHashtags)
-                .build();
-    }
-
-    public Spot updateMenuItems(Spot spot, List<MenuItem> menuItems) {
-        return spot.toBuilder()
-                .menuItems(menuItems)
-                .build();
-    }
-
-    public Spot updateImages(Spot spot, List<SpotImage> spotImages) {
-        return spot.toBuilder()
-                .images(spotImages)
-                .build();
-    }
-
     public Spot updateReview(Spot spot, Review review) {
 
         List<Review> reviews = spot.getReviews();
@@ -326,9 +292,5 @@ public class SpotService {
                 .averageScore(averageScore)
                 .reviews(reviews)
                 .build();
-    }
-
-    public Spot getSpotByNameAndAddress(String name, String address) {
-        return this.spotRepository.findByNameAndAddress(name, address).orElse(null);
     }
 }
