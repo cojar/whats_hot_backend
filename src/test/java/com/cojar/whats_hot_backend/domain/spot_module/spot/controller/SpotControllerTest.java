@@ -170,11 +170,7 @@ class SpotControllerTest extends BaseControllerTest {
         String password = "1234";
         String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
-        Long expectId = this.spotService.count() + 1;
-        Long expectHashTags = this.spotHashtagService.count();
-        Long expectMenuItems = this.menuItemService.count();
-        Long expectSpotImages = this.spotImageService.count();
-        Long expectFiles = this.fileService.count();
+        List<Long> checkList = getCheckListNotCreated();
 
         SpotRequest.CreateSpot request = SpotRequest.CreateSpot.builder()
                 .categoryId(categoryId)
@@ -235,11 +231,7 @@ class SpotControllerTest extends BaseControllerTest {
         if (categoryId == null) resultActions.andExpect(jsonPath("data[0].rejectedValue").doesNotExist());
         else resultActions.andExpect(jsonPath("data[0].rejectedValue").value(""));
 
-        assertThat(this.spotService.getSpotById(expectId)).isNull();
-        assertThat(this.spotHashtagService.count()).isEqualTo(expectHashTags);
-        assertThat(this.menuItemService.count()).isEqualTo(expectMenuItems);
-        assertThat(this.spotImageService.count()).isEqualTo(expectSpotImages);
-        assertThat(this.fileService.count()).isEqualTo(expectFiles);
+        checkNotCreated(checkList);
     }
 
     private static Stream<Arguments> argsFor_createSpot_BadRequest_NotBlank() {
@@ -263,11 +255,7 @@ class SpotControllerTest extends BaseControllerTest {
         String password = "1234";
         String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
-        Long expectId = this.spotService.count() + 1;
-        Long expectHashTags = this.spotHashtagService.count();
-        Long expectMenuItems = this.menuItemService.count();
-        Long expectSpotImages = this.spotImageService.count();
-        Long expectFiles = this.fileService.count();
+        List<Long> checkList = getCheckListNotCreated();
 
         Long categoryId = 1000000000L;
         String name = "쿠우쿠우 대전둔산점";
@@ -332,11 +320,7 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue").value(categoryId))
         ;
 
-        assertThat(this.spotService.getSpotById(expectId)).isNull();
-        assertThat(this.spotHashtagService.count()).isEqualTo(expectHashTags);
-        assertThat(this.menuItemService.count()).isEqualTo(expectMenuItems);
-        assertThat(this.spotImageService.count()).isEqualTo(expectSpotImages);
-        assertThat(this.fileService.count()).isEqualTo(expectFiles);
+        checkNotCreated(checkList);
     }
 
     @ParameterizedTest
@@ -349,11 +333,7 @@ class SpotControllerTest extends BaseControllerTest {
         String password = "1234";
         String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
-        Long expectId = this.spotService.count() + 1;
-        Long expectHashTags = this.spotHashtagService.count();
-        Long expectMenuItems = this.menuItemService.count();
-        Long expectSpotImages = this.spotImageService.count();
-        Long expectFiles = this.fileService.count();
+        List<Long> checkList = getCheckListNotCreated();
 
         String name = "쿠우쿠우 대전둔산점";
         String address = "대전 서구 대덕대로233번길 17 해운빌딩 4층";
@@ -417,11 +397,7 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue").value(categoryId))
         ;
 
-        assertThat(this.spotService.getSpotById(expectId)).isNull();
-        assertThat(this.spotHashtagService.count()).isEqualTo(expectHashTags);
-        assertThat(this.menuItemService.count()).isEqualTo(expectMenuItems);
-        assertThat(this.spotImageService.count()).isEqualTo(expectSpotImages);
-        assertThat(this.fileService.count()).isEqualTo(expectFiles);
+        checkNotCreated(checkList);
     }
 
     private static Stream<Arguments> argsFor_createSpot_BadRequest_InvalidCategoryId() {
@@ -442,11 +418,7 @@ class SpotControllerTest extends BaseControllerTest {
         String password = "1234";
         String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
-        Long expectId = this.spotService.count() + 1;
-        Long expectHashTags = this.spotHashtagService.count();
-        Long expectMenuItems = this.menuItemService.count();
-        Long expectSpotImages = this.spotImageService.count();
-        Long expectFiles = this.fileService.count();
+        List<Long> checkList = getCheckListNotCreated();
 
         Long categoryId = 3L;
         String name = "장소1";
@@ -511,11 +483,7 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue[1]").value(address))
         ;
 
-        assertThat(this.spotService.getSpotById(expectId)).isNull();
-        assertThat(this.spotHashtagService.count()).isEqualTo(expectHashTags);
-        assertThat(this.menuItemService.count()).isEqualTo(expectMenuItems);
-        assertThat(this.spotImageService.count()).isEqualTo(expectSpotImages);
-        assertThat(this.fileService.count()).isEqualTo(expectFiles);
+        checkNotCreated(checkList);
     }
 
     @Test
@@ -527,11 +495,7 @@ class SpotControllerTest extends BaseControllerTest {
         String password = "1234";
         String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
-        Long expectId = this.spotService.count() + 1;
-        Long expectHashTags = this.spotHashtagService.count();
-        Long expectMenuItems = this.menuItemService.count();
-        Long expectSpotImages = this.spotImageService.count();
-        Long expectFiles = this.fileService.count();
+        List<Long> checkList = getCheckListNotCreated();
 
         Long categoryId = 3L;
         String name = "쿠우쿠우 대전둔산점";
@@ -589,11 +553,7 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue").value(MediaType.TEXT_MARKDOWN_VALUE))
         ;
 
-        assertThat(this.spotService.getSpotById(expectId)).isNull();
-        assertThat(this.spotHashtagService.count()).isEqualTo(expectHashTags);
-        assertThat(this.menuItemService.count()).isEqualTo(expectMenuItems);
-        assertThat(this.spotImageService.count()).isEqualTo(expectSpotImages);
-        assertThat(this.fileService.count()).isEqualTo(expectFiles);
+        checkNotCreated(checkList);
     }
 
     @Test
@@ -605,11 +565,7 @@ class SpotControllerTest extends BaseControllerTest {
         String password = "1234";
         String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
-        Long expectId = this.spotService.count() + 1;
-        Long expectHashTags = this.spotHashtagService.count();
-        Long expectMenuItems = this.menuItemService.count();
-        Long expectSpotImages = this.spotImageService.count();
-        Long expectFiles = this.fileService.count();
+        List<Long> checkList = getCheckListNotCreated();
 
         Long categoryId = 3L;
         String name = "쿠우쿠우 대전둔산점";
@@ -667,11 +623,7 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue").value(MediaType.IMAGE_GIF_VALUE))
         ;
 
-        assertThat(this.spotService.getSpotById(expectId)).isNull();
-        assertThat(this.spotHashtagService.count()).isEqualTo(expectHashTags);
-        assertThat(this.menuItemService.count()).isEqualTo(expectMenuItems);
-        assertThat(this.spotImageService.count()).isEqualTo(expectSpotImages);
-        assertThat(this.fileService.count()).isEqualTo(expectFiles);
+        checkNotCreated(checkList);
     }
 
     @Test
@@ -683,11 +635,7 @@ class SpotControllerTest extends BaseControllerTest {
         String password = "1234";
         String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
-        Long expectId = this.spotService.count() + 1;
-        Long expectHashTags = this.spotHashtagService.count();
-        Long expectMenuItems = this.menuItemService.count();
-        Long expectSpotImages = this.spotImageService.count();
-        Long expectFiles = this.fileService.count();
+        List<Long> checkList = getCheckListNotCreated();
 
         Long categoryId = 3L;
         String name = "쿠우쿠우 대전둔산점";
@@ -761,11 +709,26 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[1].rejectedValue").value(MediaType.IMAGE_GIF_VALUE))
         ;
 
-        assertThat(this.spotService.getSpotById(expectId)).isNull();
-        assertThat(this.spotHashtagService.count()).isEqualTo(expectHashTags);
-        assertThat(this.menuItemService.count()).isEqualTo(expectMenuItems);
-        assertThat(this.spotImageService.count()).isEqualTo(expectSpotImages);
-        assertThat(this.fileService.count()).isEqualTo(expectFiles);
+        checkNotCreated(checkList);
+    }
+
+    private List<Long> getCheckListNotCreated() {
+        return List.of(
+                this.spotService.count() + 1,
+                this.spotHashtagService.count(),
+                this.menuItemService.count(),
+                this.spotImageService.count(),
+                this.fileService.count()
+        );
+    }
+
+    private void checkNotCreated(List<Long> checkList) {
+        int i = 0;
+        assertThat(this.spotService.getSpotById(checkList.get(i++))).isNull();
+        assertThat(this.spotHashtagService.count()).isEqualTo(checkList.get(i++));
+        assertThat(this.menuItemService.count()).isEqualTo(checkList.get(i++));
+        assertThat(this.spotImageService.count()).isEqualTo(checkList.get(i++));
+        assertThat(this.fileService.count()).isEqualTo(checkList.get(i));
     }
 
     @Transactional
