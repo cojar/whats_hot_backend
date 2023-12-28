@@ -76,6 +76,7 @@ class SpotControllerTest extends BaseControllerTest {
         String menuName1 = "평일점심", menuPrice1 = "20,900원";
         String menuName2 = "평일저녁", menuPrice2 = "24,900원";
         String menuName3 = "주말/공휴일", menuPrice3 = "26,900원";
+
         SpotRequest.CreateSpot request = SpotRequest.CreateSpot.builder()
                 .categoryId(category.getId())
                 .name(name)
@@ -434,6 +435,8 @@ class SpotControllerTest extends BaseControllerTest {
     @DisplayName("post:/api/spots - bad request duplicated name and address, F-02-01-04")
     public void createSpot_BadRequest_DuplicatedNameAndAddress() throws Exception {
 
+        Spot spot = this.spotService.getSpotById(1L);
+
         // given
         String username = "admin";
         String password = "1234";
@@ -765,6 +768,7 @@ class SpotControllerTest extends BaseControllerTest {
         assertThat(this.fileService.count()).isEqualTo(expectFiles);
     }
 
+    @Transactional
     @Test
     @DisplayName("patch:/api/spots/{id} - ok, S-02-04")
     public void updateSpot_OK() throws Exception {
@@ -975,6 +979,7 @@ class SpotControllerTest extends BaseControllerTest {
         );
     }
 
+    @Transactional
     @Test
     @DisplayName("patch:/api/spots/{id} - ok partial input images, S-02-04")
     public void updateSpot_OK_PartialInput_Images() throws Exception {
@@ -1052,6 +1057,7 @@ class SpotControllerTest extends BaseControllerTest {
         ;
     }
 
+    @Transactional
     @Test
     @DisplayName("patch:/api/spots/{id} - ok partial input only images, S-02-04")
     public void updateSpot_OK_PartialInput_OnlyImages() throws Exception {

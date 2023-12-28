@@ -27,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
@@ -192,6 +191,17 @@ public class SpotService {
         // 검증 단계에서 에러 걸러짐
         Spot spot = this.getSpotById(id);
 
+        Category category = this.categoryService.getCategoryById(request.getCategoryId());
+
+        spot = spot.toBuilder()
+                .category(category != null ? category : spot.getCategory())
+                .name(request.getName() != null ? request.getName() : spot.getName())
+                .address(request.getAddress() != null ? request.getAddress() : spot.getAddress())
+                .contact(request.getContact() != null ? request.getContact() : spot.getContact())
+                .build();
+
+        spot = this.spotRepository.save(spot);
+
         // hashtags 수정
         this.spotHashtagService.updateAll(request.getHashtags(), spot);
 
@@ -202,6 +212,7 @@ public class SpotService {
         List<_File> files = this.fileService.createAll(images, FileDomain.SPOT);
         this.spotImageService.updateAll(files, spot);
 
+        entityManager.flush();
         entityManager.refresh(spot);
 
         return spot;
@@ -315,5 +326,9 @@ public class SpotService {
                 .averageScore(averageScore)
                 .reviews(reviews)
                 .build();
+    }
+
+    public Spot getSpotByNameAndAddress(String name, String address) {
+        return this.spotRepository.findByNameAndAddress(name, address).orElse(null);
     }
 }

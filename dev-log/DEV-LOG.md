@@ -3,6 +3,7 @@
 ## 23-12-28
 ### feature/patch-api-spots-id
 - [x] 수정 로직 수정
+- [x] 일부 로직 수정 및 깨진 TC 잘 작동하도록 수정
 
 ## 23-12-27
 ### feature/comment_module-comment

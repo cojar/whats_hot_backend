@@ -25,6 +25,8 @@ public class MenuItemService {
     @Transactional
     public List<MenuItem> createAll(List<MenuItemDto> items, Spot spot) {
 
+        if (items == null) return null;
+
         List<MenuItem> menuItems = items.stream()
                 .map(item -> MenuItem.builder()
                         .name(item.getName())
@@ -45,6 +47,8 @@ public class MenuItemService {
 
     @Transactional
     public List<MenuItem> updateAll(List<MenuItemDto> items, Spot spot) {
+
+        if (items == null) return null;
 
         List<MenuItem> menuItems = items.stream()
                 .map(item -> MenuItem.builder()

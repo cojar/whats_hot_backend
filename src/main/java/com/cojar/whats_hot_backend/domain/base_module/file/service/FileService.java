@@ -120,6 +120,8 @@ public class FileService {
 
     public ResData validateAll(List<MultipartFile> files) {
 
+        if (files == null) return null;
+
         Errors errors = new BeanPropertyBindingResult(files, "file");
 
         ResData resData = ResData.reduceError(
@@ -164,6 +166,8 @@ public class FileService {
 
     @Transactional
     public List<_File> createAll(List<MultipartFile> images, FileDomain fileDomain) {
+
+        if (images == null) return null;
 
         List<_File> files = images.stream()
                 .map(image -> this.create(image, fileDomain))

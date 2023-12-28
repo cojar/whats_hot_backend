@@ -27,6 +27,8 @@ public class SpotImageService {
     @Transactional
     public List<SpotImage> createAll(List<_File> files, Spot spot) {
 
+        if (files == null) return null;
+
         List<SpotImage> spotImages = files.stream()
                 .map(file ->
                         SpotImage.builder()
@@ -43,6 +45,8 @@ public class SpotImageService {
 
     @Transactional
     public List<SpotImage> updateAll(List<_File> files, Spot spot) {
+
+        if (files == null) return null;
 
         List<SpotImage> spotImages = files.stream()
                 .map(file ->
