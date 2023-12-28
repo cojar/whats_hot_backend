@@ -30,6 +30,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -263,6 +264,19 @@ public class SpotService {
                     )
             );
         }
+    }
+
+    @Transactional
+    public void delete(Long id) {
+
+        Spot spot = this.getSpotById(id);
+
+        List<_File> files = spot.getImages().stream()
+                .map(image -> image.getImage())
+                .collect(Collectors.toList());
+        this.fileService.deleteFile(files);
+
+        this.spotRepository.delete(spot);
     }
 
     public Spot updateReview(Spot spot, Review review) {

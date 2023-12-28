@@ -6,6 +6,9 @@
 - [x] 생성 부분 체크 로직 분리
 - [x] InitConfig 장소 생성 관련 로직 변경
 
+### feature/delete-api-spots-id
+- [x] S-02-05 TC 추가
+
 ## 23-12-28
 ### feature/patch-api-spots-id
 - [x] 수정 로직 수정
