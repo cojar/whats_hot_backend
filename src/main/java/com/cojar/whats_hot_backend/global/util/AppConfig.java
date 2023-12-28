@@ -22,9 +22,16 @@ public class AppConfig {
 
     private static String fileOriginPath;
 
+    private static String fileRootPath;
+
     @Value("${file.origin.path}")
     public void setFileOriginPath(String fileOriginPath) {
         AppConfig.fileOriginPath = fileOriginPath;
+    }
+
+    @Value("${file.root.path}")
+    public void setFileRootPath(String fileRootPath) {
+        AppConfig.fileRootPath = fileRootPath;
     }
 
     @Bean
@@ -50,6 +57,10 @@ public class AppConfig {
 
     public static String getBaseFileURL() {
         return getBaseURL() + fileOriginPath;
+    }
+
+    public static String getBaseFilePath() {
+        return fileRootPath;
     }
 
     public static String getMediaType(String fileName1) {

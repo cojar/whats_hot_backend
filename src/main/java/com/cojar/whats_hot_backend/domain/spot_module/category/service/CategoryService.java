@@ -35,6 +35,7 @@ public class CategoryService {
     }
 
     public Category getCategoryById(Long id) {
+        if (id == null) return null;
         return this.categoryRepository.findById(id).orElse(null);
     }
 }

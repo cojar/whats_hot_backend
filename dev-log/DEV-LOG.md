@@ -1,4 +1,17 @@
 # What's Hot Dev-Log
+
+## 23-12-29
+### feature/patch-api-spots-id
+- [x] 수정 TC 중 Bad Request 부분에서 엔티티 미수정 확인 추가
+- [x] 생성 부분 체크 로직 분리
+- [x] InitConfig 장소 생성 관련 로직 변경
+
+## 23-12-28
+### feature/patch-api-spots-id
+- [x] 수정 로직 수정
+- [x] 일부 로직 수정 및 깨진 TC 잘 작동하도록 수정
+- [x] 미사용 로직 제거
+
 ## 23-12-27
 ### feature/comment_module-comment
 - [x] getValidate 오류 메시지 출력 내용 수정

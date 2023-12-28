@@ -21,6 +21,10 @@ public class SpotHashtagService {
     private final SpotRepository spotRepository;
     private final HashtagRepository hashtagRepository;
 
+    public long count() {
+        return this.spotHashtagRepository.count();
+    }
+
     @Transactional
     public List<SpotHashtag> createAll(List<String> hashtags, Spot spot) {
 
@@ -46,24 +50,33 @@ public class SpotHashtagService {
         return spotHashtags;
     }
 
-    @Transactional
-    public void saveAll(List<SpotHashtag> spotHashtags) {
-        if (spotHashtags != null) this.spotHashtagRepository.saveAll(spotHashtags);
-    }
-
-    @Transactional
-    public void saveAll(List<SpotHashtag> newSpotHashtags, List<SpotHashtag> oldSpotHashtags) {
-        if (newSpotHashtags != null) {
-            this.spotHashtagRepository.deleteAll(oldSpotHashtags);
-            this.spotHashtagRepository.saveAll(newSpotHashtags);
-        }
-    }
-
     public List<SpotHashtag> getAllBySpot(Spot spot) {
         return this.spotHashtagRepository.findAllBySpot(spot);
     }
 
-    public Long count() {
-        return this.spotHashtagRepository.count();
+    @Transactional
+    public List<SpotHashtag> updateAll(List<String> hashtags, Spot spot) {
+
+        if (hashtags == null) return null;
+
+        List<SpotHashtag> spotHashtags = hashtags.stream()
+                .map(hashtag -> {
+                            Hashtag _hashtag = this.hashtagRepository.findByName(hashtag).orElse(null);
+                            if (_hashtag == null) {
+                                _hashtag = Hashtag.builder().name(hashtag).build();
+                                this.hashtagRepository.save(_hashtag);
+                            }
+                            return SpotHashtag.builder()
+                                    .hashtag(_hashtag)
+                                    .spot(spot)
+                                    .build();
+                        }
+                )
+                .collect(Collectors.toList());
+
+        this.spotHashtagRepository.deleteAll(spot.getHashtags());
+        this.spotHashtagRepository.saveAll(spotHashtags);
+
+        return spotHashtags;
     }
 }

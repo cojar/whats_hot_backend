@@ -7,16 +7,13 @@ import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.category.repository.CategoryRepository;
 import com.cojar.whats_hot_backend.domain.spot_module.category.service.CategoryService;
-import com.cojar.whats_hot_backend.domain.spot_module.menu_item.entity.MenuItem;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.service.MenuItemService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.controller.SpotController;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotListDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.repository.SpotRepository;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
-import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.entity.SpotHashtag;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.service.SpotHashtagService;
-import com.cojar.whats_hot_backend.domain.spot_module.spot_image.entity.SpotImage;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.service.SpotImageService;
 import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.DataModel;
@@ -52,6 +49,10 @@ public class SpotService {
 
     private final EntityManager entityManager;
 
+    public long count() {
+        return this.spotRepository.count();
+    }
+
     @Transactional
     public Spot create(SpotRequest.CreateSpot request, List<MultipartFile> images, Errors errors) {
 
@@ -86,10 +87,6 @@ public class SpotService {
         entityManager.refresh(spot);
 
         return spot;
-    }
-
-    public long count() {
-        return this.spotRepository.count();
     }
 
     private void createValidate(SpotRequest.CreateSpot request, Errors errors) {
@@ -143,23 +140,6 @@ public class SpotService {
         }
     }
 
-    public Spot create(SpotRequest.CreateSpot request) {
-
-        Spot spot = Spot.builder()
-                .category(this.categoryRepository.findById(request.getCategoryId()).orElse(null))
-                .name(request.getName())
-                .address(request.getAddress())
-                .contact(request.getContact())
-                .build();
-
-        return this.spotRepository.save(spot);
-    }
-
-    @Transactional
-    public void save(Spot spot) {
-        this.spotRepository.save(spot);
-    }
-
     public Spot getSpotById(Long id) {
         return this.spotRepository.findById(id)
                 .orElse(null);
@@ -179,7 +159,46 @@ public class SpotService {
                 });
     }
 
-    public ResData updateValidate(Long id, SpotRequest.UpdateSpot request, Errors errors) {
+    @Transactional
+    public Spot update(Long id, SpotRequest.UpdateSpot request, List<MultipartFile> images, Errors errors) {
+
+        // request 에러 검증
+        this.updateValidate(id, request, errors);
+
+        // images 에러 검증
+        this.fileService.validateAll(images);
+
+        // 검증 단계에서 에러 걸러짐
+        Spot spot = this.getSpotById(id);
+
+        Category category = this.categoryService.getCategoryById(request.getCategoryId());
+
+        spot = spot.toBuilder()
+                .category(category != null ? category : spot.getCategory())
+                .name(request.getName() != null ? request.getName() : spot.getName())
+                .address(request.getAddress() != null ? request.getAddress() : spot.getAddress())
+                .contact(request.getContact() != null ? request.getContact() : spot.getContact())
+                .build();
+
+        spot = this.spotRepository.save(spot);
+
+        // hashtags 수정
+        this.spotHashtagService.updateAll(request.getHashtags(), spot);
+
+        // menu item 수정
+        this.menuItemService.updateAll(request.getMenuItems(), spot);
+
+        // images 수정
+        List<_File> files = this.fileService.createAll(images, FileDomain.SPOT);
+        this.spotImageService.updateAll(files, spot);
+
+        entityManager.flush();
+        entityManager.refresh(spot);
+
+        return spot;
+    }
+
+    private void updateValidate(Long id, SpotRequest.UpdateSpot request, Errors errors) {
 
         if (!this.spotRepository.existsById(id)) {
 
@@ -244,39 +263,6 @@ public class SpotService {
                     )
             );
         }
-
-        return null;
-    }
-
-    public Spot update(Spot spot, SpotRequest.UpdateSpot request) {
-
-        spot = spot.toBuilder()
-                .category(request.getCategoryId() != null ?
-                        this.categoryRepository.findById(request.getCategoryId()).orElse(null) : spot.getCategory())
-                .name(request.getName() != null ? request.getName() : spot.getName())
-                .address(request.getAddress() != null ? request.getAddress() : spot.getAddress())
-                .contact(request.getContact() != null ? request.getContact() : spot.getContact())
-                .build();
-
-        return spot;
-    }
-
-    public Spot updateHashtags(Spot spot, List<SpotHashtag> spotHashtags) {
-        return spot.toBuilder()
-                .hashtags(spotHashtags)
-                .build();
-    }
-
-    public Spot updateMenuItems(Spot spot, List<MenuItem> menuItems) {
-        return spot.toBuilder()
-                .menuItems(menuItems)
-                .build();
-    }
-
-    public Spot updateImages(Spot spot, List<SpotImage> spotImages) {
-        return spot.toBuilder()
-                .images(spotImages)
-                .build();
     }
 
     public Spot updateReview(Spot spot, Review review) {

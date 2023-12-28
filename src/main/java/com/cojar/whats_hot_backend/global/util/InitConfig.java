@@ -1,6 +1,5 @@
 package com.cojar.whats_hot_backend.global.util;
 
-import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.base_module.hashtag.service.HashtagService;
@@ -16,24 +15,20 @@ import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewSer
 import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.category.service.CategoryService;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.dto.MenuItemDto;
-import com.cojar.whats_hot_backend.domain.spot_module.menu_item.entity.MenuItem;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.service.MenuItemService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
-import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.entity.SpotHashtag;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.service.SpotHashtagService;
-import com.cojar.whats_hot_backend.domain.spot_module.spot_image.entity.SpotImage;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.service.SpotImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.validation.BeanPropertyBindingResult;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -85,6 +80,7 @@ public class InitConfig {
                     List.of(MemberRole.USER));
             this.memberService.save(user1);
 
+            // category init data
             Category category1 = this.categoryService.create("맛집", 1, -1L);
             Category category2 = this.categoryService.create("2차", 2, category1.getId());
             Category category3 = this.categoryService.create("3차-1", 3, category2.getId());
@@ -97,40 +93,28 @@ public class InitConfig {
                             .name("장소1")
                             .address("대전 서구 대덕대로 179")
                             .contact("010-1234-5678")
-                            .build()
+                            .hashtags(
+                                    List.of(
+                                            "해시태그1",
+                                            "해시태그2"
+                                    )
+                            )
+                            .menuItems(
+                                    List.of(
+                                            MenuItemDto.of("메뉴1", "10,000원"),
+                                            MenuItemDto.of("메뉴2", "20,000원"),
+                                            MenuItemDto.of("메뉴3", "30,000원")
+                                    )
+                            )
+                            .build(),
+                    List.of(new MockMultipartFile(
+                            "images",
+                            "test.png",
+                            AppConfig.getMediaType("test.png"),
+                            this.resourceLoader.getResource("classpath:/static/image/%s".formatted("test.png")).getInputStream()
+                    )),
+                    new BeanPropertyBindingResult(null, "request")
             );
-            this.spotService.save(spot1);
-
-            List<SpotHashtag> spotHashtags1 = this.spotHashtagService.createAll(
-                    List.of(
-                            "해시태그1",
-                            "해시태그2"
-                    ),
-                    spot1);
-            this.spotHashtagService.saveAll(spotHashtags1);
-
-            List<MenuItem> menuItems1 = this.menuItemService.createAll(
-                    List.of(
-                            MenuItemDto.of("메뉴1", "10,000원"),
-                            MenuItemDto.of("메뉴2", "20,000원"),
-                            MenuItemDto.of("메뉴3", "30,000원")
-                    ),
-                    spot1);
-            this.menuItemService.saveAll(menuItems1);
-
-            String fileName1 = "test.png";
-            Resource resource = resourceLoader.getResource("classpath:/static/image/%s".formatted(fileName1));
-            MultipartFile _file1 = new MockMultipartFile(
-                    "images",
-                    fileName1,
-                    AppConfig.getMediaType(fileName1),
-                    resource.getInputStream()
-            );
-            List<MultipartFile> _files1 = List.of(_file1);
-            List<_File> files1 = this.fileService.createAll(_files1, FileDomain.SPOT);
-            this.fileService.saveAll(files1);
-            List<SpotImage> images1 = this.spotImageService.createAll(files1, spot1);
-            this.spotImageService.saveAll(images1);
 
             Spot spot2 = this.spotService.create(
                     SpotRequest.CreateSpot.builder()
@@ -138,71 +122,36 @@ public class InitConfig {
                             .name("장소2")
                             .address("대전 서구 대덕대로 179")
                             .contact("010-1234-5678")
-                            .build()
+                            .hashtags(
+                                    List.of(
+                                            "해시태그3",
+                                            "해시태그4"
+                                    )
+                            )
+                            .menuItems(
+                                    List.of(
+                                            MenuItemDto.of("메뉴4", "40,000원"),
+                                            MenuItemDto.of("메뉴5", "50,000원"),
+                                            MenuItemDto.of("메뉴6", "60,000원")
+                                    )
+                            )
+                            .build(),
+                    List.of(new MockMultipartFile(
+                            "images",
+                            "test.png",
+                            AppConfig.getMediaType("test.png"),
+                            this.resourceLoader.getResource("classpath:/static/image/%s".formatted("test.png")).getInputStream()
+                    )),
+                    new BeanPropertyBindingResult(null, "request")
             );
-            this.spotService.save(spot2);
 
-            Spot spot3 = this.spotService.create(
-                    SpotRequest.CreateSpot.builder()
-                            .categoryId(category3.getId())
-                            .name("장소3")
-                            .address("대전 서구 대덕대로 179")
-                            .contact("010-1234-5678")
-                            .build()
-            );
-            this.spotService.save(spot3);
-
-            Spot spot4 = this.spotService.create(
-                    SpotRequest.CreateSpot.builder()
-                            .categoryId(category3.getId())
-                            .name("장소4")
-                            .address("대전 서구 대덕대로 179")
-                            .contact("010-1234-5678")
-                            .build()
-            );
-            this.spotService.save(spot4);
-
-            Spot spot5 = this.spotService.create(
-                    SpotRequest.CreateSpot.builder()
-                            .categoryId(category3.getId())
-                            .name("장소5")
-                            .address("대전 서구 대덕대로 179")
-                            .contact("010-1234-5678")
-                            .build()
-            );
-            this.spotService.save(spot5);
-
-            Spot spot6 = this.spotService.create(
-                    SpotRequest.CreateSpot.builder()
-                            .categoryId(category3.getId())
-                            .name("장소6")
-                            .address("대전 서구 대덕대로 179")
-                            .contact("010-1234-5678")
-                            .build()
-            );
-            this.spotService.save(spot6);
-
-            MenuItem menuItem4 = this.menuItemService.create("메뉴1", "10000원", spot2);
-            MenuItem menuItem5 = this.menuItemService.create("메뉴2", "20000원", spot2);
-            MenuItem menuItem6 = this.menuItemService.create("메뉴3", "30000원", spot2);
-
-            MenuItem menuItem7 = this.menuItemService.create("메뉴1", "10000원", spot3);
-            MenuItem menuItem8 = this.menuItemService.create("메뉴2", "20000원", spot3);
-            MenuItem menuItem9 = this.menuItemService.create("메뉴3", "30000원", spot3);
-
-            _File image4 = this.fileService.create(spot2);
-            _File image5 = this.fileService.create(spot2);
-            _File image6 = this.fileService.create(spot2);
-
-            _File image7 = this.fileService.create(spot3);
-            _File image8 = this.fileService.create(spot3);
-            _File image9 = this.fileService.create(spot3);
-
+            // review init data
             Review review1 = this.reviewService.create(user1, spot1, LocalDateTime.now(), "리뷰제목1", "리뷰내용1", 4.5, ReviewStatus.PUBLIC);
             _File image10 = this.fileService.create(review1);
             Review review2 = this.reviewService.create(user1, spot1, LocalDateTime.now(), "리뷰제목2", "리뷰내용2", 4.5, ReviewStatus.PUBLIC);
             _File image11 = this.fileService.create(review2);
 
+            // comment init data
             Comment comment1 = this.commentService.create(user1, review1, "댓글내용1", null);
             Comment comment2 = this.commentService.create(user1, review1, "댓글내용2", null);
 

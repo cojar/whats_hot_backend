@@ -33,4 +33,10 @@ public class _File extends BaseEntity {
                 + File.separator + this.domain.getDomain()
                 + File.separator + this.uuid + "." + this.ext;
     }
+
+    public String toPath(String root) {
+        return root
+                + File.separator + this.domain.getDomain()
+                + File.separator + this.uuid + "." + this.ext;
+    }
 }

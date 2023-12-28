@@ -1,6 +1,7 @@
 package com.cojar.whats_hot_backend.domain.spot_module.spot_image.service;
 
 import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
+import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.entity.SpotImage;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.repository.SpotImageRepository;
@@ -17,8 +18,16 @@ public class SpotImageService {
 
     private final SpotImageRepository spotImageRepository;
 
+    private final FileService fileService;
+
+    public long count() {
+        return this.spotImageRepository.count();
+    }
+
     @Transactional
     public List<SpotImage> createAll(List<_File> files, Spot spot) {
+
+        if (files == null) return null;
 
         List<SpotImage> spotImages = files.stream()
                 .map(file ->
@@ -35,23 +44,27 @@ public class SpotImageService {
     }
 
     @Transactional
-    public void saveAll(List<SpotImage> spotImages) {
-        if (spotImages != null) this.spotImageRepository.saveAll(spotImages);
-    }
+    public List<SpotImage> updateAll(List<_File> files, Spot spot) {
 
-    @Transactional
-    public void saveAll(List<SpotImage> newSpotImages, List<SpotImage> oldSpotImages) {
-        if (newSpotImages != null) {
-            this.spotImageRepository.deleteAll(oldSpotImages);
-            this.spotImageRepository.saveAll(newSpotImages);
-        }
+        if (files == null) return null;
+
+        List<SpotImage> spotImages = files.stream()
+                .map(file ->
+                        SpotImage.builder()
+                                .image(file)
+                                .spot(spot)
+                                .build()
+                )
+                .collect(Collectors.toList());
+
+        this.fileService.deleteFile(spot.getImages().stream().map(spotImage -> spotImage.getImage()).collect(Collectors.toList()));
+        this.spotImageRepository.deleteAll(spot.getImages());
+        this.spotImageRepository.saveAll(spotImages);
+
+        return spotImages;
     }
 
     public List<SpotImage> getAllBySpot(Spot spot) {
         return this.spotImageRepository.findAllBySpot(spot);
-    }
-
-    public Long count() {
-        return this.spotImageRepository.count();
     }
 }

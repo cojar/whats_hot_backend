@@ -18,22 +18,14 @@ public class MenuItemService {
 
     private final MenuItemRepository menuItemRepository;
 
-    @Transactional
-    public MenuItem create(String name, String price, Spot spot) {
-
-        MenuItem menuItem = MenuItem.builder()
-                .name(name)
-                .price(price)
-                .spot(spot)
-                .build();
-
-        this.menuItemRepository.save(menuItem);
-
-        return menuItem;
+    public long count() {
+        return this.menuItemRepository.count();
     }
 
     @Transactional
     public List<MenuItem> createAll(List<MenuItemDto> items, Spot spot) {
+
+        if (items == null) return null;
 
         List<MenuItem> menuItems = items.stream()
                 .map(item -> MenuItem.builder()
@@ -49,24 +41,27 @@ public class MenuItemService {
         return menuItems;
     }
 
-    @Transactional
-    public void saveAll(List<MenuItem> menuItems) {
-        if (menuItems != null) this.menuItemRepository.saveAll(menuItems);
-    }
-
-    @Transactional
-    public void saveAll(List<MenuItem> newMenuItems, List<MenuItem> oldMenuItems) {
-        if (newMenuItems != null) {
-            this.menuItemRepository.deleteAll(oldMenuItems);
-            this.menuItemRepository.saveAll(newMenuItems);
-        }
-    }
-
     public List<MenuItem> getAllBySpot(Spot spot) {
         return this.menuItemRepository.findAllBySpot(spot);
     }
 
-    public Long count() {
-        return this.menuItemRepository.count();
+    @Transactional
+    public List<MenuItem> updateAll(List<MenuItemDto> items, Spot spot) {
+
+        if (items == null) return null;
+
+        List<MenuItem> menuItems = items.stream()
+                .map(item -> MenuItem.builder()
+                        .name(item.getName())
+                        .price(item.getPrice())
+                        .spot(spot)
+                        .build()
+                )
+                .collect(Collectors.toList());
+
+        this.menuItemRepository.deleteAll(spot.getMenuItems());
+        this.menuItemRepository.saveAll(menuItems);
+
+        return menuItems;
     }
 }

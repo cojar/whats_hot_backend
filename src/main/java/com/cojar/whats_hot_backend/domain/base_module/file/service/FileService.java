@@ -8,6 +8,7 @@ import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
+import com.cojar.whats_hot_backend.global.util.AppConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -119,6 +120,8 @@ public class FileService {
 
     public ResData validateAll(List<MultipartFile> files) {
 
+        if (files == null) return null;
+
         Errors errors = new BeanPropertyBindingResult(files, "file");
 
         ResData resData = ResData.reduceError(
@@ -164,6 +167,8 @@ public class FileService {
     @Transactional
     public List<_File> createAll(List<MultipartFile> images, FileDomain fileDomain) {
 
+        if (images == null) return null;
+
         List<_File> files = images.stream()
                 .map(image -> this.create(image, fileDomain))
                 .collect(Collectors.toList());
@@ -178,7 +183,16 @@ public class FileService {
         if (files != null) this.fileRepository.saveAll(files);
     }
 
-    public Long count() {
+    public long count() {
         return this.fileRepository.count();
+    }
+
+    public void deleteFile(List<_File> files) {
+        files.stream()
+                .forEach(file -> {
+                    String deleteDirPath = file.toPath(AppConfig.getBaseFilePath());
+                    File target = new File(deleteDirPath);
+                    target.delete();
+                });
     }
 }
