@@ -89,7 +89,7 @@ public class ReviewController {
         this.fileService.saveAll(files);
         this.reviewImageService.saveAll(reviewImages);
         this.reviewService.save(review);
-        this.spotService.save(spot);
+//        this.spotService.save(spot);
 
         resData = ResData.of(
                 ResCode.S_03_01,

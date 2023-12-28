@@ -4,6 +4,7 @@
 ### feature/patch-api-spots-id
 - [x] 수정 TC 중 Bad Request 부분에서 엔티티 미수정 확인 추가
 - [x] 생성 부분 체크 로직 분리
+- [x] InitConfig 장소 생성 관련 로직 변경
 
 ## 23-12-28
 ### feature/patch-api-spots-id

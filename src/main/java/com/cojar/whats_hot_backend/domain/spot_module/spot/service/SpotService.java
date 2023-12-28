@@ -140,23 +140,6 @@ public class SpotService {
         }
     }
 
-    public Spot create(SpotRequest.CreateSpot request) {
-
-        Spot spot = Spot.builder()
-                .category(this.categoryRepository.findById(request.getCategoryId()).orElse(null))
-                .name(request.getName())
-                .address(request.getAddress())
-                .contact(request.getContact())
-                .build();
-
-        return this.spotRepository.save(spot);
-    }
-
-    @Transactional
-    public void save(Spot spot) {
-        this.spotRepository.save(spot);
-    }
-
     public Spot getSpotById(Long id) {
         return this.spotRepository.findById(id)
                 .orElse(null);
