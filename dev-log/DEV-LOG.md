@@ -1,5 +1,8 @@
 # What's Hot Dev-Log
 
+## 23-12-29
+- [x] 수정 TC 중 Bad Request 부분에서 엔티티 미수정 확인 추가
+
 ## 23-12-28
 ### feature/patch-api-spots-id
 - [x] 수정 로직 수정

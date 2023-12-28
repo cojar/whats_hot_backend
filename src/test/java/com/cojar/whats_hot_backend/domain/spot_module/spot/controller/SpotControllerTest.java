@@ -1177,6 +1177,7 @@ class SpotControllerTest extends BaseControllerTest {
         String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
         Long id = 1L;
+        Spot before = this.spotService.getSpotById(id);
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
                 .hashtags(List.of(hashtag))
                 .menuItems(List.of(MenuItemDto.of(menuName, menuPrice)))
@@ -1212,6 +1213,9 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue").value(""))
                 .andExpect(jsonPath("_links.index").exists())
         ;
+
+        Spot after = this.spotService.getSpotById(id);
+        checkNotUpdated(before, after);
     }
 
     private static Stream<Arguments> argsFor_updateSpot_BadRequest_NotBlank() {
@@ -1233,6 +1237,7 @@ class SpotControllerTest extends BaseControllerTest {
 
         Long id = 1L;
         Long categoryId = 10000000L;
+        Spot before = this.spotService.getSpotById(id);
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
                 .categoryId(categoryId)
                 .build();
@@ -1267,6 +1272,9 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue").value(categoryId))
                 .andExpect(jsonPath("_links.index").exists())
         ;
+
+        Spot after = this.spotService.getSpotById(id);
+        checkNotUpdated(before, after);
     }
 
     @ParameterizedTest
@@ -1280,6 +1288,7 @@ class SpotControllerTest extends BaseControllerTest {
         String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
         Long id = 1L;
+        Spot before = this.spotService.getSpotById(id);
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
                 .categoryId(categoryId)
                 .build();
@@ -1314,6 +1323,9 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue").value(categoryId))
                 .andExpect(jsonPath("_links.index").exists())
         ;
+
+        Spot after = this.spotService.getSpotById(id);
+        checkNotUpdated(before, after);
     }
 
     private static Stream<Arguments> argsFor_updateSpot_BadRequest_InvalidCategoryId() {
@@ -1335,6 +1347,7 @@ class SpotControllerTest extends BaseControllerTest {
         Long id = 1L;
         String name = "장소2";
         String address = "대전 서구 대덕대로 179";
+        Spot before = this.spotService.getSpotById(id);
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
                 .name(name)
                 .address(address)
@@ -1370,6 +1383,9 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue[1]").value(address))
                 .andExpect(jsonPath("_links.index").exists())
         ;
+
+        Spot after = this.spotService.getSpotById(id);
+        checkNotUpdated(before, after);
     }
 
     @Test
@@ -1382,6 +1398,7 @@ class SpotControllerTest extends BaseControllerTest {
         String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
         Long id = 1L;
+        Spot before = this.spotService.getSpotById(id);
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
                 .build();
         MockMultipartFile _request = new MockMultipartFile(
@@ -1425,6 +1442,9 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
                 .andExpect(jsonPath("data[0].rejectedValue").value(MediaType.TEXT_MARKDOWN_VALUE))
         ;
+
+        Spot after = this.spotService.getSpotById(id);
+        checkNotUpdated(before, after);
     }
 
     @Test
@@ -1437,6 +1457,7 @@ class SpotControllerTest extends BaseControllerTest {
         String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
         Long id = 1L;
+        Spot before = this.spotService.getSpotById(id);
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
                 .build();
         MockMultipartFile _request = new MockMultipartFile(
@@ -1480,6 +1501,9 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
                 .andExpect(jsonPath("data[0].rejectedValue").value(MediaType.IMAGE_GIF_VALUE))
         ;
+
+        Spot after = this.spotService.getSpotById(id);
+        checkNotUpdated(before, after);
     }
 
     @Test
@@ -1492,6 +1516,7 @@ class SpotControllerTest extends BaseControllerTest {
         String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
 
         Long id = 1L;
+        Spot before = this.spotService.getSpotById(id);
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
                 .build();
         MockMultipartFile _request = new MockMultipartFile(
@@ -1552,5 +1577,36 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[1].defaultMessage").exists())
                 .andExpect(jsonPath("data[1].rejectedValue").value(MediaType.IMAGE_GIF_VALUE))
         ;
+
+        Spot after = this.spotService.getSpotById(id);
+        checkNotUpdated(before, after);
+    }
+
+    private void checkNotUpdated(Spot before, Spot after) {
+        assertThat(before.getCategory().toLine()).isEqualTo(after.getCategory().toLine());
+        assertThat(before.getName()).isEqualTo(after.getName());
+        assertThat(before.getAddress()).isEqualTo(after.getAddress());
+        assertThat(before.getLatitude()).isEqualTo(after.getLatitude());
+        assertThat(before.getLongitude()).isEqualTo(after.getLongitude());
+        assertThat(before.getContact()).isEqualTo(after.getContact());
+        List<SpotHashtag> beforeHashtags = this.spotHashtagService.getAllBySpot(before);
+        List<SpotHashtag> afterHashtags = this.spotHashtagService.getAllBySpot(after);
+        assertThat(beforeHashtags.size()).isEqualTo(afterHashtags.size());
+        for (int i = 0; i < beforeHashtags.size(); i++) {
+            assertThat(beforeHashtags.get(i).getHashtag().getName()).isEqualTo(afterHashtags.get(i).getHashtag().getName());
+        }
+        List<MenuItem> beforeItems = this.menuItemService.getAllBySpot(before);
+        List<MenuItem> afterItems = this.menuItemService.getAllBySpot(after);
+        assertThat(beforeItems.size()).isEqualTo(afterItems.size());
+        for (int i = 0; i < beforeItems.size(); i++) {
+            assertThat(beforeItems.get(i).getName()).isEqualTo(afterItems.get(i).getName());
+            assertThat(beforeItems.get(i).getPrice()).isEqualTo(afterItems.get(i).getPrice());
+        }
+        List<SpotImage> beforeImages = this.spotImageService.getAllBySpot(before);
+        List<SpotImage> afterImages = this.spotImageService.getAllBySpot(after);
+        assertThat(beforeImages.size()).isEqualTo(afterImages.size());
+        for (int i = 0; i < beforeImages.size(); i++) {
+            assertThat(beforeImages.get(i).getImage().getUuid()).isEqualTo(afterImages.get(i).getImage().getUuid());
+        }
     }
 }
