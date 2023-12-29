@@ -1650,7 +1650,7 @@ class SpotControllerTest extends BaseControllerTest {
 
 
     @Test
-    @DisplayName("GET /Spot/1")
+    @DisplayName("GET /Spot/1 - detail, S-02-03")
     void getSpot_ok() throws Exception {
         // When
         ResultActions resultActions = this.mockMvc
@@ -1678,11 +1678,11 @@ class SpotControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("GET /spot/3")
+    @DisplayName("GET /spot/23 - bad request not id, F-02-04-01")
     void getSpot_BadRequest_Spot_NotExist() throws Exception {
 
         // given
-
+        Spot spot = this.spotService.getSpotById(23L);
 
         // when
         ResultActions resultActions = mockMvc

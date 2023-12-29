@@ -89,14 +89,11 @@ public class SpotController {
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity detail(@PathVariable(value = "id") Long id) {
 
-        ResData resData = this.spotService.getSpotValidate(id);
-
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
+        this.spotService.getSpotValidate(id);
 
         Spot spot = this.spotService.getSpotById(id);
 
-
-        resData = ResData.of(
+        ResData resData = ResData.of(
                 ResCode.S_02_03,
                 SpotDto.of(spot),
                 linkTo(this.getClass()).slash(spot.getId())
