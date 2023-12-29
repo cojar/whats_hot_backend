@@ -1650,13 +1650,17 @@ class SpotControllerTest extends BaseControllerTest {
 
 
     @Test
-    @DisplayName("GET /Spot/1 - detail, S-02-03")
+    @DisplayName("GET:api/Spots/{id} - detail, S-02-03")
     void getSpot_ok() throws Exception {
+
+        //given
+        Long id = 1L;
+
+
         // When
         ResultActions resultActions = this.mockMvc
-                .perform(
-                        get("/api/spots/1")
-                                .contentType(MediaType.APPLICATION_JSON)
+                .perform(multipart(HttpMethod.GET, "/api/spots/%s".formatted(id))
+                                .contentType(MediaType.ALL_VALUE)
                 )
                 .andDo(print());
 
@@ -1665,7 +1669,7 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("success").value("true"))
                 .andExpect(jsonPath("code").value("S-02-03"))
-                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("message").value(ResCode.S_02_03.getMessage()))
                 .andExpect(jsonPath("data.id").value(1))
                 .andExpect(jsonPath("data.name").exists())
                 .andExpect(jsonPath("data.category").exists())
@@ -1678,21 +1682,21 @@ class SpotControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("GET /spot/23 - bad request not id, F-02-04-01")
+    @DisplayName("GET:api/spots/{id} - bad request not id, F-02-04-01")
     void getSpot_BadRequest_Spot_NotExist() throws Exception {
 
         // given
-        Spot spot = this.spotService.getSpotById(23L);
+        Long id = 9L;
 
         // when
         ResultActions resultActions = mockMvc
-                .perform(
-                        get("/api/spots/23")
-                                .contentType(MediaType.APPLICATION_JSON)
+                .perform(multipart(HttpMethod.GET, "/api/spots/%s".formatted(id))
+                                .contentType(MediaType.ALL_VALUE)
                                 .accept(MediaTypes.HAL_JSON)
 
                 )
                 .andDo(print());
+
 
         // then
         resultActions
@@ -1700,7 +1704,8 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("success").value("false"))
                 .andExpect(jsonPath("code").value("F-02-04-01"))
-                .andExpect(jsonPath("message").exists());
+                .andExpect(jsonPath("message").value(ResCode.F_02_05_01.getMessage()));
+
     }
 
 

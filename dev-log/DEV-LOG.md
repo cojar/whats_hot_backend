@@ -8,6 +8,8 @@
 - [x] spotController get/spot/detail 수정
 - [x] S-02-03 TC 수정
 - [x] F-02-04-01 TC 수정
+- [x] S-02-03 TC 추가 수정
+- [x] F-02-04-01 TC 추가 수정
 
 ### feature/patch-api-spots-id
 - [x] 수정 TC 중 Bad Request 부분에서 엔티티 미수정 확인 추가
