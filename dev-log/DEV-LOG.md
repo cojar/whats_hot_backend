@@ -8,6 +8,7 @@
 
 ### feature/delete-api-spots-id
 - [x] S-02-05 TC 추가
+- [x] F-02-05-01 TC 추가
 
 ## 23-12-28
 ### feature/patch-api-spots-id

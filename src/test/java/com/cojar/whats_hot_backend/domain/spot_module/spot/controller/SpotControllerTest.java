@@ -1609,4 +1609,39 @@ class SpotControllerTest extends BaseControllerTest {
 
         assertThat(this.spotService.getSpotById(id) == null).isTrue();
     }
+
+    @Test
+    @DisplayName("delete:/api/spots - bad request not exist, F-02-05-01")
+    public void deleteSpot_BadRequest_NotExist() throws Exception {
+
+        // given
+        String username = "admin";
+        String password = "1234";
+        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+        Long id = 100000000L;
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(delete("/api/spots/%s".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResCode.F_02_05_01.getStatus().name()))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value(ResCode.F_02_05_01.getCode()))
+                .andExpect(jsonPath("message").value(ResCode.F_02_05_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(id.toString()))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
 }
