@@ -3,6 +3,7 @@ package com.cojar.whats_hot_backend.domain.spot_module.spot.service;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
+import com.cojar.whats_hot_backend.domain.base_module.hashtag.entity.Hashtag;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.category.repository.CategoryRepository;
@@ -20,10 +21,12 @@ import com.cojar.whats_hot_backend.global.response.DataModel;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -147,11 +150,12 @@ public class SpotService {
                 .orElse(null);
     }
 
-    public Page<DataModel> getSpotList(int page, int size) {
+    public Page<DataModel> getSpotList(int page, int size, String kw) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
+        Specification<Spot> spec = search(kw);
 
-        return this.spotRepository.findAll(pageable)
+        return this.spotRepository.findAll(spec, pageable)
                 .map(spot -> {
                     DataModel dataModel = DataModel.of(
                             SpotListDto.of(spot),
@@ -160,6 +164,24 @@ public class SpotService {
                     return dataModel;
                 });
     }
+
+
+    private Specification<Spot> search(String kw) {
+        return new Specification<>() {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public Predicate toPredicate(Root<Spot> s, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                query.distinct(true);  // 중복을 제거
+                Join<Spot, Hashtag> h = s.join("hashtags", JoinType.LEFT);
+                Join<Spot, Category> c = s.join("category", JoinType.LEFT);
+                return cb.or(cb.like(s.get("name"), "%" + kw + "%"), // 장소이름
+                        cb.like(h.get("name"), "%" + kw + "%"),      // 해쉬태그
+                        cb.like(c.get("name"), "%" + kw + "%"));   // 카테고리
+                // 내추럴 쿼리 ,
+            }
+        };
+    }
+
 
     @Transactional
     public Spot update(Long id, SpotRequest.UpdateSpot request, List<MultipartFile> images, Errors errors) {
@@ -311,4 +333,21 @@ public class SpotService {
                 .reviews(reviews)
                 .build();
     }
+
+    public ResData getSpotValidate(Long spotid){
+        Errors errors = new BeanPropertyBindingResult(null,"spot");
+
+        errors.reject("not exist", new Object[]{spotid}, "Spot that has id does not exist");
+        if (!this.spotRepository.existsById(spotid)) {
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_04_01,
+                            errors
+                    )
+            );
+        }
+        return null;
+    }
+
 }
