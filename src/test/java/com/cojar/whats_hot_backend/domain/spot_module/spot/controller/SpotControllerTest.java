@@ -34,11 +34,14 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.config.http.MatcherType.mvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+
 
 class SpotControllerTest extends BaseControllerTest {
 
@@ -1644,4 +1647,73 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.index").exists())
         ;
     }
+
+
+    @Test
+    @DisplayName("GET:api/Spots/{id} - ok, S-02-03")
+    void getSpot_ok() throws Exception {
+
+        //given
+        Long id = 1L;
+
+
+        // When
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.GET, "/api/spots/%s".formatted(id))
+                        .contentType(MediaType.ALL_VALUE)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // Then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(ResCode.S_02_03.getStatus().name()))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value(ResCode.S_02_03.getCode()))
+                .andExpect(jsonPath("message").value(ResCode.S_02_03.getMessage()))
+                .andExpect(jsonPath("data.id").value(1))
+                .andExpect(jsonPath("data.name").exists())
+                .andExpect(jsonPath("data.category").exists())
+                .andExpect(jsonPath("data.address").exists())
+                .andExpect(jsonPath("data.contact").exists())
+                .andExpect(jsonPath("data.averageScore").exists())
+                .andExpect(jsonPath("data.hashtags").exists())
+                .andExpect(jsonPath("data.reviews").exists());
+
+    }
+
+    @Test
+    @DisplayName("GET:api/spots/{id} - bad request not exist, F-02-04-01")
+    void getSpot_BadRequest_Spot_NotExist() throws Exception {
+
+        // given
+        Long id = 1000000L;
+
+        // when
+        ResultActions resultActions = mockMvc
+                .perform(multipart(HttpMethod.GET, "/api/spots/%s".formatted(id))
+                        .contentType(MediaType.ALL_VALUE)
+                        .accept(MediaTypes.HAL_JSON)
+
+                )
+                .andDo(print());
+
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResCode.F_02_04_01.getStatus().name()))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value(ResCode.F_02_04_01.getCode()))
+                .andExpect(jsonPath("message").value(ResCode.F_02_04_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(id.toString()))
+                .andExpect(jsonPath("_links.index").exists());
+
+    }
+
+
 }
