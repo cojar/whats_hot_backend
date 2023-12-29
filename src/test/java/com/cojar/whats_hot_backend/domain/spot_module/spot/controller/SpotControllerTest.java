@@ -1677,4 +1677,31 @@ class SpotControllerTest extends BaseControllerTest {
 
     }
 
+    @Test
+    @DisplayName("GET /spot/3")
+    void getSpot_BadRequest_Spot_NotExist() throws Exception {
+
+        // given
+
+
+        // when
+        ResultActions resultActions = mockMvc
+                .perform(
+                        get("/api/spots/23")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaTypes.HAL_JSON)
+
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-02-04-01"))
+                .andExpect(jsonPath("message").exists());
+    }
+
+
 }
