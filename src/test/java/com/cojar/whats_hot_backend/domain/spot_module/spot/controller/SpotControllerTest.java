@@ -1682,7 +1682,7 @@ class SpotControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("GET:api/spots/{id} - bad request not id, F-02-04-01")
+    @DisplayName("GET:api/spots/{id} - bad request not exist, F-02-04-01")
     void getSpot_BadRequest_Spot_NotExist() throws Exception {
 
         // given
