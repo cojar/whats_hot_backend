@@ -121,7 +121,9 @@ public class SpotController {
 
     @SpotApiResponse.Delete
     @DeleteMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity delete(@PathVariable(value = "id") Long id) {
+    public ResponseEntity deleteSpot(@PathVariable(value = "id") Long id) {
+
+        this.spotService.delete(id);
 
         ResData resData = ResData.of(
                 ResCode.S_02_05,

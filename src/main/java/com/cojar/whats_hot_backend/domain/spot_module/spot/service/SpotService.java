@@ -26,10 +26,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -259,6 +261,39 @@ public class SpotService {
             throw new ApiResponseException(
                     ResData.of(
                             ResCode.F_02_04_05,
+                            errors
+                    )
+            );
+        }
+    }
+
+    @Transactional
+    public void delete(Long id) {
+
+        // id 에러 걸러짐
+        this.deletetValidate(id);
+
+        // 검증 이후이므로 null 아님
+        Spot spot = this.getSpotById(id);
+
+        List<_File> files = spot.getImages().stream()
+                .map(image -> image.getImage())
+                .collect(Collectors.toList());
+        this.fileService.deleteFile(files);
+
+        this.spotRepository.delete(spot);
+    }
+
+    private void deletetValidate(Long id) {
+
+        Errors errors = new BeanPropertyBindingResult(null, "request");
+
+        if (!this.spotRepository.existsById(id)) {
+            errors.reject("not exist", new Object[]{id}, "spot that has id does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_05_01,
                             errors
                     )
             );
