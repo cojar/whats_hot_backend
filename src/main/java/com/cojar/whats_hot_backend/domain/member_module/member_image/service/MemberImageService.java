@@ -15,6 +15,10 @@ public class MemberImageService {
 
     private final MemberImageRepository memberImageRepository;
 
+    public long count() {
+        return this.memberImageRepository.count();
+    }
+
     @Transactional
     public MemberImage create(_File file, Member member) {
 

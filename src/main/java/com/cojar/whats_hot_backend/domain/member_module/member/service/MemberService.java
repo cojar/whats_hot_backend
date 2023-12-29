@@ -7,7 +7,6 @@ import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.MemberRole;
 import com.cojar.whats_hot_backend.domain.member_module.member.repository.MemberRepository;
 import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
-import com.cojar.whats_hot_backend.domain.member_module.member_image.entity.MemberImage;
 import com.cojar.whats_hot_backend.domain.member_module.member_image.service.MemberImageService;
 import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.jwt.JwtProvider;
@@ -39,6 +38,10 @@ public class MemberService {
 
     public boolean hasNoMember() {
         return this.memberRepository.count() == 0;
+    }
+
+    public long count() {
+        return this.memberRepository.count();
     }
 
     @Transactional
@@ -123,6 +126,11 @@ public class MemberService {
         }
     }
 
+    public Member getUserById(Long id) {
+        return this.memberRepository.findById(id)
+                .orElse(null);
+    }
+
     public Member getUserByUsername(String username) {
         return this.memberRepository.findByUsername(username)
                 .orElse(null);
@@ -192,18 +200,6 @@ public class MemberService {
                 .build();
 
         this.memberRepository.save(member);
-    }
-
-    @Transactional
-    public Member updateProfileImage(Member member, MemberImage profileImage) {
-
-        member = member.toBuilder()
-                .profileImage(profileImage)
-                .build();
-
-        this.memberRepository.save(member);
-
-        return member;
     }
 
     public ResData updatePasswordValidate(MemberRequest.UpdatePassword request, Member member, Errors errors) {

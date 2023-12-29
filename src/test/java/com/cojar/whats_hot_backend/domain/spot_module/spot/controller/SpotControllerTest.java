@@ -1607,7 +1607,7 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.profile").exists())
         ;
 
-        assertThat(this.spotService.getSpotById(id) == null).isTrue();
+        assertThat(this.spotService.getSpotById(id)).isNull();
     }
 
     @Test

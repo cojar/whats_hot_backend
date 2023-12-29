@@ -12,6 +12,7 @@
 
 ### feature/post-api-members
 - [x] 생성 로직 수정 및 S-01-01 TC 점검
+- [x] 생성 TC 중 Bad Request 부분에서 엔티티 미생성 확인 추가
 
 ## 23-12-28
 ### feature/patch-api-spots-id
