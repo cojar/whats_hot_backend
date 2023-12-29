@@ -43,6 +43,9 @@ public enum ResCode {
     S_04_05(HttpStatus.OK, "S-04-05", "댓글 삭제가 완료되었습니다"),
     S_04_06(HttpStatus.OK, "S-04-06", "댓글 좋아요 상태가 변경되었습니다"),
 
+    // category controller success codes
+    S_05_01(HttpStatus.CREATED, "S-05-01", "카테고리 등록이 완료되었습니다"),
+
     // file service fail codes
     F_00_00_01(HttpStatus.BAD_REQUEST, "F-00-00-01", "이미지 형식만 업로드할 수 있습니다"),
     F_00_00_02(HttpStatus.BAD_REQUEST, "F-00-00-02", "JPG, JPEG, PNG 확장자만 업로드할 수 있습니다"),
