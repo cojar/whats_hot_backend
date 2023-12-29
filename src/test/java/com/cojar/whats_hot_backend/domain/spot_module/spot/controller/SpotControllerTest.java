@@ -34,11 +34,14 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.config.http.MatcherType.mvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+
 
 class SpotControllerTest extends BaseControllerTest {
 
@@ -1644,4 +1647,34 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.index").exists())
         ;
     }
+
+
+    @Test
+    @DisplayName("GET /Spot/1")
+    void getSpot_ok() throws Exception {
+        // When
+        ResultActions resultActions = this.mockMvc
+                .perform(
+                        get("/api/spots/1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print());
+
+        // Then
+        resultActions
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-02-03"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data.id").value(1))
+                .andExpect(jsonPath("data.name").exists())
+                .andExpect(jsonPath("data.category").exists())
+                .andExpect(jsonPath("data.address").exists())
+                .andExpect(jsonPath("data.contact").exists())
+                .andExpect(jsonPath("data.averageScore").exists())
+                .andExpect(jsonPath("data.hashtags").exists())
+                .andExpect(jsonPath("data.reviews").exists());
+
+    }
+
 }
