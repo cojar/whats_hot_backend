@@ -1650,7 +1650,7 @@ class SpotControllerTest extends BaseControllerTest {
 
 
     @Test
-    @DisplayName("GET:api/Spots/{id} - detail, S-02-03")
+    @DisplayName("GET:api/Spots/{id} - ok, S-02-03")
     void getSpot_ok() throws Exception {
 
         //given
@@ -1660,8 +1660,8 @@ class SpotControllerTest extends BaseControllerTest {
         // When
         ResultActions resultActions = this.mockMvc
                 .perform(multipart(HttpMethod.GET, "/api/spots/%s".formatted(id))
-                                .contentType(MediaType.ALL_VALUE)
-                                .accept(MediaTypes.HAL_JSON)
+                        .contentType(MediaType.ALL_VALUE)
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -1688,13 +1688,13 @@ class SpotControllerTest extends BaseControllerTest {
     void getSpot_BadRequest_Spot_NotExist() throws Exception {
 
         // given
-        Long id = 9L;
+        Long id = 1000000L;
 
         // when
         ResultActions resultActions = mockMvc
                 .perform(multipart(HttpMethod.GET, "/api/spots/%s".formatted(id))
-                                .contentType(MediaType.ALL_VALUE)
-                                .accept(MediaTypes.HAL_JSON)
+                        .contentType(MediaType.ALL_VALUE)
+                        .accept(MediaTypes.HAL_JSON)
 
                 )
                 .andDo(print());
