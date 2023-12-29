@@ -27,6 +27,7 @@
 - [x] 생성 로직 수정 및 S-01-01 TC 점검
 - [x] 생성 TC 중 Bad Request 부분에서 엔티티 미생성 확인 추가
 - [x] InitConfig 가동용 static resource 추가
+- [x] 머지 후 conflict 수정
 
 ## 23-12-28
 ### feature/patch-api-spots-id
