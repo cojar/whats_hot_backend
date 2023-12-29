@@ -271,7 +271,7 @@ public class SpotService {
     public void delete(Long id) {
 
         // id 에러 걸러짐
-        this.deletetValidate(id);
+        this.deleteValidate(id);
 
         // 검증 이후이므로 null 아님
         Spot spot = this.getSpotById(id);
@@ -284,7 +284,7 @@ public class SpotService {
         this.spotRepository.delete(spot);
     }
 
-    private void deletetValidate(Long id) {
+    private void deleteValidate(Long id) {
 
         Errors errors = new BeanPropertyBindingResult(null, "request");
 

@@ -3,8 +3,6 @@ package com.cojar.whats_hot_backend.domain.base_module.file.service;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.repository.FileRepository;
-import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
-import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
@@ -37,29 +35,37 @@ public class FileService {
 
     private final FileRepository fileRepository;
 
-    @Transactional
-    public _File create(Spot spot) {
-
-        _File saveFile = _File.builder()
-                .build();
-
-        this.fileRepository.save(saveFile);
-
-        return saveFile;
+    public long count() {
+        return this.fileRepository.count();
     }
 
     @Transactional
-    public _File create(Review review) {
+    public _File createUnit(MultipartFile _file, FileDomain fileDomain) {
 
-        _File saveFile = _File.builder()
-                .build();
+        if (_file == null) return null;
 
-        this.fileRepository.save(saveFile);
+        _File file = this.create(_file, fileDomain);
 
-        return saveFile;
+        this.fileRepository.save(file);
+
+        return file;
     }
 
-    public _File create(MultipartFile _file, FileDomain domain) {
+    @Transactional
+    public List<_File> createAll(List<MultipartFile> _files, FileDomain fileDomain) {
+
+        if (_files == null) return null;
+
+        List<_File> files = _files.stream()
+                .map(file -> this.create(file, fileDomain))
+                .collect(Collectors.toList());
+
+        this.fileRepository.saveAll(files);
+
+        return files;
+    }
+
+    private _File create(MultipartFile _file, FileDomain domain) {
 
         Map<String, Object> fileBits = this.getFileBits(_file);
         String uuid = UUID.randomUUID().toString();
@@ -165,26 +171,8 @@ public class FileService {
     }
 
     @Transactional
-    public List<_File> createAll(List<MultipartFile> images, FileDomain fileDomain) {
-
-        if (images == null) return null;
-
-        List<_File> files = images.stream()
-                .map(image -> this.create(image, fileDomain))
-                .collect(Collectors.toList());
-
-        this.fileRepository.saveAll(files);
-
-        return files;
-    }
-
-    @Transactional
     public void saveAll(List<_File> files) {
         if (files != null) this.fileRepository.saveAll(files);
-    }
-
-    public long count() {
-        return this.fileRepository.count();
     }
 
     public void deleteFile(List<_File> files) {

@@ -10,6 +10,9 @@
 - [x] S-02-05 TC 추가
 - [x] F-02-05-01 TC 추가
 
+### feature/post-api-members
+- [x] 생성 로직 수정 및 S-01-01 TC 점검
+
 ## 23-12-28
 ### feature/patch-api-spots-id
 - [x] 수정 로직 수정

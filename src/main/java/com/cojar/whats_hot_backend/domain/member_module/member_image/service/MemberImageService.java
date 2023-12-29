@@ -16,11 +16,13 @@ public class MemberImageService {
     private final MemberImageRepository memberImageRepository;
 
     @Transactional
-    public MemberImage create(Member member, _File image) {
+    public MemberImage create(_File file, Member member) {
+
+        if (file == null) return null;
 
         MemberImage memberImage = MemberImage.builder()
                 .member(member)
-                .image(image)
+                .image(file)
                 .build();
 
         this.memberImageRepository.save(memberImage);
