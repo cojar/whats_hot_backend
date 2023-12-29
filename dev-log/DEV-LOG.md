@@ -1,6 +1,9 @@
 # What's Hot Dev-Log
 
 ## 23-12-29
+### feature/post-api-categories
+- [x] 맛집, 여행지, 숙박 대/중/소분류로 나누어 카테고리 편성
+
 ### feature/get-api-spots-id
 - [x] get spot detail 작성
 - [x] S-02-03 TC 추가
