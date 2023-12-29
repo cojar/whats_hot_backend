@@ -34,13 +34,11 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.security.config.http.MatcherType.mvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 
 class SpotControllerTest extends BaseControllerTest {
@@ -1610,7 +1608,7 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.profile").exists())
         ;
 
-        assertThat(this.spotService.getSpotById(id) == null).isTrue();
+        assertThat(this.spotService.getSpotById(id)).isNull();
     }
 
     @Test
@@ -1650,12 +1648,11 @@ class SpotControllerTest extends BaseControllerTest {
 
 
     @Test
-    @DisplayName("GET:api/Spots/{id} - ok, S-02-03")
-    void getSpot_ok() throws Exception {
+    @DisplayName("get:api/Spots/{id} - ok, S-02-03")
+    void getSpot_OK() throws Exception {
 
         //given
         Long id = 1L;
-
 
         // When
         ResultActions resultActions = this.mockMvc
@@ -1680,12 +1677,11 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data.averageScore").exists())
                 .andExpect(jsonPath("data.hashtags").exists())
                 .andExpect(jsonPath("data.reviews").exists());
-
     }
 
     @Test
-    @DisplayName("GET:api/spots/{id} - bad request not exist, F-02-04-01")
-    void getSpot_BadRequest_Spot_NotExist() throws Exception {
+    @DisplayName("get:api/spots/{id} - bad request not exist, F-02-04-01")
+    void getSpot_BadRequest_NotExist() throws Exception {
 
         // given
         Long id = 1000000L;
@@ -1699,7 +1695,6 @@ class SpotControllerTest extends BaseControllerTest {
                 )
                 .andDo(print());
 
-
         // then
         resultActions
                 .andExpect(status().isBadRequest())
@@ -1712,8 +1707,5 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
                 .andExpect(jsonPath("data[0].rejectedValue[0]").value(id.toString()))
                 .andExpect(jsonPath("_links.index").exists());
-
     }
-
-
 }

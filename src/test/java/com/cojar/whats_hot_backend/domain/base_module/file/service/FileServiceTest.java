@@ -152,7 +152,7 @@ class FileServiceTest {
         );
 
         // when
-        _File file = this.fileService.create(_file, FileDomain.MEMBER);
+        _File file = this.fileService.createUnit(_file, FileDomain.MEMBER);
 
         // then
         assertThat(file).isNotNull();

@@ -1,19 +1,24 @@
 package com.cojar.whats_hot_backend.domain.member_module.member.service;
 
+import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
+import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
+import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.MemberRole;
 import com.cojar.whats_hot_backend.domain.member_module.member.repository.MemberRepository;
 import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
-import com.cojar.whats_hot_backend.domain.member_module.member_image.entity.MemberImage;
+import com.cojar.whats_hot_backend.domain.member_module.member_image.service.MemberImageService;
 import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.jwt.JwtProvider;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -26,8 +31,17 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
+    private final FileService fileService;
+    private final MemberImageService memberImageService;
+
+    private final EntityManager entityManager;
+
     public boolean hasNoMember() {
         return this.memberRepository.count() == 0;
+    }
+
+    public long count() {
+        return this.memberRepository.count();
     }
 
     @Transactional
@@ -36,19 +50,34 @@ public class MemberService {
         return this.memberRepository.save(member);
     }
 
-    public Member signup(MemberRequest.Signup request, List<MemberRole> authorities) {
+    @Transactional
+    public Member signup(MemberRequest.Signup request, MultipartFile profileImage, boolean isAdmin, Errors errors) {
+
+        // request 에러 검증
+        this.signupValidate(request, errors);
+
+        // profileImage 에러 검증
+        this.fileService.validateUnit(profileImage);
 
         Member member = Member.builder()
                 .username(request.getUsername())
                 .password(this.passwordEncoder.encode(request.getPassword()))
                 .email(request.getEmail())
-                .authorities(authorities)
+                .authorities(isAdmin ? List.of(MemberRole.ADMIN, MemberRole.USER) : List.of(MemberRole.USER))
                 .build();
+
+        this.memberRepository.save(member);
+
+        // images 생성
+        _File file = this.fileService.createUnit(profileImage, FileDomain.MEMBER);
+        this.memberImageService.create(file, member);
+
+        entityManager.refresh(member);
 
         return member;
     }
 
-    public ResData signupValidate(MemberRequest.Signup request, Errors errors) {
+    private void signupValidate(MemberRequest.Signup request, Errors errors) {
 
         if (errors.hasErrors()) {
 
@@ -95,8 +124,11 @@ public class MemberService {
                     )
             );
         }
+    }
 
-        return null;
+    public Member getUserById(Long id) {
+        return this.memberRepository.findById(id)
+                .orElse(null);
     }
 
     public Member getUserByUsername(String username) {
@@ -168,18 +200,6 @@ public class MemberService {
                 .build();
 
         this.memberRepository.save(member);
-    }
-
-    @Transactional
-    public Member updateProfileImage(Member member, MemberImage profileImage) {
-
-        member = member.toBuilder()
-                .profileImage(profileImage)
-                .build();
-
-        this.memberRepository.save(member);
-
-        return member;
     }
 
     public ResData updatePasswordValidate(MemberRequest.UpdatePassword request, Member member, Errors errors) {

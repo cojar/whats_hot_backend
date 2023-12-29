@@ -1,21 +1,26 @@
 package com.cojar.whats_hot_backend.domain.member_module.member.controller;
 
+import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
+import com.cojar.whats_hot_backend.domain.member_module.member_image.service.MemberImageService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +31,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class MemberControllerTest extends BaseControllerTest {
 
+    @Autowired
+    private MemberImageService memberImageService;
+
+    @Autowired
+    private FileService fileService;
+
+    @Transactional
     @Test
     @DisplayName("post:/api/members - created, S-01-01")
     public void signup_Created() throws Exception {
@@ -96,6 +108,8 @@ class MemberControllerTest extends BaseControllerTest {
                                            String email) throws Exception {
 
         // given
+        List<Long> checkList = getCheckListNotCreated();
+
         MemberRequest.Signup request = MemberRequest.Signup.builder()
                 .username(username)
                 .password(password)
@@ -142,6 +156,8 @@ class MemberControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
                 .andExpect(jsonPath("data[0].rejectedValue").value(""))
         ;
+
+        checkNotCreated(checkList);
     }
 
     private static Stream<Arguments> argsFor_signup_BadRequest_NotBlank() {
@@ -158,12 +174,12 @@ class MemberControllerTest extends BaseControllerTest {
     public void signup_BadRequest_PasswordNotMatched() throws Exception {
 
         // given
+        List<Long> checkList = getCheckListNotCreated();
+
         String username = "tester";
         String password = "1234";
         String passwordConfirm = "1235";
         String email = "tester@test.io";
-
-        // given
         MemberRequest.Signup request = MemberRequest.Signup.builder()
                 .username(username)
                 .password(password)
@@ -210,6 +226,8 @@ class MemberControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
                 .andExpect(jsonPath("data[0].rejectedValue").value(passwordConfirm))
         ;
+
+        checkNotCreated(checkList);
     }
 
     @Test
@@ -217,12 +235,12 @@ class MemberControllerTest extends BaseControllerTest {
     public void signup_BadRequest_UsernameUniqueViolation() throws Exception {
 
         // given
+        List<Long> checkList = getCheckListNotCreated();
+
         String username = "user1";
         String password = "1234";
         String passwordConfirm = "1234";
         String email = "tester@test.io";
-
-        // given
         MemberRequest.Signup request = MemberRequest.Signup.builder()
                 .username(username)
                 .password(password)
@@ -269,6 +287,8 @@ class MemberControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
                 .andExpect(jsonPath("data[0].rejectedValue").value(username))
         ;
+
+        checkNotCreated(checkList);
     }
 
     @Test
@@ -276,12 +296,12 @@ class MemberControllerTest extends BaseControllerTest {
     public void signup_BadRequest_EmailUniqueViolation() throws Exception {
 
         // given
+        List<Long> checkList = getCheckListNotCreated();
+
         String username = "tester";
         String password = "1234";
         String passwordConfirm = "1234";
         String email = "user1@test.com";
-
-        // given
         MemberRequest.Signup request = MemberRequest.Signup.builder()
                 .username(username)
                 .password(password)
@@ -328,6 +348,8 @@ class MemberControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
                 .andExpect(jsonPath("data[0].rejectedValue").value(email))
         ;
+
+        checkNotCreated(checkList);
     }
 
     @Test
@@ -335,6 +357,8 @@ class MemberControllerTest extends BaseControllerTest {
     public void signup_BadRequest_ContentType() throws Exception {
 
         // given
+        List<Long> checkList = getCheckListNotCreated();
+
         String username = "tester";
         String password = "1234";
         String passwordConfirm = "1234";
@@ -387,7 +411,7 @@ class MemberControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.index").exists())
         ;
 
-        assertThat(this.memberService.getUserByUsername(username)).isNull();
+        checkNotCreated(checkList);
     }
 
     @Test
@@ -395,6 +419,8 @@ class MemberControllerTest extends BaseControllerTest {
     public void signup_BadRequest_Extension() throws Exception {
 
         // given
+        List<Long> checkList = getCheckListNotCreated();
+
         String username = "tester";
         String password = "1234";
         String passwordConfirm = "1234";
@@ -447,7 +473,22 @@ class MemberControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.index").exists())
         ;
 
-        assertThat(this.memberService.getUserByUsername(username)).isNull();
+        checkNotCreated(checkList);
+    }
+
+    private List<Long> getCheckListNotCreated() {
+        return List.of(
+                this.memberService.count() + 1,
+                this.memberImageService.count(),
+                this.fileService.count()
+        );
+    }
+
+    private void checkNotCreated(List<Long> checkList) {
+        int i = 0;
+        assertThat(this.memberService.getUserById(checkList.get(i++))).isNull();
+        assertThat(this.memberImageService.count()).isEqualTo(checkList.get(i++));
+        assertThat(this.fileService.count()).isEqualTo(checkList.get(i));
     }
 
     @Test

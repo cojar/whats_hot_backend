@@ -1,12 +1,10 @@
 package com.cojar.whats_hot_backend.global.util;
 
-import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.base_module.hashtag.service.HashtagService;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.entity.Comment;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.service.CommentService;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
-import com.cojar.whats_hot_backend.domain.member_module.member.entity.MemberRole;
 import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
@@ -66,19 +64,52 @@ public class InitConfig {
                     MemberRequest.Signup.builder()
                             .username("admin")
                             .password("1234")
+                            .passwordConfirm("1234")
                             .email("admin@test.com")
                             .build(),
-                    List.of(MemberRole.ADMIN, MemberRole.USER));
-            this.memberService.save(admin);
+                    new MockMultipartFile(
+                            "profileImage",
+                            "test.png",
+                            AppConfig.getMediaType("test.png"),
+                            this.resourceLoader.getResource("classpath:/static/image/%s".formatted("test.png")).getInputStream()
+                    ),
+                    true,
+                    new BeanPropertyBindingResult(null, "request")
+            );
 
             Member user1 = this.memberService.signup(
                     MemberRequest.Signup.builder()
                             .username("user1")
                             .password("1234")
+                            .passwordConfirm("1234")
                             .email("user1@test.com")
                             .build(),
-                    List.of(MemberRole.USER));
-            this.memberService.save(user1);
+                    new MockMultipartFile(
+                            "profileImage",
+                            "test.png",
+                            AppConfig.getMediaType("test.png"),
+                            this.resourceLoader.getResource("classpath:/static/image/%s".formatted("test.png")).getInputStream()
+                    ),
+                    false,
+                    new BeanPropertyBindingResult(null, "request")
+            );
+
+            Member user2 = this.memberService.signup(
+                    MemberRequest.Signup.builder()
+                            .username("user2")
+                            .password("1234")
+                            .passwordConfirm("1234")
+                            .email("user2@test.com")
+                            .build(),
+                    new MockMultipartFile(
+                            "profileImage",
+                            "test.png",
+                            AppConfig.getMediaType("test.png"),
+                            this.resourceLoader.getResource("classpath:/static/image/%s".formatted("test.png")).getInputStream()
+                    ),
+                    false,
+                    new BeanPropertyBindingResult(null, "request")
+            );
 
             // category init data
             Category category1 = this.categoryService.create("맛집", 1, -1L);
@@ -147,9 +178,7 @@ public class InitConfig {
 
             // review init data
             Review review1 = this.reviewService.create(user1, spot1, LocalDateTime.now(), "리뷰제목1", "리뷰내용1", 4.5, ReviewStatus.PUBLIC);
-            _File image10 = this.fileService.create(review1);
             Review review2 = this.reviewService.create(user1, spot1, LocalDateTime.now(), "리뷰제목2", "리뷰내용2", 4.5, ReviewStatus.PUBLIC);
-            _File image11 = this.fileService.create(review2);
 
             // comment init data
             Comment comment1 = this.commentService.create(user1, review1, "댓글내용1", null);

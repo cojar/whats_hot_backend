@@ -1,18 +1,14 @@
 package com.cojar.whats_hot_backend.domain.member_module.member.controller;
 
-import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
-import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.base_module.mail.service.MailService;
 import com.cojar.whats_hot_backend.domain.index_module.index.controller.IndexController;
 import com.cojar.whats_hot_backend.domain.member_module.member.api_response.MemberApiResponse;
 import com.cojar.whats_hot_backend.domain.member_module.member.dto.MemberDto;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
-import com.cojar.whats_hot_backend.domain.member_module.member.entity.MemberRole;
 import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
 import com.cojar.whats_hot_backend.domain.member_module.member.response.MemberResponse;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
-import com.cojar.whats_hot_backend.domain.member_module.member_image.entity.MemberImage;
 import com.cojar.whats_hot_backend.domain.member_module.member_image.service.MemberImageService;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
@@ -30,8 +26,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -51,22 +45,9 @@ public class MemberController {
     public ResponseEntity signup(@Valid @RequestPart(value = "request") MemberRequest.Signup request, Errors errors,
                                  @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
 
-        ResData resData = this.memberService.signupValidate(request, errors);
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
+        Member member = this.memberService.signup(request, profileImage, false, errors);
 
-        Member member = this.memberService.signup(request, List.of(MemberRole.USER));
-
-        if (profileImage != null) {
-            resData = this.fileService.validateUnit(profileImage);
-            if (resData != null) return ResponseEntity.badRequest().body(resData);
-            _File file = this.fileService.create(profileImage, FileDomain.MEMBER);
-            MemberImage _profileImage = this.memberImageService.create(member, file);
-            member.updateProfileImage(_profileImage);
-        }
-
-        member = this.memberService.save(member);
-
-        resData = ResData.of(
+        ResData resData = ResData.of(
                 ResCode.S_01_01,
                 MemberDto.of(member),
                 linkTo(this.getClass()).slash("login")
