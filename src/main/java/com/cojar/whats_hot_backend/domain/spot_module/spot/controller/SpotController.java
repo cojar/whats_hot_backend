@@ -67,14 +67,16 @@ public class SpotController {
     @SpotApiResponse.List
     @GetMapping(consumes = MediaType.ALL_VALUE)
     public ResponseEntity list(@RequestParam(value = "page", defaultValue = "1") int page,
-                               @RequestParam(value = "size", defaultValue = "2") int size) {
+                               @RequestParam(value = "size", defaultValue = "2") int size,
+                               @RequestParam(value = "kw", defaultValue = "") String kw) {
 
-        Page<DataModel> spotList = this.spotService.getSpotList(page, size);
+        Page<DataModel> spotList = this.spotService.getSpotList(page, size, kw);
+
 
         ResData resData = ResData.of(
                 ResCode.S_02_02,
                 PagedDataModel.of(spotList),
-                linkTo(this.getClass()).slash("?page=%s&size=%s".formatted(page, size))
+                linkTo(this.getClass()).slash("?page=%s&size=%s&kw=%s".formatted(page, size, kw))
         );
 
         // TODO: paged links with query; custom method
@@ -87,9 +89,14 @@ public class SpotController {
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity detail(@PathVariable(value = "id") Long id) {
 
+        ResData resData = this.spotService.getSpotValidate(id);
+
+        if (resData != null) return ResponseEntity.badRequest().body(resData);
+
         Spot spot = this.spotService.getSpotById(id);
 
-        ResData resData = ResData.of(
+
+        resData = ResData.of(
                 ResCode.S_02_03,
                 SpotDto.of(spot),
                 linkTo(this.getClass()).slash(spot.getId())
