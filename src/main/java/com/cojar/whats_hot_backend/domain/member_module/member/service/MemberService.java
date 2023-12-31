@@ -209,6 +209,31 @@ public class MemberService {
         this.memberRepository.save(member);
     }
 
+    @Transactional
+    public void updatePassword(Member member, String password) {
+
+        member = member.toBuilder()
+                .password(password)
+                .build();
+
+        this.memberRepository.save(member);
+    }
+
+    @Transactional
+    public void updatePassword(MemberRequest.UpdatePassword request, User user, Errors errors) {
+
+        Member member = this.getUserByUsername(user.getUsername());
+
+        // request 검증
+        this.updatePasswordValidate(request, member, errors);
+
+        member = member.toBuilder()
+                .password(this.passwordEncoder.encode(request.getNewPassword()))
+                .build();
+
+        this.memberRepository.save(member);
+    }
+
     public ResData updatePasswordValidate(MemberRequest.UpdatePassword request, Member member, Errors errors) {
 
         if (errors.hasErrors()) {
@@ -246,16 +271,6 @@ public class MemberService {
         }
 
         return null;
-    }
-
-    @Transactional
-    public void updatePassword(MemberRequest.UpdatePassword request, Member member) {
-
-        member = member.toBuilder()
-                .password(this.passwordEncoder.encode(request.getNewPassword()))
-                .build();
-
-        this.memberRepository.save(member);
     }
 
     public ResData findUsernameValidate(MemberRequest.FindUsername request, Errors errors) {
@@ -325,15 +340,5 @@ public class MemberService {
     public Member getUserByUsernameAndEmail(MemberRequest.FindPassword request) {
         return this.memberRepository.findByUsernameAndEmail(request.getUsername(), request.getEmail())
                 .orElse(null);
-    }
-
-    @Transactional
-    public void updatePassword(Member member, String password) {
-
-        member = member.toBuilder()
-                .password(password)
-                .build();
-
-        this.memberRepository.save(member);
     }
 }
