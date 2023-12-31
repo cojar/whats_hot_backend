@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
 @Getter
 public class MemberRequest {
@@ -31,7 +30,9 @@ public class MemberRequest {
     }
 
     @Getter
-    @Component
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class Login {
 
         @Schema(example = "user1")
@@ -42,11 +43,8 @@ public class MemberRequest {
         @NotBlank
         private String password;
 
-        public Login of(String username, String password) {
-            this.username = username;
-            this.password = password;
-
-            return this;
+        public static Login of(String username, String password) {
+            return new Login(username, password);
         }
     }
 

@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 23-12-31
+### feature/member_module-member
+- [x] login 로직 수정 및 로그인이 필요한 모든 TC 점검
+
 ## 23-12-29
 ### feature/get-api-spots-id
 - [x] get spot detail 작성

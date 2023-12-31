@@ -1,5 +1,6 @@
 package com.cojar.whats_hot_backend.domain.review_module.review.controller;
 
+import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.ReviewStatus;
 import com.cojar.whats_hot_backend.domain.review_module.review.request.ReviewRequest;
 import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.validation.BeanPropertyBindingResult;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -46,7 +48,11 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long spotId = 1L;
         Integer year = 2023, month = 12, day = 25;
@@ -136,7 +142,11 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long spotId = 1L;
         Integer year = 2023, month = 12, day = 25;
@@ -228,7 +238,11 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long spotId = 1L;
         Integer year = 2023, month = 12, day = 25;
@@ -315,7 +329,11 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long spotId = 1L;
         Integer year = 2023, month = 12, day = 25;
@@ -394,7 +412,11 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         ReviewRequest.CreateReview request = ReviewRequest.CreateReview.builder()
                 .spotId(spotId)
@@ -462,7 +484,11 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long spotId = 1000000000L;
         int year = 2023, month = 12, day = 25;
@@ -538,7 +564,11 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long spotId = 1L;
         Integer year = 2023, month = 12, day = 25;
@@ -606,7 +636,11 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long spotId = 1L;
         Integer year = 2023, month = 12, day = 25;
@@ -674,7 +708,11 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long spotId = 1L;
         Integer year = 2023, month = 12, day = 25;

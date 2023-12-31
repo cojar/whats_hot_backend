@@ -1,6 +1,7 @@
 package com.cojar.whats_hot_backend.domain.spot_module.spot.controller;
 
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
+import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.category.service.CategoryService;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.dto.MenuItemDto;
@@ -28,6 +29,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -69,7 +71,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Category category = this.categoryService.getCategoryById(3L);
         String name = "쿠우쿠우 대전둔산점";
@@ -171,7 +177,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         List<Long> checkList = getCheckListNotCreated();
 
@@ -256,7 +266,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         List<Long> checkList = getCheckListNotCreated();
 
@@ -334,7 +348,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         List<Long> checkList = getCheckListNotCreated();
 
@@ -419,7 +437,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         List<Long> checkList = getCheckListNotCreated();
 
@@ -496,7 +518,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         List<Long> checkList = getCheckListNotCreated();
 
@@ -566,7 +592,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         List<Long> checkList = getCheckListNotCreated();
 
@@ -636,7 +666,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         List<Long> checkList = getCheckListNotCreated();
 
@@ -742,7 +776,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long id = 1L;
         Category category = this.categoryService.getCategoryById(4L);
@@ -861,7 +899,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long id = 1L;
         Spot spot = this.spotService.getSpotById(id);
@@ -953,7 +995,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long id = 1L;
         Category category = this.categoryService.getCategoryById(4L);
@@ -1031,7 +1077,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long id = 1L;
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
@@ -1095,7 +1145,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long id = 100000000L;
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
@@ -1140,7 +1194,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long id = 1L;
         Spot before = this.spotService.getSpotById(id);
@@ -1199,7 +1257,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long id = 1L;
         Long categoryId = 10000000L;
@@ -1251,7 +1313,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long id = 1L;
         Spot before = this.spotService.getSpotById(id);
@@ -1308,7 +1374,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long id = 1L;
         String name = "장소2";
@@ -1361,7 +1431,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long id = 1L;
         Spot before = this.spotService.getSpotById(id);
@@ -1420,7 +1494,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long id = 1L;
         Spot before = this.spotService.getSpotById(id);
@@ -1479,7 +1557,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long id = 1L;
         Spot before = this.spotService.getSpotById(id);
@@ -1584,7 +1666,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long id = 1L;
 
@@ -1618,7 +1704,11 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
 
         Long id = 100000000L;
 

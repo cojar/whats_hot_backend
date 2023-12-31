@@ -1,15 +1,14 @@
 package com.cojar.whats_hot_backend.domain.member_module.member.controller;
 
-import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.base_module.mail.service.MailService;
 import com.cojar.whats_hot_backend.domain.index_module.index.controller.IndexController;
 import com.cojar.whats_hot_backend.domain.member_module.member.api_response.MemberApiResponse;
 import com.cojar.whats_hot_backend.domain.member_module.member.dto.MemberDto;
+import com.cojar.whats_hot_backend.domain.member_module.member.dto.MemberLoginDto;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
 import com.cojar.whats_hot_backend.domain.member_module.member.response.MemberResponse;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
-import com.cojar.whats_hot_backend.domain.member_module.member_image.service.MemberImageService;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
@@ -36,8 +35,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 public class MemberController {
 
     private final MemberService memberService;
-    private final MemberImageService memberImageService;
-    private final FileService fileService;
     private final MailService mailService;
 
     @MemberApiResponse.Signup
@@ -59,16 +56,13 @@ public class MemberController {
 
     @MemberApiResponse.Login
     @PostMapping(value = "/login")
-    public ResponseEntity login(@Valid @RequestBody MemberRequest.Login loginReq, Errors errors) {
+    public ResponseEntity login(@Valid @RequestBody MemberRequest.Login request, Errors errors) {
 
-        ResData resData = this.memberService.loginValidate(loginReq, errors);
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
+        String accessToken = this.memberService.login(request, errors);
 
-        String accessToken = this.memberService.getAccessToken(loginReq);
-
-        resData = ResData.of(
+        ResData resData = ResData.of(
                 ResCode.S_01_02,
-                new MemberResponse.Login(accessToken),
+                MemberLoginDto.of(accessToken),
                 linkTo(IndexController.class).slash("/api/index")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/login").withRel("profile"));

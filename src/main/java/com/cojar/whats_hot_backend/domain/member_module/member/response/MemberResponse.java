@@ -9,13 +9,6 @@ public class MemberResponse {
 
     @Getter
     @AllArgsConstructor
-    public static class Login {
-
-        private final String accessToken;
-    }
-
-    @Getter
-    @AllArgsConstructor
     public static class Me {
 
         @JsonUnwrapped

@@ -136,7 +136,26 @@ public class MemberService {
                 .orElse(null);
     }
 
-    public ResData loginValidate(MemberRequest.Login loginReq, Errors errors) {
+    @Transactional
+    public String login(MemberRequest.Login request, Errors errors) {
+
+        // request 에러 검증
+        this.loginValidate(request, errors);
+
+        // 로그인 상태 변경
+        Member member = this.getUserByUsername(request.getUsername());
+
+        member = member.toBuilder()
+                .isLogout(false)
+                .build();
+
+        this.memberRepository.save(member);
+
+        // 토큰 생성 후 반환
+        return this.getAccessToken(member);
+    }
+
+    private void loginValidate(MemberRequest.Login request, Errors errors) {
 
         if (errors.hasErrors()) {
 
@@ -148,9 +167,7 @@ public class MemberService {
             );
         }
 
-        Member member = this.memberRepository.findByUsername(loginReq.getUsername())
-                .orElse(null);
-        if (member == null) {
+        if (!this.memberRepository.existsByUsername(request.getUsername())) {
 
             errors.rejectValue("username", "not exist", "member does not exist");
 
@@ -162,7 +179,7 @@ public class MemberService {
             );
         }
 
-        if (!this.passwordEncoder.matches(loginReq.getPassword(), member.getPassword())) {
+        if (!this.passwordEncoder.matches(request.getPassword(), this.getUserByUsername(request.getUsername()).getPassword())) {
 
             errors.rejectValue("password", "not matched", "password is not matched");
 
@@ -173,23 +190,10 @@ public class MemberService {
                     )
             );
         }
-
-        return null;
     }
 
-    @Transactional
-    public String getAccessToken(MemberRequest.Login loginReq) {
-
-        Member member = this.memberRepository.findByUsername(loginReq.getUsername())
-                .orElse(null);
-
-        member = member.toBuilder()
-                .isLogout(false)
-                .build();
-
-        this.memberRepository.save(member);
-
-        return this.jwtProvider.genToken(member.toClaims(), 60 * 60 * 24 * 365); // 1년 유효 토큰 생성
+    private String getAccessToken(Member member) {
+        return this.jwtProvider.genToken(member.toClaims(), 60 * 60 * 3); // 3시간 토큰
     }
 
     @Transactional

@@ -1,6 +1,5 @@
 package com.cojar.whats_hot_backend.global.controller;
 
-import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Disabled;
@@ -34,7 +33,4 @@ public class BaseControllerTest {
 
     @Autowired
     protected MemberService memberService;
-
-    @Autowired
-    protected MemberRequest.Login loginReq;
 }
