@@ -93,7 +93,7 @@ public class MemberController {
 
         ResData resData = ResData.of(
                 ResCode.S_01_04,
-                new MemberResponse.Me(MemberDto.of(member)),
+                MemberDto.of(member),
                 linkTo(this.getClass()).slash("me")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/me").withRel("profile"));
