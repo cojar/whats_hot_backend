@@ -17,6 +17,10 @@ public class ReviewImageService {
 
     private final ReviewImageRepository reviewImageRepository;
 
+    public long count() {
+        return this.reviewImageRepository.count();
+    }
+
     @Transactional
     public List<ReviewImage> createAll(List<_File> files, Review review) {
 
@@ -34,10 +38,5 @@ public class ReviewImageService {
         this.reviewImageRepository.saveAll(reviewImages);
 
         return reviewImages;
-    }
-
-    @Transactional
-    public void saveAll(List<ReviewImage> reviewImages) {
-        if (reviewImages != null) this.reviewImageRepository.saveAll(reviewImages);
     }
 }

@@ -19,6 +19,10 @@ public class ReviewHashtagService {
     private final ReviewHashtagRepository reviewHashtagRepository;
     private final HashtagRepository hashtagRepository;
 
+    public long count() {
+        return this.reviewHashtagRepository.count();
+    }
+
     @Transactional
     public List<ReviewHashtag> createAll(List<String> hashtags, Review review) {
 
@@ -42,10 +46,5 @@ public class ReviewHashtagService {
         this.reviewHashtagRepository.saveAll(reviewHashtags);
 
         return reviewHashtags;
-    }
-
-    @Transactional
-    public void saveAll(List<ReviewHashtag> reviewHashtags) {
-        if (reviewHashtags != null) this.reviewHashtagRepository.saveAll(reviewHashtags);
     }
 }

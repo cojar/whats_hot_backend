@@ -10,9 +10,7 @@ import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.ReviewStatus;
 import com.cojar.whats_hot_backend.domain.review_module.review.repository.ReviewRepository;
 import com.cojar.whats_hot_backend.domain.review_module.review.request.ReviewRequest;
-import com.cojar.whats_hot_backend.domain.review_module.review_hashtag.entity.ReviewHashtag;
 import com.cojar.whats_hot_backend.domain.review_module.review_hashtag.service.ReviewHashtagService;
-import com.cojar.whats_hot_backend.domain.review_module.review_image.entity.ReviewImage;
 import com.cojar.whats_hot_backend.domain.review_module.review_image.service.ReviewImageService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.controller.SpotController;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
@@ -54,9 +52,8 @@ public class ReviewService {
 
     private final EntityManager entityManager;
 
-    public Review getReviewById(Long id) {
-        return this.reviewRepository.findById(id)
-                .orElse(null);
+    public long count() {
+        return this.reviewRepository.count();
     }
 
     @Transactional
@@ -146,6 +143,11 @@ public class ReviewService {
         this.reviewRepository.save(review);
     }
 
+    public Review getReviewById(Long id) {
+        return this.reviewRepository.findById(id)
+                .orElse(null);
+    }
+
     public Page<DataModel> getReviewList(int page, int size) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
@@ -158,17 +160,5 @@ public class ReviewService {
                     );
                     return dataModel;
                 });
-    }
-
-    public Review updateHashtags(Review review, List<ReviewHashtag> reviewHashtags) {
-        return review.toBuilder()
-                .hashtags(reviewHashtags)
-                .build();
-    }
-
-    public Review updateImages(Review review, List<ReviewImage> reviewImages) {
-        return review.toBuilder()
-                .images(reviewImages)
-                .build();
     }
 }

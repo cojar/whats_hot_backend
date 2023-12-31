@@ -1,5 +1,6 @@
 package com.cojar.whats_hot_backend.domain.review_module.review.controller;
 
+import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.ReviewStatus;
 import com.cojar.whats_hot_backend.domain.review_module.review.request.ReviewRequest;
 import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
@@ -24,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -39,6 +41,9 @@ class ReviewControllerTest extends BaseControllerTest {
 
     @Autowired
     private ReviewImageService reviewImageService;
+
+    @Autowired
+    private FileService fileService;
 
     @Transactional
     @Test
@@ -401,6 +406,8 @@ class ReviewControllerTest extends BaseControllerTest {
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
 
+        List<Long> checkList = getCheckListNotCreated();
+
         ReviewRequest.CreateReview request = ReviewRequest.CreateReview.builder()
                 .spotId(spotId)
                 .year(year)
@@ -445,6 +452,8 @@ class ReviewControllerTest extends BaseControllerTest {
         if (spotId == null || year == null || month == null || day == null || score == null)
             resultActions.andExpect(jsonPath("data[0].rejectedValue").doesNotExist());
         else resultActions.andExpect(jsonPath("data[0].rejectedValue").value(""));
+
+        checkNotCreated(checkList);
     }
 
     private static Stream<Arguments> argsFor_createReview_BadRequest_NotBlank() {
@@ -468,6 +477,8 @@ class ReviewControllerTest extends BaseControllerTest {
         String username = "user1";
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
+
+        List<Long> checkList = getCheckListNotCreated();
 
         Long spotId = 1000000000L;
         int year = 2023, month = 12, day = 25;
@@ -534,6 +545,8 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue").value(spotId))
                 .andExpect(jsonPath("_links.index").exists())
         ;
+
+        checkNotCreated(checkList);
     }
 
     @Test
@@ -544,6 +557,8 @@ class ReviewControllerTest extends BaseControllerTest {
         String username = "user1";
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
+
+        List<Long> checkList = getCheckListNotCreated();
 
         Long spotId = 1L;
         Integer year = 2023, month = 12, day = 25;
@@ -602,6 +617,8 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
                 .andExpect(jsonPath("data[0].rejectedValue").value(MediaType.TEXT_MARKDOWN_VALUE))
         ;
+
+        checkNotCreated(checkList);
     }
 
     @Test
@@ -612,6 +629,8 @@ class ReviewControllerTest extends BaseControllerTest {
         String username = "user1";
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
+
+        List<Long> checkList = getCheckListNotCreated();
 
         Long spotId = 1L;
         Integer year = 2023, month = 12, day = 25;
@@ -670,6 +689,8 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
                 .andExpect(jsonPath("data[0].rejectedValue").value(MediaType.IMAGE_GIF_VALUE))
         ;
+
+        checkNotCreated(checkList);
     }
 
     @Test
@@ -680,6 +701,8 @@ class ReviewControllerTest extends BaseControllerTest {
         String username = "user1";
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
+
+        List<Long> checkList = getCheckListNotCreated();
 
         Long spotId = 1L;
         Integer year = 2023, month = 12, day = 25;
@@ -754,5 +777,24 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[1].defaultMessage").exists())
                 .andExpect(jsonPath("data[1].rejectedValue").value(MediaType.IMAGE_GIF_VALUE))
         ;
+
+        checkNotCreated(checkList);
+    }
+
+    private List<Long> getCheckListNotCreated() {
+        return List.of(
+                this.reviewService.count() + 1,
+                this.reviewHashtagService.count(),
+                this.reviewImageService.count(),
+                this.fileService.count()
+        );
+    }
+
+    private void checkNotCreated(List<Long> checkList) {
+        int i = 0;
+        assertThat(this.reviewService.getReviewById(checkList.get(i++))).isNull();
+        assertThat(this.reviewHashtagService.count()).isEqualTo(checkList.get(i++));
+        assertThat(this.reviewImageService.count()).isEqualTo(checkList.get(i++));
+        assertThat(this.fileService.count()).isEqualTo(checkList.get(i));
     }
 }
