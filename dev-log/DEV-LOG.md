@@ -10,6 +10,7 @@
 - [x] findUsername 로직 수정 및 관련 TC 점검
 - [x] findPassword 로직 수정 및 관련 TC 점검
 - [x] 테스트 코드 로그인 로직 수정
+- [x] 미사용 패키지 정리
 
 ## 23-12-29
 ### feature/get-api-spots-id
