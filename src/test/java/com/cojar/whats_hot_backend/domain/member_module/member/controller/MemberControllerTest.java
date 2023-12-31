@@ -18,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -639,11 +638,7 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         // when
         ResultActions resultActions = this.mockMvc
@@ -675,11 +670,7 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         // when
         ResultActions resultActions = this.mockMvc
@@ -715,11 +706,7 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         String newPassword = "12345";
         String newPasswordConfirm = "12345";
@@ -762,11 +749,7 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         MemberRequest.UpdatePassword request = MemberRequest.UpdatePassword.builder()
                 .oldPassword(oldPassword)
@@ -815,11 +798,7 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         String oldPassword = "1111";
         String newPassword = "12345";
@@ -864,11 +843,7 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         MemberRequest.UpdatePassword request = MemberRequest.UpdatePassword.builder()
                 .oldPassword(password)

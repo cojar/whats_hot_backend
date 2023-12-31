@@ -4,7 +4,6 @@ import com.cojar.whats_hot_backend.domain.comment_module.comment.entity.Comment;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.repository.CommentRepository;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.service.CommentService;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
-import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
 
 import java.util.Set;
 
@@ -39,11 +37,7 @@ class CommentControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         // when
         ResultActions resultActions = mockMvc
@@ -84,11 +78,7 @@ class CommentControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         Long review = 3L;
 
@@ -125,11 +115,7 @@ class CommentControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         Long reviewId = 2L;
         String content = "  ";
@@ -227,11 +213,7 @@ class CommentControllerTest extends BaseControllerTest {
 
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
 
         // when
@@ -265,11 +247,7 @@ class CommentControllerTest extends BaseControllerTest {
 
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
 
         // when
@@ -296,11 +274,7 @@ class CommentControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         // when
         ResultActions resultActions = mockMvc
@@ -334,11 +308,7 @@ class CommentControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         String content = "  ";
 
@@ -380,11 +350,7 @@ class CommentControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         String content = "안녕하세요";
 
@@ -420,11 +386,7 @@ class CommentControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         String content = "안녕하세요";
 
@@ -460,11 +422,7 @@ class CommentControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         // when
         ResultActions resultActions = mockMvc
@@ -494,11 +452,7 @@ class CommentControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         // when
         ResultActions resultActions = mockMvc
@@ -525,11 +479,7 @@ class CommentControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         // when
         ResultActions resultActions = mockMvc
@@ -555,11 +505,7 @@ class CommentControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         // when
         ResultActions resultActions = mockMvc
@@ -599,11 +545,7 @@ class CommentControllerTest extends BaseControllerTest {
 
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         // when
         ResultActions resultActions = mockMvc
@@ -631,11 +573,7 @@ class CommentControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         String content = "안녕하세요";
 
@@ -665,11 +603,7 @@ class CommentControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer "
-                + this.memberService.login(
-                MemberRequest.Login.of(username, password),
-                new BeanPropertyBindingResult(null, "request")
-        );
+        String accessToken = this.getAccessToken(username, password);
 
         // when
         ResultActions resultActions = mockMvc

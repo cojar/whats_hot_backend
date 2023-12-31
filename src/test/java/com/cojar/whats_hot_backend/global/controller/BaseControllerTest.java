@@ -1,5 +1,6 @@
 package com.cojar.whats_hot_backend.global.controller;
 
+import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Disabled;
@@ -11,6 +12,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.validation.BeanPropertyBindingResult;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,4 +35,12 @@ public class BaseControllerTest {
 
     @Autowired
     protected MemberService memberService;
+
+    protected String getAccessToken(String username, String password) {
+        return "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
+    }
 }
