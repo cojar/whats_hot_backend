@@ -57,25 +57,6 @@ public class ReviewService {
     }
 
     @Transactional
-    public Review create(Member author, Spot spot, LocalDateTime visitDate, String title, String content, Double score, ReviewStatus status) {
-
-        Review review = Review.builder()
-                .author(author)
-                .spot(spot)
-                .visitDate(visitDate)
-                .title(title)
-                .content(content)
-                .score(score)
-                .status(status)
-                .validated(true)
-                .build();
-
-        this.reviewRepository.save(review);
-
-        return review;
-    }
-
-    @Transactional
     public Review create(ReviewRequest.CreateReview request, List<MultipartFile> images, Errors errors, User user) {
 
         // request 에러 검증
@@ -136,11 +117,6 @@ public class ReviewService {
                     )
             );
         }
-    }
-
-    @Transactional
-    public void save(Review review) {
-        this.reviewRepository.save(review);
     }
 
     public Review getReviewById(Long id) {

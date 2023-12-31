@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -128,7 +127,7 @@ public class FileService {
 
         if (files == null) return null;
 
-        Errors errors = new BeanPropertyBindingResult(files, "file");
+        Errors errors = AppConfig.getMockErrors(files, "file");
 
         ResData resData = ResData.reduceError(
                 files.stream()
@@ -145,7 +144,7 @@ public class FileService {
     private ResData validate(MultipartFile file) {
 
         Map<String, Object> fileBits = this.getFileBits(file);
-        Errors errors = new BeanPropertyBindingResult(file, "file");
+        Errors errors = AppConfig.getMockErrors(file, "file");
 
         if (!fileBits.get("type").equals("image")) {
 
@@ -168,11 +167,6 @@ public class FileService {
         }
 
         return null;
-    }
-
-    @Transactional
-    public void saveAll(List<_File> files) {
-        if (files != null) this.fileRepository.saveAll(files);
     }
 
     public void deleteFile(List<_File> files) {
