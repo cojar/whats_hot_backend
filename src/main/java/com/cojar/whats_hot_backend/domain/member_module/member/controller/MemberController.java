@@ -137,16 +137,9 @@ public class MemberController {
     @PostMapping(value = "/password")
     public ResponseEntity findPassword(@Valid @RequestBody MemberRequest.FindPassword request, Errors errors) throws MessagingException {
 
-        ResData resData = this.memberService.findPasswordValidate(request, errors);
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
+        this.memberService.findPassword(request, errors);
 
-        Member member = this.memberService.getUserByUsernameAndEmail(request);
-
-        String resetPassword = AppConfig.getRandomPassword();
-        this.mailService.send(member.getEmail(), resetPassword, "임시 비밀번호"); // exception 발생 시 저장 안 되도록
-        this.memberService.updatePassword(member, resetPassword);
-
-        resData = ResData.of(
+        ResData resData = ResData.of(
                 ResCode.S_01_07,
                 linkTo(this.getClass()).slash("login")
         );

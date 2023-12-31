@@ -3,6 +3,7 @@ package com.cojar.whats_hot_backend.domain.member_module.member.service;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
+import com.cojar.whats_hot_backend.domain.base_module.mail.service.MailService;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.MemberRole;
 import com.cojar.whats_hot_backend.domain.member_module.member.repository.MemberRepository;
@@ -12,6 +13,7 @@ import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.jwt.JwtProvider;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
+import com.cojar.whats_hot_backend.global.util.AppConfig;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -34,6 +36,7 @@ public class MemberService {
 
     private final FileService fileService;
     private final MemberImageService memberImageService;
+    private final MailService mailService;
 
     private final EntityManager entityManager;
 
@@ -210,16 +213,6 @@ public class MemberService {
     }
 
     @Transactional
-    public void updatePassword(Member member, String password) {
-
-        member = member.toBuilder()
-                .password(password)
-                .build();
-
-        this.memberRepository.save(member);
-    }
-
-    @Transactional
     public void updatePassword(MemberRequest.UpdatePassword request, User user, Errors errors) {
 
         Member member = this.getUserByUsername(user.getUsername());
@@ -311,7 +304,25 @@ public class MemberService {
                 .orElse(null);
     }
 
-    public ResData findPasswordValidate(MemberRequest.FindPassword request, Errors errors) {
+    @Transactional
+    public void findPassword(MemberRequest.FindPassword request, Errors errors) {
+
+        // request 에러 검증
+        this.findPasswordValidate(request, errors);
+
+        Member member = this.getUserByUsernameAndEmail(request.getUsername(), request.getEmail());
+
+        String autoResetPassword = AppConfig.getRandomPassword();
+        this.mailService.send(member.getEmail(), autoResetPassword, "임시 비밀번호");
+
+        member = member.toBuilder()
+                .password(this.passwordEncoder.encode(autoResetPassword))
+                .build();
+
+        this.memberRepository.save(member);
+    }
+
+    private void findPasswordValidate(MemberRequest.FindPassword request, Errors errors) {
 
         if (errors.hasErrors()) {
             throw new ApiResponseException(
@@ -339,12 +350,10 @@ public class MemberService {
                     )
             );
         }
-
-        return null;
     }
 
-    public Member getUserByUsernameAndEmail(MemberRequest.FindPassword request) {
-        return this.memberRepository.findByUsernameAndEmail(request.getUsername(), request.getEmail())
+    public Member getUserByUsernameAndEmail(String username, String email) {
+        return this.memberRepository.findByUsernameAndEmail(username, email)
                 .orElse(null);
     }
 }
