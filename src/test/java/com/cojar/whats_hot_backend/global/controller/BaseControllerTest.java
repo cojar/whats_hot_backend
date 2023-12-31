@@ -12,6 +12,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.validation.BeanPropertyBindingResult;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -35,6 +36,11 @@ public class BaseControllerTest {
     @Autowired
     protected MemberService memberService;
 
-    @Autowired
-    protected MemberRequest.Login loginReq;
+    protected String getAccessToken(String username, String password) {
+        return "Bearer "
+                + this.memberService.login(
+                MemberRequest.Login.of(username, password),
+                new BeanPropertyBindingResult(null, "request")
+        );
+    }
 }

@@ -498,17 +498,13 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
+        MemberRequest.Login request = MemberRequest.Login.of(username, password);
 
         // when
         ResultActions resultActions = this.mockMvc
                 .perform(post("/api/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                    "username": "%s",
-                                    "password": "%s"
-                                }
-                                """.formatted(username, password).stripIndent())
+                        .content(this.objectMapper.writeValueAsString(request))
                         .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
@@ -532,17 +528,13 @@ class MemberControllerTest extends BaseControllerTest {
     public void login_BadRequest_InputValidation(String username, String password) throws Exception {
 
         // given
+        MemberRequest.Login request = MemberRequest.Login.of(username, password);
 
         // when
         ResultActions resultActions = this.mockMvc
                 .perform(post("/api/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                    "username": "%s",
-                                    "password": "%s"
-                                }
-                                """.formatted(username, password).stripIndent())
+                        .content(this.objectMapper.writeValueAsString(request))
                         .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
@@ -578,17 +570,13 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "abcde";
         String password = "12345";
+        MemberRequest.Login request = MemberRequest.Login.of(username, password);
 
         // when
         ResultActions resultActions = this.mockMvc
                 .perform(post("/api/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                    "username": "%s",
-                                    "password": "%s"
-                                }
-                                """.formatted(username, password).stripIndent())
+                        .content(this.objectMapper.writeValueAsString(request))
                         .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
@@ -616,17 +604,13 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "12345";
+        MemberRequest.Login request = MemberRequest.Login.of(username, password);
 
         // when
         ResultActions resultActions = this.mockMvc
                 .perform(post("/api/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                    "username": "%s",
-                                    "password": "%s"
-                                }
-                                """.formatted(username, password).stripIndent())
+                        .content(this.objectMapper.writeValueAsString(request))
                         .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
@@ -654,7 +638,7 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         // when
         ResultActions resultActions = this.mockMvc
@@ -686,7 +670,7 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         // when
         ResultActions resultActions = this.mockMvc
@@ -714,6 +698,7 @@ class MemberControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.profile").exists());
     }
 
+    @Transactional
     @Test
     @DisplayName("patch:/api/members/password - ok, S-01-05")
     public void updatePassword_OK() throws Exception {
@@ -721,7 +706,7 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         String newPassword = "12345";
         String newPasswordConfirm = "12345";
@@ -764,7 +749,7 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         MemberRequest.UpdatePassword request = MemberRequest.UpdatePassword.builder()
                 .oldPassword(oldPassword)
@@ -813,7 +798,7 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         String oldPassword = "1111";
         String newPassword = "12345";
@@ -858,7 +843,7 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         MemberRequest.UpdatePassword request = MemberRequest.UpdatePassword.builder()
                 .oldPassword(password)
@@ -1002,6 +987,7 @@ class MemberControllerTest extends BaseControllerTest {
         ;
     }
 
+    @Transactional
     @Test
     @DisplayName("post:/api/members/password - ok, S-01-07")
     public void findPassword_OK() throws Exception {

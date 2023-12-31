@@ -3,6 +3,7 @@ package com.cojar.whats_hot_backend.domain.member_module.member.service;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
+import com.cojar.whats_hot_backend.domain.base_module.mail.service.MailService;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.MemberRole;
 import com.cojar.whats_hot_backend.domain.member_module.member.repository.MemberRepository;
@@ -12,8 +13,10 @@ import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.jwt.JwtProvider;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
+import com.cojar.whats_hot_backend.global.util.AppConfig;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +36,7 @@ public class MemberService {
 
     private final FileService fileService;
     private final MemberImageService memberImageService;
+    private final MailService mailService;
 
     private final EntityManager entityManager;
 
@@ -136,7 +140,26 @@ public class MemberService {
                 .orElse(null);
     }
 
-    public ResData loginValidate(MemberRequest.Login loginReq, Errors errors) {
+    @Transactional
+    public String login(MemberRequest.Login request, Errors errors) {
+
+        // request 에러 검증
+        this.loginValidate(request, errors);
+
+        // 로그인 상태 변경
+        Member member = this.getUserByUsername(request.getUsername());
+
+        member = member.toBuilder()
+                .isLogout(false)
+                .build();
+
+        this.memberRepository.save(member);
+
+        // 토큰 생성 후 반환
+        return this.getAccessToken(member);
+    }
+
+    private void loginValidate(MemberRequest.Login request, Errors errors) {
 
         if (errors.hasErrors()) {
 
@@ -148,9 +171,7 @@ public class MemberService {
             );
         }
 
-        Member member = this.memberRepository.findByUsername(loginReq.getUsername())
-                .orElse(null);
-        if (member == null) {
+        if (!this.memberRepository.existsByUsername(request.getUsername())) {
 
             errors.rejectValue("username", "not exist", "member does not exist");
 
@@ -162,7 +183,7 @@ public class MemberService {
             );
         }
 
-        if (!this.passwordEncoder.matches(loginReq.getPassword(), member.getPassword())) {
+        if (!this.passwordEncoder.matches(request.getPassword(), this.getUserByUsername(request.getUsername()).getPassword())) {
 
             errors.rejectValue("password", "not matched", "password is not matched");
 
@@ -173,30 +194,34 @@ public class MemberService {
                     )
             );
         }
+    }
 
-        return null;
+    private String getAccessToken(Member member) {
+        return this.jwtProvider.genToken(member.toClaims(), 60 * 60 * 3); // 3시간 토큰
     }
 
     @Transactional
-    public String getAccessToken(MemberRequest.Login loginReq) {
+    public void logout(User user) {
 
-        Member member = this.memberRepository.findByUsername(loginReq.getUsername())
-                .orElse(null);
-
-        member = member.toBuilder()
-                .isLogout(false)
-                .build();
-
-        this.memberRepository.save(member);
-
-        return this.jwtProvider.genToken(member.toClaims(), 60 * 60 * 24 * 365); // 1년 유효 토큰 생성
-    }
-
-    @Transactional
-    public void logout(Member member) {
+        Member member = this.getUserByUsername(user.getUsername());
 
         member = member.toBuilder()
                 .isLogout(true)
+                .build();
+
+        this.memberRepository.save(member);
+    }
+
+    @Transactional
+    public void updatePassword(MemberRequest.UpdatePassword request, User user, Errors errors) {
+
+        Member member = this.getUserByUsername(user.getUsername());
+
+        // request 검증
+        this.updatePasswordValidate(request, member, errors);
+
+        member = member.toBuilder()
+                .password(this.passwordEncoder.encode(request.getNewPassword()))
                 .build();
 
         this.memberRepository.save(member);
@@ -241,17 +266,15 @@ public class MemberService {
         return null;
     }
 
-    @Transactional
-    public void updatePassword(MemberRequest.UpdatePassword request, Member member) {
+    public Member findUsername(MemberRequest.FindUsername request, Errors errors) {
 
-        member = member.toBuilder()
-                .password(this.passwordEncoder.encode(request.getNewPassword()))
-                .build();
+        // request 에러 검증
+        this.findUsernameValidate(request, errors);
 
-        this.memberRepository.save(member);
+        return this.getUserByEmail(request.getEmail());
     }
 
-    public ResData findUsernameValidate(MemberRequest.FindUsername request, Errors errors) {
+    private void findUsernameValidate(MemberRequest.FindUsername request, Errors errors) {
 
         if (errors.hasErrors()) {
             throw new ApiResponseException(
@@ -273,8 +296,6 @@ public class MemberService {
                     )
             );
         }
-
-        return null;
     }
 
     public Member getUserByEmail(String email) {
@@ -283,7 +304,25 @@ public class MemberService {
                 .orElse(null);
     }
 
-    public ResData findPasswordValidate(MemberRequest.FindPassword request, Errors errors) {
+    @Transactional
+    public void findPassword(MemberRequest.FindPassword request, Errors errors) {
+
+        // request 에러 검증
+        this.findPasswordValidate(request, errors);
+
+        Member member = this.getUserByUsernameAndEmail(request.getUsername(), request.getEmail());
+
+        String autoResetPassword = AppConfig.getRandomPassword();
+        this.mailService.send(member.getEmail(), autoResetPassword, "임시 비밀번호");
+
+        member = member.toBuilder()
+                .password(this.passwordEncoder.encode(autoResetPassword))
+                .build();
+
+        this.memberRepository.save(member);
+    }
+
+    private void findPasswordValidate(MemberRequest.FindPassword request, Errors errors) {
 
         if (errors.hasErrors()) {
             throw new ApiResponseException(
@@ -311,22 +350,10 @@ public class MemberService {
                     )
             );
         }
-
-        return null;
     }
 
-    public Member getUserByUsernameAndEmail(MemberRequest.FindPassword request) {
-        return this.memberRepository.findByUsernameAndEmail(request.getUsername(), request.getEmail())
+    public Member getUserByUsernameAndEmail(String username, String email) {
+        return this.memberRepository.findByUsernameAndEmail(username, email)
                 .orElse(null);
-    }
-
-    @Transactional
-    public void updatePassword(Member member, String password) {
-
-        member = member.toBuilder()
-                .password(password)
-                .build();
-
-        this.memberRepository.save(member);
     }
 }

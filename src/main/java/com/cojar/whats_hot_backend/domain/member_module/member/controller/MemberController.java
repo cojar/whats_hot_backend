@@ -1,15 +1,14 @@
 package com.cojar.whats_hot_backend.domain.member_module.member.controller;
 
-import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.base_module.mail.service.MailService;
 import com.cojar.whats_hot_backend.domain.index_module.index.controller.IndexController;
 import com.cojar.whats_hot_backend.domain.member_module.member.api_response.MemberApiResponse;
 import com.cojar.whats_hot_backend.domain.member_module.member.dto.MemberDto;
+import com.cojar.whats_hot_backend.domain.member_module.member.dto.MemberTokenDto;
+import com.cojar.whats_hot_backend.domain.member_module.member.dto.MemberUsernameDto;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
-import com.cojar.whats_hot_backend.domain.member_module.member.response.MemberResponse;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
-import com.cojar.whats_hot_backend.domain.member_module.member_image.service.MemberImageService;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
@@ -36,8 +35,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 public class MemberController {
 
     private final MemberService memberService;
-    private final MemberImageService memberImageService;
-    private final FileService fileService;
     private final MailService mailService;
 
     @MemberApiResponse.Signup
@@ -59,16 +56,13 @@ public class MemberController {
 
     @MemberApiResponse.Login
     @PostMapping(value = "/login")
-    public ResponseEntity login(@Valid @RequestBody MemberRequest.Login loginReq, Errors errors) {
+    public ResponseEntity login(@Valid @RequestBody MemberRequest.Login request, Errors errors) {
 
-        ResData resData = this.memberService.loginValidate(loginReq, errors);
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
+        String accessToken = this.memberService.login(request, errors);
 
-        String accessToken = this.memberService.getAccessToken(loginReq);
-
-        resData = ResData.of(
+        ResData resData = ResData.of(
                 ResCode.S_01_02,
-                new MemberResponse.Login(accessToken),
+                MemberTokenDto.of(accessToken),
                 linkTo(IndexController.class).slash("/api/index")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/login").withRel("profile"));
@@ -80,8 +74,7 @@ public class MemberController {
     @PostMapping(value = "/logout", consumes = MediaType.ALL_VALUE)
     public ResponseEntity logout(@AuthenticationPrincipal User user) {
 
-        Member member = this.memberService.getUserByUsername(user.getUsername());
-        this.memberService.logout(member);
+        this.memberService.logout(user);
 
         ResData resData = ResData.of(
                 ResCode.S_01_03,
@@ -100,7 +93,7 @@ public class MemberController {
 
         ResData resData = ResData.of(
                 ResCode.S_01_04,
-                new MemberResponse.Me(MemberDto.of(member)),
+                MemberDto.of(member),
                 linkTo(this.getClass()).slash("me")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/me").withRel("profile"));
@@ -113,14 +106,9 @@ public class MemberController {
     public ResponseEntity updatePassword(@Valid @RequestBody MemberRequest.UpdatePassword request, Errors errors,
                                          @AuthenticationPrincipal User user) {
 
-        Member member = this.memberService.getUserByUsername(user.getUsername());
+        this.memberService.updatePassword(request, user, errors);
 
-        ResData resData = this.memberService.updatePasswordValidate(request, member, errors);
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
-
-        this.memberService.updatePassword(request, member);
-
-        resData = ResData.of(
+        ResData resData = ResData.of(
                 ResCode.S_01_05,
                 linkTo(this.getClass()).slash("me")
         );
@@ -133,14 +121,11 @@ public class MemberController {
     @PostMapping(value = "/username")
     public ResponseEntity findUsername(@Valid @RequestBody MemberRequest.FindUsername request, Errors errors) {
 
-        ResData resData = this.memberService.findUsernameValidate(request, errors);
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
+        Member member = this.memberService.findUsername(request, errors);
 
-        Member member = this.memberService.getUserByEmail(request.getEmail());
-
-        resData = ResData.of(
+        ResData resData = ResData.of(
                 ResCode.S_01_06,
-                new MemberResponse.FindUsername(member.getUsername()),
+                MemberUsernameDto.of(member),
                 linkTo(this.getClass()).slash("login")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/findUsername").withRel("profile"));
@@ -152,16 +137,9 @@ public class MemberController {
     @PostMapping(value = "/password")
     public ResponseEntity findPassword(@Valid @RequestBody MemberRequest.FindPassword request, Errors errors) throws MessagingException {
 
-        ResData resData = this.memberService.findPasswordValidate(request, errors);
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
+        this.memberService.findPassword(request, errors);
 
-        Member member = this.memberService.getUserByUsernameAndEmail(request);
-
-        String resetPassword = AppConfig.getRandomPassword();
-        this.mailService.send(member.getEmail(), resetPassword, "임시 비밀번호"); // exception 발생 시 저장 안 되도록
-        this.memberService.updatePassword(member, resetPassword);
-
-        resData = ResData.of(
+        ResData resData = ResData.of(
                 ResCode.S_01_07,
                 linkTo(this.getClass()).slash("login")
         );

@@ -46,7 +46,7 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long spotId = 1L;
         Integer year = 2023, month = 12, day = 25;
@@ -136,7 +136,7 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long spotId = 1L;
         Integer year = 2023, month = 12, day = 25;
@@ -228,7 +228,7 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long spotId = 1L;
         Integer year = 2023, month = 12, day = 25;
@@ -315,7 +315,7 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long spotId = 1L;
         Integer year = 2023, month = 12, day = 25;
@@ -394,7 +394,7 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         ReviewRequest.CreateReview request = ReviewRequest.CreateReview.builder()
                 .spotId(spotId)
@@ -462,7 +462,7 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long spotId = 1000000000L;
         int year = 2023, month = 12, day = 25;
@@ -538,7 +538,7 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long spotId = 1L;
         Integer year = 2023, month = 12, day = 25;
@@ -606,7 +606,7 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long spotId = 1L;
         Integer year = 2023, month = 12, day = 25;
@@ -674,7 +674,7 @@ class ReviewControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long spotId = 1L;
         Integer year = 2023, month = 12, day = 25;
