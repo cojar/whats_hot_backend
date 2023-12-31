@@ -499,17 +499,13 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "1234";
+        MemberRequest.Login request = MemberRequest.Login.of(username, password);
 
         // when
         ResultActions resultActions = this.mockMvc
                 .perform(post("/api/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                    "username": "%s",
-                                    "password": "%s"
-                                }
-                                """.formatted(username, password).stripIndent())
+                        .content(this.objectMapper.writeValueAsString(request))
                         .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
@@ -533,17 +529,13 @@ class MemberControllerTest extends BaseControllerTest {
     public void login_BadRequest_InputValidation(String username, String password) throws Exception {
 
         // given
+        MemberRequest.Login request = MemberRequest.Login.of(username, password);
 
         // when
         ResultActions resultActions = this.mockMvc
                 .perform(post("/api/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                    "username": "%s",
-                                    "password": "%s"
-                                }
-                                """.formatted(username, password).stripIndent())
+                        .content(this.objectMapper.writeValueAsString(request))
                         .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
@@ -579,17 +571,13 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "abcde";
         String password = "12345";
+        MemberRequest.Login request = MemberRequest.Login.of(username, password);
 
         // when
         ResultActions resultActions = this.mockMvc
                 .perform(post("/api/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                    "username": "%s",
-                                    "password": "%s"
-                                }
-                                """.formatted(username, password).stripIndent())
+                        .content(this.objectMapper.writeValueAsString(request))
                         .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
@@ -617,17 +605,13 @@ class MemberControllerTest extends BaseControllerTest {
         // given
         String username = "user1";
         String password = "12345";
+        MemberRequest.Login request = MemberRequest.Login.of(username, password);
 
         // when
         ResultActions resultActions = this.mockMvc
                 .perform(post("/api/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                    "username": "%s",
-                                    "password": "%s"
-                                }
-                                """.formatted(username, password).stripIndent())
+                        .content(this.objectMapper.writeValueAsString(request))
                         .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
