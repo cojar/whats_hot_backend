@@ -74,8 +74,7 @@ public class MemberController {
     @PostMapping(value = "/logout", consumes = MediaType.ALL_VALUE)
     public ResponseEntity logout(@AuthenticationPrincipal User user) {
 
-        Member member = this.memberService.getUserByUsername(user.getUsername());
-        this.memberService.logout(member);
+        this.memberService.logout(user);
 
         ResData resData = ResData.of(
                 ResCode.S_01_03,

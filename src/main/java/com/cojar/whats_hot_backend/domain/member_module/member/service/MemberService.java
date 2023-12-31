@@ -14,6 +14,7 @@ import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -197,7 +198,9 @@ public class MemberService {
     }
 
     @Transactional
-    public void logout(Member member) {
+    public void logout(User user) {
+
+        Member member = this.getUserByUsername(user.getUsername());
 
         member = member.toBuilder()
                 .isLogout(true)
