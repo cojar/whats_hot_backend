@@ -322,16 +322,19 @@ public class SpotService {
         }
     }
 
-    public Spot updateReview(Spot spot, Review review) {
+    @Transactional
+    public void updateReview(Spot spot, Review review) {
 
         List<Review> reviews = spot.getReviews();
         reviews.add(review);
         Double averageScore = (spot.getAverageScore() + review.getScore()) / reviews.size();
 
-        return spot.toBuilder()
+        spot = spot.toBuilder()
                 .averageScore(averageScore)
                 .reviews(reviews)
                 .build();
+
+        this.spotRepository.save(spot);
     }
 
     public ResData getSpotValidate(Long spotid){

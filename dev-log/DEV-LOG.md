@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 24-01-01
+### feature/post-api-reviews
+- [x] 생성 로직 수정 및 S-03-01 TC 점검
+
 ## 23-12-31
 ### feature/member_module-member
 - [x] login 로직 수정 및 로그인이 필요한 모든 TC 점검

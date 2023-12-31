@@ -18,6 +18,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -39,6 +40,7 @@ class ReviewControllerTest extends BaseControllerTest {
     @Autowired
     private ReviewImageService reviewImageService;
 
+    @Transactional
     @Test
     @DisplayName("post:/api/reviews - created, S-03-01")
     public void createReview_Created() throws Exception {
@@ -129,6 +131,7 @@ class ReviewControllerTest extends BaseControllerTest {
         ;
     }
 
+    @Transactional
     @Test
     @DisplayName("post:/api/reviews - created status private, S-03-01")
     public void createReview_Created_StatusPrivate() throws Exception {
@@ -221,6 +224,7 @@ class ReviewControllerTest extends BaseControllerTest {
         ;
     }
 
+    @Transactional
     @Test
     @DisplayName("post:/api/reviews - created without hashtags, S-03-01")
     public void createReview_Created_WithoutHashtags() throws Exception {
@@ -308,6 +312,7 @@ class ReviewControllerTest extends BaseControllerTest {
         ;
     }
 
+    @Transactional
     @Test
     @DisplayName("post:/api/reviews - created without images, S-03-01")
     public void createReview_Created_WithoutImages() throws Exception {

@@ -22,6 +22,8 @@ public class ReviewHashtagService {
     @Transactional
     public List<ReviewHashtag> createAll(List<String> hashtags, Review review) {
 
+        if (hashtags == null) return null;
+
         List<ReviewHashtag> reviewHashtags = hashtags.stream()
                 .map(hashtag -> {
                             Hashtag _hashtag = this.hashtagRepository.findByName(hashtag).orElse(null);
@@ -36,6 +38,9 @@ public class ReviewHashtagService {
                         }
                 )
                 .collect(Collectors.toList());
+
+        this.reviewHashtagRepository.saveAll(reviewHashtags);
+
         return reviewHashtags;
     }
 

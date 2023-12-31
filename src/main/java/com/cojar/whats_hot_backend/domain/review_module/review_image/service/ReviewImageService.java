@@ -17,7 +17,10 @@ public class ReviewImageService {
 
     private final ReviewImageRepository reviewImageRepository;
 
+    @Transactional
     public List<ReviewImage> createAll(List<_File> files, Review review) {
+
+        if (files == null) return null;
 
         List<ReviewImage> reviewImages = files.stream()
                 .map(file ->
@@ -27,6 +30,9 @@ public class ReviewImageService {
                                 .build()
                 )
                 .collect(Collectors.toList());
+
+        this.reviewImageRepository.saveAll(reviewImages);
+
         return reviewImages;
     }
 
