@@ -7,6 +7,7 @@
 - [x] logout 로직 수정 및 관련 TC 점검
 - [x] me 로직 수정 및 관련 TC 점검
 - [x] updatePassword 로직 수정 및 관련 TC 점검
+- [x] findUsername 로직 수정 및 관련 TC 점검
 
 ## 23-12-29
 ### feature/get-api-spots-id

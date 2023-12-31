@@ -5,15 +5,15 @@ import lombok.Getter;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
-public class MemberLoginDto {
+public class MemberTokenDto {
 
     private final String accessToken;
 
-    private MemberLoginDto(String accessToken) {
+    private MemberTokenDto(String accessToken) {
         this.accessToken = accessToken;
     }
 
-    public static MemberLoginDto of(String accessToken) {
-        return new MemberLoginDto(accessToken);
+    public static MemberTokenDto of(String accessToken) {
+        return new MemberTokenDto(accessToken);
     }
 }

@@ -273,7 +273,15 @@ public class MemberService {
         return null;
     }
 
-    public ResData findUsernameValidate(MemberRequest.FindUsername request, Errors errors) {
+    public Member findUsername(MemberRequest.FindUsername request, Errors errors) {
+
+        // request 에러 검증
+        this.findUsernameValidate(request, errors);
+
+        return this.getUserByEmail(request.getEmail());
+    }
+
+    private void findUsernameValidate(MemberRequest.FindUsername request, Errors errors) {
 
         if (errors.hasErrors()) {
             throw new ApiResponseException(
@@ -295,8 +303,6 @@ public class MemberService {
                     )
             );
         }
-
-        return null;
     }
 
     public Member getUserByEmail(String email) {

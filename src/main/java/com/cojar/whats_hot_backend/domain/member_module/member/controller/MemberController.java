@@ -4,10 +4,10 @@ import com.cojar.whats_hot_backend.domain.base_module.mail.service.MailService;
 import com.cojar.whats_hot_backend.domain.index_module.index.controller.IndexController;
 import com.cojar.whats_hot_backend.domain.member_module.member.api_response.MemberApiResponse;
 import com.cojar.whats_hot_backend.domain.member_module.member.dto.MemberDto;
-import com.cojar.whats_hot_backend.domain.member_module.member.dto.MemberLoginDto;
+import com.cojar.whats_hot_backend.domain.member_module.member.dto.MemberTokenDto;
+import com.cojar.whats_hot_backend.domain.member_module.member.dto.MemberUsernameDto;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
-import com.cojar.whats_hot_backend.domain.member_module.member.response.MemberResponse;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
@@ -62,7 +62,7 @@ public class MemberController {
 
         ResData resData = ResData.of(
                 ResCode.S_01_02,
-                MemberLoginDto.of(accessToken),
+                MemberTokenDto.of(accessToken),
                 linkTo(IndexController.class).slash("/api/index")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/login").withRel("profile"));
@@ -121,14 +121,11 @@ public class MemberController {
     @PostMapping(value = "/username")
     public ResponseEntity findUsername(@Valid @RequestBody MemberRequest.FindUsername request, Errors errors) {
 
-        ResData resData = this.memberService.findUsernameValidate(request, errors);
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
+        Member member = this.memberService.findUsername(request, errors);
 
-        Member member = this.memberService.getUserByEmail(request.getEmail());
-
-        resData = ResData.of(
+        ResData resData = ResData.of(
                 ResCode.S_01_06,
-                new MemberResponse.FindUsername(member.getUsername()),
+                MemberUsernameDto.of(member),
                 linkTo(this.getClass()).slash("login")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/findUsername").withRel("profile"));
