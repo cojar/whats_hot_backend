@@ -1,5 +1,6 @@
 package com.cojar.whats_hot_backend.global.util;
 
+import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -8,8 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.security.SecureRandom;
@@ -91,6 +95,22 @@ public class AppConfig {
         }
 
         return code;
+    }
+
+    public static User toUser(Member member) {
+        return new User(member.getUsername(), member.getPassword(), member.getAuthorities());
+    }
+
+    public static Errors getMockErrors() {
+        return new BeanPropertyBindingResult(null, "request");
+    }
+
+    public static Errors getMockErrors(String objectName) {
+        return new BeanPropertyBindingResult(null, objectName);
+    }
+
+    public static Errors getMockErrors(Object object, String objectName) {
+        return new BeanPropertyBindingResult(object, objectName);
     }
 
     public static String toJson(Object object) {

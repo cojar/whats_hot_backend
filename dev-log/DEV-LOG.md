@@ -1,5 +1,11 @@
 # What's Hot Dev-Log
 
+## 24-01-01
+### feature/post-api-reviews
+- [x] 생성 로직 수정 및 S-03-01 TC 점검
+- [x] 생성 TC 중 Bad Request 부분에서 엔티티 미생성 확인 추가
+- [x] InitConfig 리뷰 생성 관련 로직 변경 및 미사용 로직 제거
+
 ## 23-12-31
 ### feature/member_module-member
 - [x] login 로직 수정 및 로그인이 필요한 모든 TC 점검

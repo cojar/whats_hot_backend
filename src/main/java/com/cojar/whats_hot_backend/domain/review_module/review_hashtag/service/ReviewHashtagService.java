@@ -19,8 +19,14 @@ public class ReviewHashtagService {
     private final ReviewHashtagRepository reviewHashtagRepository;
     private final HashtagRepository hashtagRepository;
 
+    public long count() {
+        return this.reviewHashtagRepository.count();
+    }
+
     @Transactional
     public List<ReviewHashtag> createAll(List<String> hashtags, Review review) {
+
+        if (hashtags == null) return null;
 
         List<ReviewHashtag> reviewHashtags = hashtags.stream()
                 .map(hashtag -> {
@@ -36,11 +42,9 @@ public class ReviewHashtagService {
                         }
                 )
                 .collect(Collectors.toList());
-        return reviewHashtags;
-    }
 
-    @Transactional
-    public void saveAll(List<ReviewHashtag> reviewHashtags) {
-        if (reviewHashtags != null) this.reviewHashtagRepository.saveAll(reviewHashtags);
+        this.reviewHashtagRepository.saveAll(reviewHashtags);
+
+        return reviewHashtags;
     }
 }
