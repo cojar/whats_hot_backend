@@ -8,7 +8,7 @@ import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
-import com.cojar.whats_hot_backend.domain.review_module.review.entity.ReviewStatus;
+import com.cojar.whats_hot_backend.domain.review_module.review.request.ReviewRequest;
 import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
 import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.category.service.CategoryService;
@@ -26,9 +26,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.validation.BeanPropertyBindingResult;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -74,7 +72,7 @@ public class InitConfig {
                             this.resourceLoader.getResource("classpath:/static/image/%s".formatted("test.png")).getInputStream()
                     ),
                     true,
-                    new BeanPropertyBindingResult(null, "request")
+                    AppConfig.getMockErrors()
             );
 
             Member user1 = this.memberService.signup(
@@ -91,7 +89,7 @@ public class InitConfig {
                             this.resourceLoader.getResource("classpath:/static/image/%s".formatted("test.png")).getInputStream()
                     ),
                     false,
-                    new BeanPropertyBindingResult(null, "request")
+                    AppConfig.getMockErrors()
             );
 
             Member user2 = this.memberService.signup(
@@ -108,7 +106,7 @@ public class InitConfig {
                             this.resourceLoader.getResource("classpath:/static/image/%s".formatted("test.png")).getInputStream()
                     ),
                     false,
-                    new BeanPropertyBindingResult(null, "request")
+                    AppConfig.getMockErrors()
             );
 
             // category init data
@@ -450,7 +448,7 @@ public class InitConfig {
                             AppConfig.getMediaType("test.png"),
                             this.resourceLoader.getResource("classpath:/static/image/%s".formatted("test.png")).getInputStream()
                     )),
-                    new BeanPropertyBindingResult(null, "request")
+                    AppConfig.getMockErrors()
             );
 
             Spot spot2 = this.spotService.create(
@@ -479,12 +477,61 @@ public class InitConfig {
                             AppConfig.getMediaType("test.png"),
                             this.resourceLoader.getResource("classpath:/static/image/%s".formatted("test.png")).getInputStream()
                     )),
-                    new BeanPropertyBindingResult(null, "request")
+                    AppConfig.getMockErrors()
             );
 
             // review init data
-            Review review1 = this.reviewService.create(user1, spot1, LocalDateTime.now(), "리뷰제목1", "리뷰내용1", 4.5, ReviewStatus.PUBLIC);
-            Review review2 = this.reviewService.create(user1, spot1, LocalDateTime.now(), "리뷰제목2", "리뷰내용2", 4.5, ReviewStatus.PUBLIC);
+            Review review1 = this.reviewService.create(
+                    ReviewRequest.CreateReview.builder()
+                            .spotId(spot1.getId())
+                            .year(2024)
+                            .month(1)
+                            .day(1)
+                            .title("리뷰제목1")
+                            .content("리뷰내용1")
+                            .score(4.5)
+                            .hashtags(
+                                    List.of(
+                                            "해시태그1",
+                                            "해시태그2"
+                                    )
+                            )
+                            .build(),
+                    List.of(new MockMultipartFile(
+                            "images",
+                            "test.png",
+                            AppConfig.getMediaType("test.png"),
+                            this.resourceLoader.getResource("classpath:/static/image/%s".formatted("test.png")).getInputStream()
+                    )),
+                    AppConfig.getMockErrors(),
+                    AppConfig.toUser(user1)
+            );
+
+            Review review2 = this.reviewService.create(
+                    ReviewRequest.CreateReview.builder()
+                            .spotId(spot1.getId())
+                            .year(2024)
+                            .month(1)
+                            .day(1)
+                            .title("리뷰제목2")
+                            .content("리뷰내용2")
+                            .score(4.0)
+                            .hashtags(
+                                    List.of(
+                                            "해시태그3",
+                                            "해시태그4"
+                                    )
+                            )
+                            .build(),
+                    List.of(new MockMultipartFile(
+                            "images",
+                            "test.png",
+                            AppConfig.getMediaType("test.png"),
+                            this.resourceLoader.getResource("classpath:/static/image/%s".formatted("test.png")).getInputStream()
+                    )),
+                    AppConfig.getMockErrors(),
+                    AppConfig.toUser(user2)
+            );
 
             // comment init data
             Comment comment1 = this.commentService.create(user1, review1, "댓글내용1", null);

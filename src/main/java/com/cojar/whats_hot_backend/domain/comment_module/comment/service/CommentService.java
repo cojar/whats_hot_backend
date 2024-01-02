@@ -9,11 +9,11 @@ import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewSer
 import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
+import com.cojar.whats_hot_backend.global.util.AppConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
 import java.time.LocalDateTime;
@@ -76,7 +76,7 @@ public class CommentService {
 
     public ResData getValidate(Long commentId) {
 
-        Errors errors = new BeanPropertyBindingResult(null,"comment");
+        Errors errors = AppConfig.getMockErrors("comment");
 
         errors.reject("not exist", new Object[]{commentId}, "Comment that has id does not exist");
 
@@ -96,7 +96,7 @@ public class CommentService {
 
     public ResData getMyCommentsValidate(Member author) {
 
-        Errors errors = new BeanPropertyBindingResult(null,"comment");
+        Errors errors = AppConfig.getMockErrors("comment");
 
         errors.reject("not exist", new Object[]{author.getId()}, "Author's comments does not exist");
 
@@ -153,7 +153,7 @@ public class CommentService {
     public ResData deleteValidate(User user, Comment comment) {
 
         if (comment == null) {
-            Errors errors = new BeanPropertyBindingResult(null,"comment");
+            Errors errors = AppConfig.getMockErrors("comment");
 
             errors.reject("not exist", new Object[]{"NULL"}, "Comment that has id does not exist");
 
@@ -166,7 +166,7 @@ public class CommentService {
         }
 
         if (!comment.getAuthor().getUsername().equals(user.getUsername())) {
-            Errors errors = new BeanPropertyBindingResult(null, "comment");
+            Errors errors = AppConfig.getMockErrors("comment");
 
             errors.reject("miss match", new Object[]{user.getUsername()}, "Author' username and user's username is miss match ");
 
@@ -184,7 +184,7 @@ public class CommentService {
     public ResData likeValidate(User user, Comment comment) {
 
         if (comment == null) {
-            Errors errors = new BeanPropertyBindingResult(null, "comment");
+            Errors errors = AppConfig.getMockErrors("comment");
 
             errors.reject("not exist", new Object[]{"NULL"}, "Comment that has id does not exist");
 
@@ -197,7 +197,7 @@ public class CommentService {
         }
 
         if (comment.getAuthor().getUsername().equals(user.getUsername())) {
-            Errors errors = new BeanPropertyBindingResult(null, "comment");
+            Errors errors = AppConfig.getMockErrors("comment");
 
             errors.reject("like not allowed", new Object[]{user.getUsername()}, "Author can not like their own comment");
 

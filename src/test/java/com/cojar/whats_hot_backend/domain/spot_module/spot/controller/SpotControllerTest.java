@@ -69,7 +69,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Category category = this.categoryService.getCategoryById(3L);
         String name = "쿠우쿠우 대전둔산점";
@@ -171,7 +171,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         List<Long> checkList = getCheckListNotCreated();
 
@@ -256,7 +256,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         List<Long> checkList = getCheckListNotCreated();
 
@@ -334,7 +334,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         List<Long> checkList = getCheckListNotCreated();
 
@@ -419,7 +419,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         List<Long> checkList = getCheckListNotCreated();
 
@@ -496,7 +496,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         List<Long> checkList = getCheckListNotCreated();
 
@@ -566,7 +566,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         List<Long> checkList = getCheckListNotCreated();
 
@@ -636,7 +636,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         List<Long> checkList = getCheckListNotCreated();
 
@@ -742,7 +742,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
         Category category = this.categoryService.getCategoryById(4L);
@@ -861,7 +861,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
         Spot spot = this.spotService.getSpotById(id);
@@ -953,7 +953,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
         Category category = this.categoryService.getCategoryById(4L);
@@ -1031,7 +1031,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
@@ -1095,7 +1095,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long id = 100000000L;
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
@@ -1140,7 +1140,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
         Spot before = this.spotService.getSpotById(id);
@@ -1199,7 +1199,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
         Long categoryId = 10000000L;
@@ -1251,7 +1251,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
         Spot before = this.spotService.getSpotById(id);
@@ -1308,7 +1308,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
         String name = "장소2";
@@ -1361,7 +1361,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
         Spot before = this.spotService.getSpotById(id);
@@ -1420,7 +1420,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
         Spot before = this.spotService.getSpotById(id);
@@ -1479,7 +1479,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
         Spot before = this.spotService.getSpotById(id);
@@ -1584,7 +1584,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
 
@@ -1618,7 +1618,7 @@ class SpotControllerTest extends BaseControllerTest {
         // given
         String username = "admin";
         String password = "1234";
-        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+        String accessToken = this.getAccessToken(username, password);
 
         Long id = 100000000L;
 

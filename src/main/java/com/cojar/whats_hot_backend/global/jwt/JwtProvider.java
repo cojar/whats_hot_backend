@@ -27,7 +27,7 @@ public class JwtProvider {
         return Keys.hmacShaKeyFor(keyBase64Encoded.getBytes());
     }
 
-    public SecretKey getSecretKey() {
+    private SecretKey getSecretKey() {
 
         if (this.secretKey == null) this.secretKey = this.genSecretKey();
 

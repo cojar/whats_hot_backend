@@ -20,6 +20,7 @@ import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.DataModel;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
+import com.cojar.whats_hot_backend.global.util.AppConfig;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -308,7 +308,7 @@ public class SpotService {
 
     private void deleteValidate(Long id) {
 
-        Errors errors = new BeanPropertyBindingResult(null, "request");
+        Errors errors = AppConfig.getMockErrors("spot");
 
         if (!this.spotRepository.existsById(id)) {
             errors.reject("not exist", new Object[]{id}, "spot that has id does not exist");
@@ -322,20 +322,23 @@ public class SpotService {
         }
     }
 
-    public Spot updateReview(Spot spot, Review review) {
+    @Transactional
+    public void updateReview(Spot spot, Review review) {
 
         List<Review> reviews = spot.getReviews();
         reviews.add(review);
         Double averageScore = (spot.getAverageScore() + review.getScore()) / reviews.size();
 
-        return spot.toBuilder()
+        spot = spot.toBuilder()
                 .averageScore(averageScore)
                 .reviews(reviews)
                 .build();
+
+        this.spotRepository.save(spot);
     }
 
     public ResData getSpotValidate(Long spotid){
-        Errors errors = new BeanPropertyBindingResult(null,"spot");
+        Errors errors = AppConfig.getMockErrors("spot");
 
         errors.reject("not exist", new Object[]{spotid}, "Spot that has id does not exist");
         if (!this.spotRepository.existsById(spotid)) {

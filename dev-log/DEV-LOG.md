@@ -1,5 +1,23 @@
 # What's Hot Dev-Log
 
+## 24-01-01
+### feature/post-api-reviews
+- [x] 생성 로직 수정 및 S-03-01 TC 점검
+- [x] 생성 TC 중 Bad Request 부분에서 엔티티 미생성 확인 추가
+- [x] InitConfig 리뷰 생성 관련 로직 변경 및 미사용 로직 제거
+
+## 23-12-31
+### feature/member_module-member
+- [x] login 로직 수정 및 로그인이 필요한 모든 TC 점검
+- [x] json 문자열 직접 사용하는 부분 ObjectMapper 사용하도록 변경
+- [x] logout 로직 수정 및 관련 TC 점검
+- [x] me 로직 수정 및 관련 TC 점검
+- [x] updatePassword 로직 수정 및 관련 TC 점검
+- [x] findUsername 로직 수정 및 관련 TC 점검
+- [x] findPassword 로직 수정 및 관련 TC 점검
+- [x] 테스트 코드 로그인 로직 수정
+- [x] 미사용 패키지 정리
+
 ## 23-12-29
 ### feature/post-api-categories
 - [x] 맛집, 여행지, 숙박 대/중/소분류로 나누어 카테고리 편성
