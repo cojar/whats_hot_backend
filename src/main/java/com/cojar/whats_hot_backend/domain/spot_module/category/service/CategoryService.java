@@ -14,9 +14,9 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public Category create(String name, Integer depth, Long parent_Id) {
+    public Category create(String name, Integer depth, Long parentId) {
 
-        Category parent = this.categoryRepository.findById(parent_Id)
+        Category parent = this.categoryRepository.findById(parentId == null ? -1 : parentId)
                 .orElse(null);
 
         Category category = Category.builder()
