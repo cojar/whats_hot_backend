@@ -1,15 +1,10 @@
 package com.cojar.whats_hot_backend.domain.spot_module.spot.controller;
 
-import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
-import com.cojar.whats_hot_backend.domain.spot_module.category.service.CategoryService;
-import com.cojar.whats_hot_backend.domain.spot_module.menu_item.service.MenuItemService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.api_response.SpotApiResponse;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
-import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.service.SpotHashtagService;
-import com.cojar.whats_hot_backend.domain.spot_module.spot_image.service.SpotImageService;
 import com.cojar.whats_hot_backend.global.response.DataModel;
 import com.cojar.whats_hot_backend.global.response.PagedDataModel;
 import com.cojar.whats_hot_backend.global.response.ResCode;
@@ -40,11 +35,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 public class SpotController {
 
     private final SpotService spotService;
-    private final CategoryService categoryService;
-    private final SpotHashtagService spotHashtagService;
-    private final MenuItemService menuItemService;
-    private final FileService fileService;
-    private final SpotImageService spotImageService;
 
     @SpotApiResponse.Create
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

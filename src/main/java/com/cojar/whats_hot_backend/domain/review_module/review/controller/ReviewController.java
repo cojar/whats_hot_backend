@@ -125,6 +125,8 @@ public class ReviewController {
     public ResponseEntity deleteReview(@PathVariable(value = "id") Long id,
                                        @AuthenticationPrincipal User user) {
 
+        this.reviewService.delete(id, user);
+
         ResData resData = ResData.of(
                 ResCode.S_03_05,
                 linkTo(this.getClass())

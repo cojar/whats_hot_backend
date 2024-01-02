@@ -7,6 +7,7 @@ import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewSer
 import com.cojar.whats_hot_backend.domain.review_module.review_hashtag.service.ReviewHashtagService;
 import com.cojar.whats_hot_backend.domain.review_module.review_image.service.ReviewImageService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
+import com.cojar.whats_hot_backend.global.response.ResCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -796,5 +798,110 @@ class ReviewControllerTest extends BaseControllerTest {
         assertThat(this.reviewHashtagService.count()).isEqualTo(checkList.get(i++));
         assertThat(this.reviewImageService.count()).isEqualTo(checkList.get(i++));
         assertThat(this.fileService.count()).isEqualTo(checkList.get(i));
+    }
+
+    @Transactional
+    @Test
+    @DisplayName("delete:/api/reviews/{id} - ok, S-03-05")
+    public void deleteReview_OK() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1L;
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(delete("/api/reviews/%s".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(ResCode.S_03_05.getStatus().name()))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value(ResCode.S_03_05.getCode()))
+                .andExpect(jsonPath("message").value(ResCode.S_03_05.getMessage()))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+
+        assertThat(this.reviewService.getReviewById(id)).isNull();
+    }
+
+    @Test
+    @DisplayName("delete:/api/reviews/{id} - bad request not exist, F-03-05-01")
+    public void deleteReview_BadRequest_NotExist() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 100000000L;
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(delete("/api/reviews/%s".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResCode.F_03_05_01.getStatus().name()))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value(ResCode.F_03_05_01.getCode()))
+                .andExpect(jsonPath("message").value(ResCode.F_03_05_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(id.toString()))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    @Test
+    @DisplayName("delete:/api/reviews/{id} - bad request has no authority, F-03-05-02")
+    public void deleteReview_BadRequest_HasNoAuthority() throws Exception {
+
+        // given
+        String username = "user2";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1L;
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(delete("/api/reviews/%s".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResCode.F_03_05_02.getStatus().name()))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value(ResCode.F_03_05_02.getCode()))
+                .andExpect(jsonPath("message").value(ResCode.F_03_05_02.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(username))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
     }
 }

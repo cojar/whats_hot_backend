@@ -1,5 +1,11 @@
 # What's Hot Dev-Log
 
+## 24-01-02
+### feature/delete-api-reviews-id
+- [x] S-03-05 TC 추가
+- [x] F-03-05-01 TC 추가
+- [x] F-03-05-02 TC 추가
+
 ## 24-01-01
 ### feature/post-api-reviews
 - [x] 생성 로직 수정 및 S-03-01 TC 점검
@@ -22,7 +28,6 @@
 ### feature/post-api-categories
 - [x] 맛집, 여행지, 숙박 대/중/소분류로 나누어 카테고리 편성
 - [x] S-05-01 카테고리생성 TC 작성
-- [ ] F-05-01-01 카테고리생성 TC 작성 중
 
 ### feature/get-api-spots-id
 - [x] get spot detail 작성

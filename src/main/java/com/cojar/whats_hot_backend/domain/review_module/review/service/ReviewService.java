@@ -20,6 +20,7 @@ import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.DataModel;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
+import com.cojar.whats_hot_backend.global.util.AppConfig;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -136,5 +138,47 @@ public class ReviewService {
                     );
                     return dataModel;
                 });
+    }
+
+    @Transactional
+    public void delete(Long id, User user) {
+
+        this.deleteValidate(id, user);
+
+        Review review = this.getReviewById(id);
+
+        List<_File> files = review.getImages().stream()
+                .map(image -> image.getImage())
+                .collect(Collectors.toList());
+        this.fileService.deleteFile(files);
+
+        this.reviewRepository.delete(review);
+    }
+
+    private void deleteValidate(Long id, User user) {
+
+        Errors errors = AppConfig.getMockErrors("review");
+
+        if (!this.reviewRepository.existsById(id)) {
+            errors.reject("not exist", new Object[]{id}, "review that has id does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_05_01,
+                            errors
+                    )
+            );
+        }
+
+        if (!this.getReviewById(id).getAuthor().getUsername().equals(user.getUsername())) {
+            errors.reject("has no authority", new Object[]{user.getUsername()}, "user has no authority to delete this review");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_05_02,
+                            errors
+                    )
+            );
+        }
     }
 }
