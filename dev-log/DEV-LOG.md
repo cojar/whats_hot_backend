@@ -4,6 +4,7 @@
 ### feature/delete-api-reviews-id
 - [x] S-03-05 TC 추가
 - [x] F-03-05-01 TC 추가
+- [x] F-03-05-02 TC 추가
 
 ## 24-01-01
 ### feature/post-api-reviews

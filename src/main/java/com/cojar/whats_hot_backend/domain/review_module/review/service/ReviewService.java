@@ -169,5 +169,16 @@ public class ReviewService {
                     )
             );
         }
+
+        if (!this.getReviewById(id).getAuthor().getUsername().equals(user.getUsername())) {
+            errors.reject("has no authority", new Object[]{user.getUsername()}, "user has no authority to delete this review");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_05_02,
+                            errors
+                    )
+            );
+        }
     }
 }
