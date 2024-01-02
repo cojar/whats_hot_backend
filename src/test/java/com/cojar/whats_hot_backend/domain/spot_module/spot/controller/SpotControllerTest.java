@@ -1578,7 +1578,7 @@ class SpotControllerTest extends BaseControllerTest {
 
     @Transactional
     @Test
-    @DisplayName("delete:/api/spots - ok, S-02-05")
+    @DisplayName("delete:/api/spots/{id} - ok, S-02-05")
     public void deleteSpot_OK() throws Exception {
 
         // given
@@ -1612,7 +1612,7 @@ class SpotControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("delete:/api/spots - bad request not exist, F-02-05-01")
+    @DisplayName("delete:/api/spots/{id} - bad request not exist, F-02-05-01")
     public void deleteSpot_BadRequest_NotExist() throws Exception {
 
         // given

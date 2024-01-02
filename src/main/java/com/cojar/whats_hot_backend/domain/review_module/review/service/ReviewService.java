@@ -33,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -136,5 +137,18 @@ public class ReviewService {
                     );
                     return dataModel;
                 });
+    }
+
+    @Transactional
+    public void delete(Long id, User user) {
+
+        Review review = this.getReviewById(id);
+
+        List<_File> files = review.getImages().stream()
+                .map(image -> image.getImage())
+                .collect(Collectors.toList());
+        this.fileService.deleteFile(files);
+
+        this.reviewRepository.delete(review);
     }
 }
