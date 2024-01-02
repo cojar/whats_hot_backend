@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -77,7 +78,7 @@ class CategoryControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = this.mockMvc
-                .perform(post ("/api/categories")
+                .perform(post("/api/categories")
                         .header("Authorization", accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(this.objectMapper.writeValueAsString(request))
@@ -100,11 +101,57 @@ class CategoryControllerTest extends BaseControllerTest {
         ;
         if (parentId != null) resultActions.andExpect(jsonPath("data.parentId").value(parentId));
     }
+
     private static Stream<Arguments> argsFor_createCategory_Created() {
         return Stream.of(
                 Arguments.of("항공권", 1, null),
                 Arguments.of("퓨전요리", 2, 1L),
                 Arguments.of("카라반", 3, 245L)
+        );
+    }
+
+    @Transactional
+    @ParameterizedTest
+    @MethodSource("argsFor_createCategory_BadRequest_NotBlank")
+    @DisplayName("post:/api/categories - created, F-05-01-01")
+    public void createCategory_BadRequest_NotBlank(String name, Integer depth, Long parentId) throws Exception {
+
+        // given
+        String username = "admin";
+        String password = "1234";
+        String accessToken = "Bearer " + this.memberService.getAccessToken(loginReq.of(username, password));
+
+
+        CategoryRequest.CreateCategory request = CategoryRequest.CreateCategory.builder()
+                .name(name)
+                .depth(depth)
+                .parentId(parentId)
+                .build();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(post("/api/categories")
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-05-01-01"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data").doesNotExist())
+        ; // No data expected on failure
+        if (parentId != null) resultActions.andExpect(jsonPath("data.parentId").value(parentId));
+    }
+    private static Stream<Arguments> argsFor_createCategory_BadRequest_NotBlank() {
+        return Stream.of(
+                Arguments.of("", 1, null)    // 이름값이 빈 문자열일 때
         );
     }
 

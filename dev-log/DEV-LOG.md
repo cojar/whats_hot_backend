@@ -4,6 +4,7 @@
 ### feature/post-api-categories
 - [x] 맛집, 여행지, 숙박 대/중/소분류로 나누어 카테고리 편성
 - [x] S-05-01 카테고리생성 TC 작성
+- [ ] F-05-01-01 카테고리생성 TC 작성 중
 
 ### feature/get-api-spots-id
 - [x] get spot detail 작성

@@ -11,6 +11,7 @@ import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotDto;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
+import io.micrometer.common.util.StringUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +35,13 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-//    @CategoryApiResponse.Create
+    //    @CategoryApiResponse.Create
     @PostMapping
-    public ResponseEntity createCategory (@Valid @RequestBody CategoryRequest.CreateCategory request, Errors errors) {
+    public ResponseEntity<?> createCategory(@Valid @RequestBody CategoryRequest.CreateCategory request, Errors errors) {
+        // 유효성 검사
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body("Invalid request body");
+        }
         Category category = this.categoryService.create(request.getName(), request.getDepth(), request.getParentId());
 
         ResData resData = ResData.of(

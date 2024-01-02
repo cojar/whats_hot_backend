@@ -46,6 +46,9 @@ public enum ResCode {
     // category controller success codes
     S_05_01(HttpStatus.CREATED, "S-05-01", "카테고리 등록이 완료되었습니다"),
 
+    // category controller fail codes
+    F_05_01_01(HttpStatus.BAD_REQUEST, "F-05-01-01", "요청 값이 올바르지 않습니다"),
+
     // file service fail codes
     F_00_00_01(HttpStatus.BAD_REQUEST, "F-00-00-01", "이미지 형식만 업로드할 수 있습니다"),
     F_00_00_02(HttpStatus.BAD_REQUEST, "F-00-00-02", "JPG, JPEG, PNG 확장자만 업로드할 수 있습니다"),
@@ -97,8 +100,7 @@ public enum ResCode {
     F_04_05_01(HttpStatus.BAD_REQUEST, "F-04-05-01", "해당 아이디를 가진 댓글이 존재하지 않습니다"),
     F_04_05_02(HttpStatus.BAD_REQUEST, "F-04-05-02", "해당 댓글에 대한 삭제 권한이 없습니다"),
     F_04_06_01(HttpStatus.BAD_REQUEST, "F-04-06-01", "해당 아이디를 가진 댓글이 존재하지 않습니다"),
-    F_04_06_02(HttpStatus.BAD_REQUEST, "F-04-06-02", "본인이 작성한 댓글에는 좋아요를 누를 수 없습니다")
-    ;
+    F_04_06_02(HttpStatus.BAD_REQUEST, "F-04-06-02", "본인이 작성한 댓글에는 좋아요를 누를 수 없습니다");
 
     private HttpStatus status;
     private String code;
