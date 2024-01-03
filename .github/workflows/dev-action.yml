@@ -82,8 +82,8 @@ jobs:
           context: .
           push: true
           tags: |
-            whats_hot:${{ needs.tag.outputs.tag_name }},
-            whats_hot:latest
+            ghcr.io/${{ env.OWNER_LC }}/whats_hot:${{ needs.tag.outputs.tag_name }},
+            ghcr.io/${{ env.OWNER_LC }}/whats_hot:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
   deploy:
@@ -104,8 +104,8 @@ jobs:
             docker stop whats_hot
             docker rm whats_hot
           fi
-          isExist=$(docker images -q whats_hot:latest)
+          isExist=$(docker images -q ghcr.io/${{ github.actor }}/whats_hot:latest)
           if [ -n "$isExist" ]; then
-            docker rmi whats_hot:latest
+            docker rmi ghcr.io/${{ github.actor }}/whats_hot:latest
           fi
-          docker run -d -p 8084:8080 --name whats_hot --restart always whats_hot:latest
+          docker run -d -p 8084:8080 --name whats_hot --restart always ghcr.io/${{ github.actor }}/whats_hot:latest
