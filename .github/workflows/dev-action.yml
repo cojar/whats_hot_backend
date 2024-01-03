@@ -76,6 +76,16 @@ jobs:
           echo "OWNER_LC=${OWNER,,}" >> ${GITHUB_ENV}
         env:
           OWNER: '${{ github.repository_owner }}'
+      - name: 앱 설정 파일 생성
+        env:
+          ACTIONS_STEP_DEBUG: true
+          APP_PROP: ${{ secrets.APP_PROP }}
+          APP_PROD_PROP: ${{ secrets.APP_PROD_PROP }}
+          APP_TEST_PROP: ${{ secrets.APP_TEST_PROP }}
+        run: |
+          echo "$APP_PROP" > src/main/resources/application.properties
+          echo "$APP_PROD_PROP" > src/main/resources/application-prod.properties
+          echo "$APP_TEST_PROP" > src/test/resources/application-test.properties
       - name: 빌드 앤 푸시
         uses: docker/build-push-action@v3
         with:
