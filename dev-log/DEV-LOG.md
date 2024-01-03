@@ -4,6 +4,9 @@
 ### feature/post-api-categories
 - [x] InitConfig 카테고리데이터 세부지역 제거 및 뎁스별 재정립
 
+### feature/spring_doc
+- [x] swagger-ui 문제 해결 시도
+
 ## 24-01-03
 ### dev
 - [x] 1차 배포 작업 진행
