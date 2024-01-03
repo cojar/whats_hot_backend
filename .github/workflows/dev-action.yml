@@ -10,6 +10,7 @@ on:
       - 'README.md'
     branches:
       - 'dev'
+permissions: write-all
 jobs:
   build:
     name: 빌드
@@ -24,6 +25,16 @@ jobs:
           cache: 'gradle'
       - name: gradlew 실행 권한 부여
         run: chmod +x gradlew
+      - name: 앱 설정 파일 생성
+        env:
+          ACTIONS_STEP_DEBUG: true
+          APP_PROP: ${{ secrets.APP_PROP }}
+          APP_PROD_PROP: ${{ secrets.APP_PROD_PROP }}
+          APP_TEST_PROP: ${{ secrets.APP_TEST_PROP }}
+        run: |
+          echo "$APP_PROP" > src/main/resources/application.properties
+          echo "$APP_PROD_PROP" > src/main/resources/application-prod.properties
+          echo "$APP_TEST_PROP" > src/test/resources/application-test.properties
       - name: gradle 빌드
         run: ./gradlew build -x test --no-daemon
       - name: build 폴더를 캐시에 저장
@@ -96,7 +107,20 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >> ${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
       - name: Docker run
         run: |
-          docker stop whats_hot && docker rm whats_hot && docker rmi ghcr.io/${{ github.actor }}/whats_hot:latest
-          docker run -d -p 8084:8080 -v /docker_projects/whats_hot/volumes/file:/file --name whats_hot --restart always ghcr.io/${{ github.actor }}/whats_hot:latest
+          isRunning=$(docker ps -q -f name=whats_hot)
+          if [ -n "$isRunning" ]; then
+            docker stop whats_hot
+            docker rm whats_hot
+          fi
+          isExist=$(docker images -q ghcr.io/${{ env.OWNER_LC }}/whats_hot:latest)
+          if [ -n "$isExist" ]; then
+            docker rmi ghcr.io/${{ env.OWNER_LC }}/whats_hot:latest
+          fi
+          docker run -d -p 8084:8080 -v /docker_projects/whats_hot/volumes/file:/file --name whats_hot --restart always ghcr.io/${{ env.OWNER_LC }}/whats_hot:latest
