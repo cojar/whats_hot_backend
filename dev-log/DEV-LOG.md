@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 24-01-04
+### feature/post-api-categories
+- [x] InitConfig 카테고리데이터 세부지역 제거 및 뎁스별 재정립
+
 ## 24-01-02
 ### feature/delete-api-reviews-id
 - [x] S-03-05 TC 추가
