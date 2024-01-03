@@ -1708,4 +1708,27 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue[0]").value(id.toString()))
                 .andExpect(jsonPath("_links.index").exists());
     }
+
+    @Test
+    @DisplayName("get:api/spots/list/average - ok, S-02-06")
+    void getList_sort_average() throws Exception {
+        // When
+        ResultActions resultActions = mockMvc
+                .perform(multipart(HttpMethod.GET, "/api/spots/average")
+                        .contentType(MediaType.ALL_VALUE)
+                        .accept(MediaTypes.HAL_JSON)
+
+                )
+                .andDo(print());
+
+        // Then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(ResCode.S_02_06.getStatus().name()))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value(ResCode.S_02_06.getCode()))
+                .andExpect(jsonPath("message").value(ResCode.S_02_06.getMessage()))
+                .andExpect(jsonPath("$.data.list[0]").exists());
+    }
+
 }
