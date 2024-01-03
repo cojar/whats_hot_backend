@@ -1,4 +1,7 @@
 # What's Hot Dev-Log
+## 24-01-03
+### feature/get-api-spots-average
+- [x] S-02-06 ResCode 추가
 
 ## 24-01-02
 ### feature/delete-api-reviews-id
