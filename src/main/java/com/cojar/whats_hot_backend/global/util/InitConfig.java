@@ -113,9 +113,6 @@ public class InitConfig {
 
             // 국내맛집 대분류
             Category gourmet = this.categoryService.create("맛집", 1, -1L);
-            Category category2 = this.categoryService.create("2차", 2, gourmet.getId());
-            Category category3 = this.categoryService.create("3차-1", 3, category2.getId());
-            Category category4 = this.categoryService.create("3차-2", 3, category2.getId());
 
             // 국내맛집 중분류
             Category koreanFood = this.categoryService.create("한식", 2, gourmet.getId());
@@ -127,7 +124,6 @@ public class InitConfig {
             Category dessert = this.categoryService.create("디저트", 2, gourmet.getId());
 
             // 국내맛집 소분류
-            Category gourmetETC = this.categoryService.create("맛집 전체", 3, gourmet.getId());
             Category pigFeetAndNapaWrapsWithPork = this.categoryService.create("족발/보쌈", 3, koreanFood.getId());
             Category noodle = this.categoryService.create("면", 3, koreanFood.getId());
             Category grilledMeat = this.categoryService.create("고기/구이", 3, koreanFood.getId());
@@ -149,44 +145,23 @@ public class InitConfig {
             // 국내여행지 대분류
             Category destination = this.categoryService.create("여행지", 1, -1L);
 
-            // 국내여행지 중분류
-            Category seoul = this.categoryService.create("서울", 2, destination.getId());
-            Category busan = this.categoryService.create("부산", 2, destination.getId());
-            Category incheon = this.categoryService.create("인천", 2, destination.getId());
-            Category daegu = this.categoryService.create("대구", 2, destination.getId());
-            Category gwangju = this.categoryService.create("광주", 2, destination.getId());
-            Category daejeon = this.categoryService.create("대전", 2, destination.getId());
-            Category ulsan = this.categoryService.create("울산", 2, destination.getId());
-            Category sejong = this.categoryService.create("세종", 2, destination.getId());
-            Category gyeonggi = this.categoryService.create("경기도", 2, destination.getId());
-            Category gangwon = this.categoryService.create("강원도", 2, destination.getId());
-            Category chungbuk = this.categoryService.create("충청북도", 2, destination.getId());
-            Category chungnam = this.categoryService.create("충청남도", 2, destination.getId());
-            Category jeonbuk = this.categoryService.create("전라북도", 2, destination.getId());
-            Category jeonnam = this.categoryService.create("전라남도", 2, destination.getId());
-            Category gyeongbuk = this.categoryService.create("경상북도", 2, destination.getId());
-            Category gyeongnam = this.categoryService.create("경상남도", 2, destination.getId());
-            Category jeju = this.categoryService.create("제주", 2, destination.getId());
-
-            // 서울 소분류
-            Category destinationETC = this.categoryService.create("여행지 전체", 3, destination.getId());
-            Category Palaces = this.categoryService.create("궁궐", 3, destination.getId());
-            Category Parks = this.categoryService.create("공원", 3, destination.getId());
-            Category Museums = this.categoryService.create("박물관", 3, destination.getId());
-            Category Markets = this.categoryService.create("재래시장", 3, destination.getId());
-            Category Landmarks = this.categoryService.create("랜드마크", 3, destination.getId());
-            Category Mountain = this.categoryService.create("산", 3, destination.getId());
-            Category Ocean = this.categoryService.create("바다", 3, destination.getId());
-            Category Valley = this.categoryService.create("계곡", 3, destination.getId());
-            Category Ruins = this.categoryService.create("유적", 3, destination.getId());
-            Category ThemePark = this.categoryService.create("테마파크", 3, destination.getId());
-            Category Activity = this.categoryService.create("액티비티", 3, destination.getId());
+            // 국내여행지 
+            Category Palaces = this.categoryService.create("궁궐", 2, destination.getId());
+            Category Parks = this.categoryService.create("공원", 2, destination.getId());
+            Category Museums = this.categoryService.create("박물관", 2, destination.getId());
+            Category Markets = this.categoryService.create("재래시장", 2, destination.getId());
+            Category Landmarks = this.categoryService.create("랜드마크", 2, destination.getId());
+            Category Mountain = this.categoryService.create("산", 2, destination.getId());
+            Category Ocean = this.categoryService.create("바다", 2, destination.getId());
+            Category Valley = this.categoryService.create("계곡", 2, destination.getId());
+            Category Ruins = this.categoryService.create("유적", 2, destination.getId());
+            Category ThemePark = this.categoryService.create("테마파크", 2, destination.getId());
+            Category Activity = this.categoryService.create("액티비티", 2, destination.getId());
 
             // 숙박 대분류
             Category lodging = this.categoryService.create("숙박", 1, -1L);
 
             // 숙박 중분류
-            Category lodgingSub = this.categoryService.create("숙박 전체", 2, lodging.getId());
             Category hotelAndResort = this.categoryService.create("호텔/리조트", 2, lodging.getId());
             Category Pension = this.categoryService.create("펜션", 2, lodging.getId());
             Category poolVilla = this.categoryService.create("풀빌라", 2, lodging.getId());
