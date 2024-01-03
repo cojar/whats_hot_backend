@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 24-01-04
+### feature/spring_doc
+- [x] swagger-ui 문제 해결 시도
+
 ## 24-01-03
 ### dev
 - [x] 1차 배포 작업 진행
