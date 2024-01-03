@@ -108,4 +108,4 @@ jobs:
           if [ -n "$isExist" ]; then
             docker rmi ghcr.io/${{ env.OWNER_LC }}/whats_hot:latest
           fi
-          docker run -d -p 8084:8080 --name whats_hot --restart always ghcr.io/${{ env.OWNER_LC }}/whats_hot:latest
+          docker run -d -p 8084:8080 -v /docker_projects/whats_hot/volumes/file:/file --name whats_hot --restart always ghcr.io/${{ env.OWNER_LC }}/whats_hot:latest
