@@ -97,6 +97,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >> ${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
       - name: Docker run
         run: |
           isRunning=$(docker ps -q -f name=whats_hot)
@@ -104,8 +109,8 @@ jobs:
             docker stop whats_hot
             docker rm whats_hot
           fi
-          isExist=$(docker images -q ghcr.io/${{ github.actor }}/whats_hot:latest)
+          isExist=$(docker images -q ghcr.io/${{ env.OWNER_LC }}/whats_hot:latest)
           if [ -n "$isExist" ]; then
-            docker rmi ghcr.io/${{ github.actor }}/whats_hot:latest
+            docker rmi ghcr.io/${{ env.OWNER_LC }}/whats_hot:latest
           fi
-          docker run -d -p 8084:8080 --name whats_hot --restart always ghcr.io/${{ github.actor }}/whats_hot:latest
+          docker run -d -p 8084:8080 --name whats_hot --restart always ghcr.io/${{ env.OWNER_LC }}/whats_hot:latest
