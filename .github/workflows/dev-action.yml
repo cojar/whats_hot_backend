@@ -106,7 +106,11 @@ jobs:
             docker stop whats_hot
             docker rm whats_hot
           fi
-          # 이미지 제거
-          docker rmi ghcr.io/${{ github.actor }}/whats_hot:latest
+          # 이미 존재하는 이미지 확인
+          isImageExists=$(docker images -q ghcr.io/${{ github.actor }}/whats_hot:latest)
+          if [ -n "$isImageExists" ]; then
+            # 이미지가 존재하면 제거
+            docker rmi ghcr.io/${{ github.actor }}/whats_hot:latest
+          fi
           # 새로운 컨테이너 실행
           docker run -d -p 8084:8080 -v /docker_projects/whats_hot/volumes/file:/file --name whats_hot --restart always ghcr.io/${{ github.actor }}/whats_hot:latest
