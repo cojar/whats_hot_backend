@@ -128,4 +128,27 @@ public class SpotController {
         return ResponseEntity.ok()
                 .body(resData);
     }
+
+    @SpotApiResponse.List
+    @GetMapping(value = "/average", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity sortAverage(@RequestParam(value = "page", defaultValue = "1") int page,
+                                      @RequestParam(value = "size", defaultValue = "4") int size) {
+
+        Page<DataModel> spotListAverage = this.spotService.sortAverageScore(page, size);
+
+
+        ResData resData = ResData.of(
+                ResCode.S_02_06,
+                PagedDataModel.of(spotListAverage),
+                linkTo(this.getClass()).slash("?page=%s&size=%s".formatted(page, size))
+        );
+
+
+        // TODO: paged links with query; custom method
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Spot/average").withRel("profile"));
+        return ResponseEntity.ok()
+                .body(resData);
+
+    }
+
 }

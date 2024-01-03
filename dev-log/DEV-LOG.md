@@ -2,6 +2,7 @@
 ## 24-01-03
 ### feature/get-api-spots-average
 - [x] S-02-06 ResCode 추가
+- [x] get spot average 작성
 
 ## 24-01-02
 ### feature/delete-api-reviews-id
