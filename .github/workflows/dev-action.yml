@@ -99,18 +99,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker run
         run: |
-          # 이미 실행 중인 컨테이너 확인
-          isContainerRunning=$(docker ps -q -f name=whats_hot)
-          if [ -n "$isContainerRunning" ]; then
-            # 컨테이너가 실행 중이면 중지하고 제거
-            docker stop whats_hot
-            docker rm whats_hot
-          fi
-          # 이미 존재하는 이미지 확인
-          isImageExists=$(docker images -q ghcr.io/${{ github.actor }}/whats_hot:latest)
-          if [ -n "$isImageExists" ]; then
-            # 이미지가 존재하면 제거
-            docker rmi ghcr.io/${{ github.actor }}/whats_hot:latest
-          fi
-          # 새로운 컨테이너 실행
-          docker run -d -p 8084:8080 -v /docker_projects/whats_hot/volumes/file:/file --name whats_hot --restart always ghcr.io/${{ github.actor }}/whats_hot:latest
+          docker stop whats_hot && docker rm whats_hot && docker rmi ghcr.io/${{ env.OWNER_LC }}/whats_hot:latest
+          docker run -d -p 8084:8080 --name whats_hot --restart always ghcr.io/${{ env.OWNER_LC }}/whats_hot:latest
