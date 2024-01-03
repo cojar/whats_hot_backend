@@ -56,7 +56,7 @@ public class AppConfig {
     }
 
     public static String getBaseURL() {
-        return ServletUriComponentsBuilder.fromCurrentContextPath().toUriString();
+        return ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
     }
 
     public static String getBaseFileURL() {
