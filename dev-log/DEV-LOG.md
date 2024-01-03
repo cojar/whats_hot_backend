@@ -6,6 +6,7 @@
 
 ## feature/util
 - [x] WebMvcConfig 추가
+- [x] properties.default 파일 수정
 
 ## 24-01-02
 ### feature/delete-api-reviews-id

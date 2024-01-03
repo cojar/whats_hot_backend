@@ -10,6 +10,6 @@ spring.datasource.password={password}
 
 # File
 file.root.path={directory.path}/file
-file.resource.path=file:///file/
+file.resource.path=file:///{directory.path}/file/
 file.request.path=/file/**
 file.origin.path=/file
