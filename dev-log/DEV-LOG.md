@@ -1,6 +1,9 @@
 # What's Hot Dev-Log
 
 ## 24-01-04
+### feature/post-api-categories
+- [x] InitConfig 카테고리데이터 세부지역 제거 및 뎁스별 재정립
+
 ### feature/spring_doc
 - [x] swagger-ui 문제 해결 시도
 
