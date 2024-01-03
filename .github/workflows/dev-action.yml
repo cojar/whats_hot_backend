@@ -99,8 +99,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker run
         run: |
-          if docker ps -a --format '{{.Names}}' | grep -Eq "^whats_hot$"; then
-            docker stop whats_hot && docker rm whats_hot
-          fi
-          docker rmi ghcr.io/${{ github.actor }}/whats_hot:latest
+          docker stop whats_hot || true 
+          docker rm whats_hot || true
+          docker rmi ghcr.io/${{ github.actor }}/whats_hot:latest || true
           docker run -d -p 8084:8080 -v /docker_projects/whats_hot/volumes/file:/file --name whats_hot --restart always ghcr.io/${{ github.actor }}/whats_hot:latest
