@@ -101,4 +101,4 @@ jobs:
       - name: Docker run
         run: |
           docker stop whats_hot && docker rm whats_hot && docker rmi ghcr.io/${{ github.actor }}/whats_hot:latest
-          docker run -d -p 8084:8080 -v /docker_projects/jigumiyak/volumes/file:/file --name whats_hot --restart always ghcr.io/${{ github.actor }}/whats_hot:latest
+          docker run -d -p 8084:8080 -v /docker_projects/whats_hot/volumes/file:/file --name whats_hot --restart always ghcr.io/${{ github.actor }}/whats_hot:latest
