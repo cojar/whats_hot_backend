@@ -173,7 +173,7 @@ public class InitConfig {
             // spot init data
             Spot spot1 = this.spotService.create(
                     SpotRequest.CreateSpot.builder()
-                            .categoryId(category3.getId())
+                            .categoryId(pigFeetAndNapaWrapsWithPork.getId())
                             .name("장소1")
                             .address("대전 서구 대덕대로 179")
                             .contact("010-1234-5678")
@@ -202,7 +202,7 @@ public class InitConfig {
 
             Spot spot2 = this.spotService.create(
                     SpotRequest.CreateSpot.builder()
-                            .categoryId(category3.getId())
+                            .categoryId(pigFeetAndNapaWrapsWithPork.getId())
                             .name("장소2")
                             .address("대전 서구 대덕대로 179")
                             .contact("010-1234-5678")
