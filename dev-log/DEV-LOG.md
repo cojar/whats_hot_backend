@@ -1,5 +1,13 @@
 # What's Hot Dev-Log
 
+## 24-01-03
+### dev
+- [x] 1차 배포 작업 진행
+
+## feature/util
+- [x] WebMvcConfig 추가
+- [x] properties.default 파일 수정
+
 ## 24-01-02
 ### feature/delete-api-reviews-id
 - [x] S-03-05 TC 추가
