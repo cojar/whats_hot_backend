@@ -13,6 +13,7 @@
 ### fix/base_module-file
 - [x] validate 로직 수정
 - [x] dev-log 작성
+- [x] 버그 수정
 
 ## 24-01-03
 ### dev
