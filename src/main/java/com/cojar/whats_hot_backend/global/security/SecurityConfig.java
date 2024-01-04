@@ -1,5 +1,7 @@
 package com.cojar.whats_hot_backend.global.security;
 
+import com.cojar.whats_hot_backend.global.errors.exception_handler.ApiAuthenticationExceptionHandler;
+import com.cojar.whats_hot_backend.global.errors.exception_handler.ApiAuthorizationExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
-    private final ApiAuthenticationEntrypoint apiAuthenticationEntrypoint;
+    private final ApiAuthenticationExceptionHandler apiAuthenticationExceptionHandler;
+    private final ApiAuthorizationExceptionHandler apiAuthorizationExceptionHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -39,17 +42,27 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/reviews").permitAll() // get:/api/reviews 아무나 접속 가능
                         .requestMatchers(HttpMethod.GET, "/api/reviews/*").permitAll() // get:/api/reviews/* 아무나 접속 가능
                         .requestMatchers(HttpMethod.GET, "/api/comments/*").permitAll() // get:/api/comments/* 아무나 접속 가능
-                        .anyRequest().authenticated()) // 그 외는 인증된 사용자만 접속 가능
+                        .anyRequest().authenticated() // 그 외는 인증된 사용자만 접속 가능
+                )
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(apiAuthenticationExceptionHandler) // 인증 에러
+                        .accessDeniedHandler(apiAuthorizationExceptionHandler)
+                )
                 .cors(cors -> cors
-                        .disable()) // 타 도메인에서 API 호출 가능
+                        .disable() // 타 도메인에서 API 호출 가능
+                )
                 .csrf(csrf -> csrf
-                        .disable()) // CSRF 토큰 끄기
+                        .disable() // CSRF 토큰 끄기
+                )
                 .httpBasic(httpBasic -> httpBasic
-                        .disable()) // httpBasic 로그인 방식 끄기
+                        .disable() // httpBasic 로그인 방식 끄기
+                )
                 .formLogin(formLogin -> formLogin
-                        .disable()) // 폼 로그인 방식 끄기
+                        .disable() // 폼 로그인 방식 끄기
+                )
                 .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 끄기
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 끄기
+                )
                 .addFilterBefore( // b filter 실행 전 a filter 실행
                         jwtAuthorizationFilter, // 강제 인증 할당 메서드 실행
                         UsernamePasswordAuthenticationFilter.class

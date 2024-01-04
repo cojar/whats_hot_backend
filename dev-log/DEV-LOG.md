@@ -10,6 +10,7 @@
 ### feature/errors-exception_handler
 - [x] application-prod.properties.default 수정
 - [x] FileServiceTest TC 점검
+- [x] Auth-Exception Handling 작업
 
 ## 24-01-04
 ### feature/post-api-categories

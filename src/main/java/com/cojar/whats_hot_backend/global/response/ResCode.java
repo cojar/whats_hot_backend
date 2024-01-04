@@ -102,7 +102,11 @@ public enum ResCode {
     F_04_06_02(HttpStatus.BAD_REQUEST, "F-04-06-02", "본인이 작성한 댓글에는 좋아요를 누를 수 없습니다"),
 
     // category controller fail codes
-    F_05_01_01(HttpStatus.BAD_REQUEST, "F-05-01-01", "요청 값이 올바르지 않습니다");
+    F_05_01_01(HttpStatus.BAD_REQUEST, "F-05-01-01", "요청 값이 올바르지 않습니다"),
+
+    // security fail codes
+    F_99_99_01(HttpStatus.UNAUTHORIZED, "F-99-99-01", "로그인이 필요한 요청입니다"),
+    F_99_99_02(HttpStatus.FORBIDDEN, "F-99-99-02", "접근 권한이 없습니다");
 
     private HttpStatus status;
     private String code;

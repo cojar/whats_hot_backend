@@ -1,6 +1,9 @@
 package com.cojar.whats_hot_backend.global.util;
 
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
+import com.cojar.whats_hot_backend.global.response.ResData;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,8 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.security.SecureRandom;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -57,6 +62,10 @@ public class AppConfig {
 
     public static String getBaseURL() {
         return ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+    }
+
+    public static String getIndexURL() {
+        return getBaseURL() + "/swagger-ui/index.html";
     }
 
     public static String getBaseFileURL() {
@@ -126,6 +135,46 @@ public class AppConfig {
             return new ObjectMapper().readValue(jsonString, LinkedHashMap.class);
         } catch (JsonProcessingException e) {
             return null;
+        }
+    }
+
+    public static String responseSerialize(ResData resData) {
+
+        try {
+            StringWriter writer = new StringWriter();
+            JsonGenerator gen = new JsonFactory().createGenerator(writer);
+
+            gen.writeStartObject();
+
+            gen.writeStringField("status", resData.getStatus().name());
+            gen.writeBooleanField("success", resData.isSuccess());
+            gen.writeStringField("code", resData.getCode().toString());
+            gen.writeStringField("message", resData.getMessage().toString());
+
+            if (!resData.getLinks().isEmpty()) {
+                gen.writeFieldName("_links");
+                gen.writeStartObject();
+
+                resData.getLinks().forEach(link -> {
+                    try {
+                        gen.writeFieldName(link.getRel().toString());
+                        gen.writeStartObject();
+                        gen.writeStringField("href", link.getHref());
+                        gen.writeEndObject();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+                gen.writeEndObject();
+            }
+
+            gen.writeEndObject();
+            gen.close();
+            writer.close();
+            return writer.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
