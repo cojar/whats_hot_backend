@@ -7,6 +7,11 @@
 ### feature/spring_doc
 - [x] 내장 톰캣 https 설정 변경으로 인한 롤백
 
+### feature/errors-exception_handler
+- [x] application-prod.properties.default 수정
+- [x] FileServiceTest TC 점검
+- [x] Auth-Exception Handling 작업
+
 ## 24-01-04
 ### feature/post-api-categories
 - [x] InitConfig 카테고리데이터 세부지역 제거 및 뎁스별 재정립

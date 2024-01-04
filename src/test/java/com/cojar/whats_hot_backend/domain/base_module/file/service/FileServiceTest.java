@@ -2,6 +2,7 @@ package com.cojar.whats_hot_backend.domain.base_module.file.service;
 
 import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
+import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,8 @@ import org.springframework.validation.FieldError;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -50,11 +53,8 @@ class FileServiceTest {
                 resource.getInputStream()
         );
 
-        // when
-        ResData resData = this.fileService.validateUnit(_file);
-
-        // then
-        assertThat(resData).isNull();
+        // when, then
+        assertDoesNotThrow(() -> this.fileService.validateUnit(_file));
     }
 
     private static Stream<Arguments> argsFor_validate_Success() {
@@ -81,7 +81,7 @@ class FileServiceTest {
         );
 
         // when
-        ResData resData = this.fileService.validateUnit(_file);
+        ResData resData = assertThrows(ApiResponseException.class, () -> this.fileService.validateUnit(_file)).getResData();
 
         // then
         assertThat(resData).isNotNull();
@@ -117,7 +117,7 @@ class FileServiceTest {
         );
 
         // when
-        ResData resData = this.fileService.validateUnit(_file);
+        ResData resData = assertThrows(ApiResponseException.class, () -> this.fileService.validateUnit(_file)).getResData();
 
         // then
         assertThat(resData).isNotNull();

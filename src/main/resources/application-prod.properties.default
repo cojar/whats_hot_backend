@@ -13,3 +13,9 @@ file.root.path={directory.path}/file
 file.resource.path=file:///{directory.path}/file/
 file.request.path=/file/**
 file.origin.path=/file
+
+# Sever
+server.ssl.key-store={directory.path}
+server.ssl.key-store-type={type}
+server.ssl.key-store-password={password}
+server.ssl.key-alias={alias}

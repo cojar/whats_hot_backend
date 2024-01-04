@@ -1,6 +1,6 @@
 package com.cojar.whats_hot_backend.global.response;
 
-import com.cojar.whats_hot_backend.domain.index_module.index.controller.IndexController;
+import com.cojar.whats_hot_backend.global.util.AppConfig;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
@@ -16,9 +16,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
@@ -62,7 +59,7 @@ public class ResData<T> extends RepresentationModel {
         ResData resData = new ResData<>(resCode, data);
 
         if (data instanceof Errors) {
-            resData.add(linkTo(methodOn(IndexController.class).index()).withRel("index"));
+            resData.add(Link.of(AppConfig.getIndexURL()).withRel("index"));
         }
 
         if (selfLink == null) return resData;
@@ -79,7 +76,7 @@ public class ResData<T> extends RepresentationModel {
         ResData resData = new ResData<>(resCodeSet, data);
 
         if (data instanceof Errors) {
-            resData.add(linkTo(methodOn(IndexController.class).index()).withRel("index"));
+            resData.add(Link.of(AppConfig.getIndexURL()).withRel("index"));
         }
 
         if (selfLink == null) return resData;
