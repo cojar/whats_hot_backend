@@ -1,5 +1,12 @@
 # What's Hot Dev-Log
 
+## 24-01-05
+### dev
+- [x] 내장 톰캣 https로 설정 변경
+
+### feature/spring_doc
+- [x] 내장 톰캣 https 설정 변경으로 인한 롤백
+
 ## 24-01-04
 ### feature/post-api-categories
 - [x] InitConfig 카테고리데이터 세부지역 제거 및 뎁스별 재정립
