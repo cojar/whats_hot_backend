@@ -116,7 +116,7 @@ public class FileService {
 
     public void validateUnit(MultipartFile file) {
 
-        if (_file == null) return;
+        if (file == null) return;
 
         ResData resData = this.validate(file);
 
