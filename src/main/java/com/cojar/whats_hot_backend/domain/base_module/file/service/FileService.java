@@ -114,18 +114,18 @@ public class FileService {
         );
     }
 
-    public ResData validateUnit(MultipartFile file) {
+    public validateUnit(MultipartFile file) {
+
+        if (_file == null) return;
 
         ResData resData = this.validate(file);
 
         if (resData != null) throw new ApiResponseException(resData);
-
-        return null;
     }
 
-    public ResData validateAll(List<MultipartFile> files) {
+    public validateAll(List<MultipartFile> files) {
 
-        if (files == null) return null;
+        if (files == null) return;
 
         Errors errors = AppConfig.getMockErrors(files, "file");
 
@@ -137,8 +137,6 @@ public class FileService {
                 errors);
 
         if (resData != null) throw new ApiResponseException(resData);
-
-        return null;
     }
 
     private ResData validate(MultipartFile file) {

@@ -10,6 +10,10 @@
 ### feature/util
 - [x] spot, review 가 데이터 추가
 
+### fix/base_module-file
+- [x] validate 로직 수정
+- [x] dev-log 작성
+
 ## 24-01-03
 ### dev
 - [x] 1차 배포 작업 진행
