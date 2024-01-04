@@ -51,4 +51,15 @@ public class Category extends BaseEntity {
 
         return String.join(" > ", names);
     }
+
+    public String getRootName() {
+
+        Category category = this;
+
+        while(category.getParent() != null) {
+            category = category.getParent();
+        }
+
+        return category.getName();
+    }
 }
