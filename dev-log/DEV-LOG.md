@@ -7,6 +7,9 @@
 ### feature/spring_doc
 - [x] swagger-ui 문제 해결 시도
 
+### feature/util
+- [x] spot, review 가 데이터 추가
+
 ## 24-01-03
 ### dev
 - [x] 1차 배포 작업 진행
