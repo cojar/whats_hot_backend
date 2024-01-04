@@ -114,7 +114,7 @@ public class FileService {
         );
     }
 
-    public validateUnit(MultipartFile file) {
+    public void validateUnit(MultipartFile file) {
 
         if (_file == null) return;
 
@@ -123,7 +123,7 @@ public class FileService {
         if (resData != null) throw new ApiResponseException(resData);
     }
 
-    public validateAll(List<MultipartFile> files) {
+    public void validateAll(List<MultipartFile> files) {
 
         if (files == null) return;
 
