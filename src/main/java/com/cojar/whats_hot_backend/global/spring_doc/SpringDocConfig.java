@@ -8,11 +8,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
-        info = @Info(title = "What's Hot REST API"),
-        servers = {
-                @Server(url = "http://localhost:8080/", description = "dev"),
-                @Server(url = "https://whb.pintor.dev/", description = "prod-1")
-        }
+        info = @Info(title = "What's Hot REST API")
 )
 @SecurityScheme(
         name = "bearerAuth",
