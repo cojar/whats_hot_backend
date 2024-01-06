@@ -38,7 +38,7 @@ public enum ResCode {
     // comment controller success codes
     S_04_01(HttpStatus.CREATED, "S-04-01", "댓글 등록이 완료되었습니다"),
     S_04_02(HttpStatus.OK, "S-04-02", "요청하신 댓글 정보를 반환합니다"),
-    S_04_03(HttpStatus.OK, "S-04-03", "요청하신 댓글 목록을 반환합니다"),
+    S_04_03(HttpStatus.OK, "S-04-03", "해당 회원이 작성한 댓글 목록을 반환합니다"),
     S_04_04(HttpStatus.OK, "S-04-04", "댓글 수정이 완료되었습니다"),
     S_04_05(HttpStatus.OK, "S-04-05", "댓글 삭제가 완료되었습니다"),
     S_04_06(HttpStatus.OK, "S-04-06", "댓글 좋아요 상태가 변경되었습니다"),
@@ -89,15 +89,25 @@ public enum ResCode {
     F_03_05_02(HttpStatus.BAD_REQUEST, "F-03-05-02", "해당 리뷰에 대한 삭제 권한이 없습니다"),
 
     // comment service fail codes
-    F_04_01_01(HttpStatus.BAD_REQUEST, "F-04-01-01", "해당 아이디를 가진 리뷰가 존재하지 않습니다"),
-    F_04_01_02(HttpStatus.BAD_REQUEST, "F-04-01-02", "요청 값이 올바르지 않습니다"),
+    F_04_01_01(HttpStatus.BAD_REQUEST, "F-04-01-01", "요청 값이 올바르지 않습니다"),
+    F_04_01_02(HttpStatus.BAD_REQUEST, "F-04-01-02", "해당 아이디를 가진 리뷰가 존재하지 않습니다"),
+    F_04_01_03(HttpStatus.BAD_REQUEST, "F-04-01-03", "해당 아이디를 가진 댓글이 존재하지 않습니다"),
+    F_04_01_04(HttpStatus.BAD_REQUEST, "F-04-01-04", "해당 아이디를 가진 댓글이 리뷰 내에 존재하지 않습니다"),
+
     F_04_02_01(HttpStatus.BAD_REQUEST, "F-04-02-01", "해당 아이디를 가진 댓글이 존재하지 않습니다"),
+
     F_04_03_01(HttpStatus.BAD_REQUEST, "F-04-03-01", "해당 회원이 작성한 댓글이 없습니다"),
-    F_04_04_01(HttpStatus.BAD_REQUEST, "F-04-04-01", "요청 값이 올바르지 않습니다"),
-    F_04_04_02(HttpStatus.BAD_REQUEST, "F-04-04-02", "해당 아이디를 가진 댓글이 존재하지 않습니다"),
+    F_04_03_02(HttpStatus.BAD_REQUEST, "F-04-03-02", "허용되지 않는 페이지 당 댓글 개수입니다"),
+    F_04_03_03(HttpStatus.BAD_REQUEST, "F-04-03-03", "존재하지 않는 페이지입니다"),
+    F_04_03_04(HttpStatus.BAD_REQUEST, "F-04-03-04", "허용되지 않는 정렬 옵션입니다"),
+
+    F_04_04_01(HttpStatus.BAD_REQUEST, "F-04-04-01", "해당 아이디를 가진 댓글이 존재하지 않습니다"),
+    F_04_04_02(HttpStatus.BAD_REQUEST, "F-04-04-02", "요청 값이 올바르지 않습니다"),
     F_04_04_03(HttpStatus.BAD_REQUEST, "F-04-04-03", "해당 댓글에 대한 수정 권한이 없습니다"),
+
     F_04_05_01(HttpStatus.BAD_REQUEST, "F-04-05-01", "해당 아이디를 가진 댓글이 존재하지 않습니다"),
     F_04_05_02(HttpStatus.BAD_REQUEST, "F-04-05-02", "해당 댓글에 대한 삭제 권한이 없습니다"),
+
     F_04_06_01(HttpStatus.BAD_REQUEST, "F-04-06-01", "해당 아이디를 가진 댓글이 존재하지 않습니다"),
     F_04_06_02(HttpStatus.BAD_REQUEST, "F-04-06-02", "본인이 작성한 댓글에는 좋아요를 누를 수 없습니다"),
 

@@ -16,22 +16,24 @@ public class CommentDto {
 
     private final LocalDateTime modifyDate;
 
-    private final String author;
-
     private final String content;
 
     private final Long liked;
 
-    private final Long tagId;
+    private final String author;
 
+    private final Long reviewId;
+
+    private final Long tagId;
 
     public CommentDto (Comment comment) {
         this.id = comment.getId();
         this.createDate = comment.getCreateDate();
         this.modifyDate = comment.getModifyDate();
-        this.author = comment.getAuthor().getUsername();
         this.content = comment.getContent();
         this.liked = comment.getLiked();
+        this.author = comment.getAuthor().getUsername();
+        this.reviewId = comment.getReview().getId();
         this.tagId = comment.getTag() != null ? comment.getTag().getId() : null;
     }
     public static CommentDto of(Comment comment) {

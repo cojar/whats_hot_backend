@@ -1,5 +1,36 @@
 # What's Hot Dev-Log
 
+## 24-01-07
+### feature/comment_module-comment
+- [x] F-04-03-01 TC 수정
+- [x] F-04-03-02 TC 작성
+- [x] F-04-03-03 TC 작성
+- [x] F-04-03-04 TC 작성
+- [x] S-04-04 TC 수정
+- [x] F-04-04-01 TC 수정
+- [x] F-04-04-02 TC 수정
+- [x] F-04-04-03 TC 수정
+- [x] S-04-05 TC 수정
+- [x] F-04-05-01 TC 수정
+- [x] F-04-05-02 TC 수정
+- [x] S-04-06 TC 수정
+- [x] F-04-06-01 TC 수정
+- [x] F-04-06-02 TC 수정
+- [x] 테스트 코드 전반 점검
+
+## 24-01-06
+### feature/comment_module-comment
+- [x] comment_module 서비스 로직 수정
+- [x] InitConfig 수정
+- [x] S-04-01 TC 수정
+- [x] F-04-01-01 TC 수정
+- [x] F-04-01-02 TC 수정
+- [x] F-04-01-03 TC 작성
+- [x] F-04-01-04 TC 작성
+- [x] S-04-02 TC 수정
+- [x] F-04-02-01 TC 수정
+- [x] S-04-03 TC 수정
+
 ## 24-01-05
 ### dev
 - [x] 내장 톰캣 https로 설정 변경

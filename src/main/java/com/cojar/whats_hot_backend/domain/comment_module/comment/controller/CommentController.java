@@ -2,20 +2,22 @@ package com.cojar.whats_hot_backend.domain.comment_module.comment.controller;
 
 import com.cojar.whats_hot_backend.domain.comment_module.comment.api_response.CommentApiResponse;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.dto.CommentDto;
+import com.cojar.whats_hot_backend.domain.comment_module.comment.dto.CommentLikeDto;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.entity.Comment;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.request.CommentRequest;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.service.CommentService;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
-import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
-import com.cojar.whats_hot_backend.domain.spot_module.spot.controller.SpotController;
+import com.cojar.whats_hot_backend.global.response.DataModel;
+import com.cojar.whats_hot_backend.global.response.PagedDataModel;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
@@ -24,9 +26,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -41,29 +40,19 @@ public class CommentController {
     private final ReviewService reviewService;
 
     @CommentApiResponse.Create
-    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity createComment(@Valid @RequestBody CommentRequest.CreateComment request,
-                                        Errors errors,
+    @PostMapping
+    public ResponseEntity createComment(@Valid @RequestBody CommentRequest.CreateComment request, Errors errors,
                                         @AuthenticationPrincipal User user) {
 
-        ResData resData = this.commentService.createValidate(request, errors);
+        Comment comment = this.commentService.create(request, errors, user);
 
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
-
-        Member author = this.memberService.getUserByUsername(user.getUsername());
-
-        Review review = this.reviewService.getReviewById(request.getReviewId());
-
-        Comment tag = (request.getTagId() != null) ? this.commentService.getCommentById(request.getTagId()) : null;
-
-        Comment comment = this.commentService.create(author, review, request.getContent(), tag);
-
-        resData = ResData.of(
+        ResData resData = ResData.of(
                 ResCode.S_04_01,
                 CommentDto.of(comment),
-                linkTo(SpotController.class).slash(comment.getId())
+                linkTo(this.getClass()).slash(comment.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/createComment").withRel("profile"));
+
         return ResponseEntity.created(resData.getSelfUri())
                 .body(resData);
     }
@@ -72,63 +61,48 @@ public class CommentController {
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity getComment(@PathVariable(value = "id") Long id) {
 
-        ResData resData = this.commentService.getValidate(id);
-
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
-
         Comment comment = this.commentService.getCommentById(id);
 
-        resData = ResData.of(
+        ResData resData = ResData.of(
                 ResCode.S_04_02,
                 CommentDto.of(comment),
                 linkTo(this.getClass()).slash(comment.getId())
         );
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/getComment").withRel("profile"));
 
         return ResponseEntity.ok()
                 .body(resData);
     }
 
-
     @CommentApiResponse.Me
     @GetMapping(value = "/me", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity getMyComments(@AuthenticationPrincipal User user) {
+    public ResponseEntity getMyComments(@RequestParam(value = "page", defaultValue = "1") int page,
+                                        @RequestParam(value = "size", defaultValue = "20") int size,
+                                        @RequestParam(value = "sort", defaultValue = "new") String sort,
+                                        @AuthenticationPrincipal User user) {
 
-        Member author = this.memberService.getUserByUsername(user.getUsername());
+        Member member = this.memberService.getUserByUsername(user.getUsername());
+        Page<DataModel> commentPaging = this.commentService.getPagingByAuthor(page, size, sort, member);
 
-        List<Comment> comments = this.commentService.getAllByAuthor(author);
-
-        ResData resData = this.commentService.getMyCommentsValidate(author);
-
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
-
-        List<CommentDto> commentDtos = comments.stream()
-                .map(CommentDto::of)
-                .collect(Collectors.toList());
-
-        resData = ResData.of(
+        ResData resData = ResData.of(
                 ResCode.S_04_03,
-                commentDtos
+                PagedDataModel.of(commentPaging)
         );
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/getMyComments").withRel("profile"));
 
-        return ResponseEntity.ok().body(resData);
-
+        return ResponseEntity.ok()
+                .body(resData);
     }
 
     @CommentApiResponse.Update
-    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/{id}")
     public ResponseEntity updateComment(@Valid @RequestBody CommentRequest.UpdateComment request, Errors errors,
                                         @PathVariable(value = "id") Long id,
                                         @AuthenticationPrincipal User user) {
 
-        Comment comment = this.commentService.getCommentById(id);
+        Comment comment = this.commentService.update(request, errors, id, user);
 
-        ResData resData = this.commentService.updateValidate(user, comment, errors);
-
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
-
-        this.commentService.update(comment, request.getContent());
-
-        resData = ResData.of(
+        ResData resData = ResData.of(
                 ResCode.S_04_04,
                 CommentDto.of(comment),
                 linkTo(this.getClass()).slash(comment.getId())
@@ -145,17 +119,13 @@ public class CommentController {
     public ResponseEntity deleteComment(@PathVariable(value = "id") Long id,
                                         @AuthenticationPrincipal User user) {
 
-        Comment comment = this.commentService.getCommentById(id);
+        this.commentService.delete(id, user);
 
-        ResData resData = this.commentService.deleteValidate(user, comment);
-
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
-
-        this.commentService.delete(comment);
-
-        resData = ResData.of(
-                ResCode.S_04_05
+        ResData resData = ResData.of(
+                ResCode.S_04_05,
+                linkTo(this.getClass())
         );
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/deleteComment").withRel("profile"));
 
         return ResponseEntity.ok()
                 .body(resData);
@@ -166,19 +136,12 @@ public class CommentController {
     public ResponseEntity likeComment(@PathVariable(value = "id") Long id,
                                       @AuthenticationPrincipal User user) {
 
-        Comment comment = this.commentService.getCommentById(id);
+        Member member = this.memberService.getUserByUsername(user.getUsername());
+        Comment comment = this.commentService.toggleLike(id, member);
 
-        Member author = this.memberService.getUserByUsername(user.getUsername());
-
-        ResData resData = this.commentService.likeValidate(user, comment);
-
-        if (resData != null) return ResponseEntity.badRequest().body(resData);
-
-        this.commentService.toggleLike(comment, author);
-
-        resData = ResData.of(
+        ResData resData = ResData.of(
                 ResCode.S_04_06,
-                CommentDto.of(comment),
+                CommentLikeDto.of(comment, member),
                 linkTo(this.getClass()).slash(comment.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/likeComment").withRel("profile"));

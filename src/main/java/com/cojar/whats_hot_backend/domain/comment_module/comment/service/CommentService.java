@@ -1,46 +1,62 @@
 package com.cojar.whats_hot_backend.domain.comment_module.comment.service;
 
+import com.cojar.whats_hot_backend.domain.comment_module.comment.controller.CommentController;
+import com.cojar.whats_hot_backend.domain.comment_module.comment.dto.CommentDto;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.entity.Comment;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.repository.CommentRepository;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.request.CommentRequest;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
-import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
+import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
+import com.cojar.whats_hot_backend.domain.review_module.review.repository.ReviewRepository;
 import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
 import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
+import com.cojar.whats_hot_backend.global.response.DataModel;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
+@Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final ReviewRepository reviewRepository;
 
     private final ReviewService reviewService;
+    private final MemberService memberService;
 
-    public Comment getCommentById(Long id) {
-        return this.commentRepository.findById(id)
-                .orElse(null);
+    public long count() {
+        return this.commentRepository.count();
     }
 
     @Transactional
-    public Comment create(Member author, Review review, String content, Comment tag) {
+    public Comment create(CommentRequest.CreateComment request, Errors errors, User user) {
+
+        this.createValidate(request, errors);
 
         Comment comment = Comment.builder()
-                .author(author)
-                .review(review)
-                .content(content)
-                .tag(tag != null ? tag : null)
+                .author(this.memberService.getUserByUsername(user.getUsername()))
+                .content(request.getContent())
+                .review(this.reviewService.getReviewById(request.getReviewId()))
+                .tag(request.getTagId() != null ? this.getCommentById(request.getTagId()) : null)
                 .build();
 
         this.commentRepository.save(comment);
@@ -48,9 +64,21 @@ public class CommentService {
         return comment;
     }
 
-    public ResData createValidate(CommentRequest.CreateComment request, Errors errors) {
+    public void createValidate(CommentRequest.CreateComment request, Errors errors) {
 
         if (errors.hasErrors()) {
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_04_01_01,
+                            errors
+                    )
+            );
+        }
+
+        if (!this.reviewRepository.existsById(request.getReviewId())) {
+
+            errors.rejectValue("reviewId", "not exist", "review that has reviewId does not exist");
 
             throw new ApiResponseException(
                     ResData.of(
@@ -60,60 +88,159 @@ public class CommentService {
             );
         }
 
-        Review review = this.reviewService.getReviewById(request.getReviewId());
+        if (request.getTagId() != null) {
 
-        if (review == null) {
-            errors.rejectValue("reviewId", "not exist", "존재하지 않는 리뷰입니다.");
+            if (!this.commentRepository.existsById(request.getTagId())) {
 
-            throw new ApiResponseException(
-                    ResData.of(
-                            ResCode.F_04_01_01
-                    )
-            );
+                errors.rejectValue("tagId", "not exist", "comment that has tagId does not exist");
+
+                throw new ApiResponseException(
+                        ResData.of(
+                                ResCode.F_04_01_03,
+                                errors
+                        )
+                );
+            }
+
+            if (this.getCommentById(request.getTagId()).getReview().getId() != request.getReviewId()) {
+
+                errors.rejectValue("tagId", "not include", "comment that has tagId does not include in review");
+
+                throw new ApiResponseException(
+                        ResData.of(
+                                ResCode.F_04_01_04,
+                                errors
+                        )
+                );
+            }
         }
-        return null;
     }
 
-    public ResData getValidate(Long commentId) {
+    public Comment getCommentById(Long id) {
+
+        this.getCommentByIdValidate(id);
+
+        return this.commentRepository.findById(id)
+                .orElse(null);
+    }
+
+    public void getCommentByIdValidate(Long id) {
 
         Errors errors = AppConfig.getMockErrors("comment");
 
-        errors.reject("not exist", new Object[]{commentId}, "Comment that has id does not exist");
+        if (!this.commentRepository.existsById(id)) {
 
-
-        if (!this.commentRepository.existsById(commentId)) {
+            errors.reject("not exist", new Object[]{id}, "comment that has id does not exist");
 
             throw new ApiResponseException(
                     ResData.of(
                             ResCode.F_04_02_01,
-                        errors
+                            errors
                     )
             );
         }
-        return null;
     }
 
+    public Page<DataModel> getPagingByAuthor(int page, int size, String sort, Member author) {
 
-    public ResData getMyCommentsValidate(Member author) {
+        this.getPagingByAuthorValidate(page, size, sort, author);
+
+        List<Sort.Order> sorts = new ArrayList<>();
+        if (sort.equals("like")) {
+            sorts.add(Sort.Order.desc("liked"));
+            sorts.add(Sort.Order.desc("createDate"));
+        } else if (sort.equals("old")) {
+            sorts.add(Sort.Order.asc("createDate"));
+        } else {
+            sorts.add(Sort.Order.desc("createDate"));
+        }
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sorts));
+
+        return this.commentRepository.findAllByAuthor(author, pageable)
+                .map(comment -> {
+                    DataModel dataModel = DataModel.of(
+                            CommentDto.of(comment),
+                            linkTo(CommentController.class).slash(comment.getId())
+                    );
+                    return dataModel;
+                });
+    }
+
+    public void getPagingByAuthorValidate(int page, int size, String sort, Member author) {
 
         Errors errors = AppConfig.getMockErrors("comment");
 
-        errors.reject("not exist", new Object[]{author.getId()}, "Author's comments does not exist");
-
         if (this.commentRepository.countByAuthor(author) == 0) {
+
+            errors.reject("not exist", new Object[]{author.getUsername()}, "comment that has author does not exist");
 
             throw new ApiResponseException(
                     ResData.of(
                             ResCode.F_04_03_01,
-                        errors
+                            errors
                     )
             );
         }
-        return null;
+
+        if (size != 20 && size != 50 && size != 100) {
+
+            errors.reject("not allowed", new Object[]{size}, "size does not allowed");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_04_03_02,
+                            errors
+                    )
+            );
+        }
+
+        if (Math.ceil((double) this.commentRepository.countByAuthor(author) / size) < page) {
+
+            errors.reject("not exist", new Object[]{page}, "page does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_04_03_03,
+                            errors
+                    )
+            );
+        }
+
+        if (!sort.equals("new") && !sort.equals("old") && !sort.equals("like")) {
+
+            errors.reject("not allowed", new Object[]{sort}, "sort does not allowed");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_04_03_04,
+                            errors
+                    )
+            );
+        }
     }
 
-    public ResData updateValidate(User user, Comment comment, Errors errors) {
-        if (errors.hasErrors()) {
+    @Transactional
+    public Comment update(CommentRequest.UpdateComment request, Errors errors, Long id, User user) {
+
+        this.updateValidate(errors, id, user);
+
+        Comment comment = this.getCommentById(id);
+
+        comment = comment.toBuilder()
+                .modifyDate(LocalDateTime.now())
+                .content(request.getContent())
+                .build();
+
+        this.commentRepository.save(comment);
+
+        return comment;
+    }
+
+    public void updateValidate(Errors errors, Long id, User user) {
+
+        if (!this.commentRepository.existsById(id)) {
+
+            errors.reject("not exist", new Object[]{id}, "comment that has id does not exist");
 
             throw new ApiResponseException(
                     ResData.of(
@@ -123,21 +250,19 @@ public class CommentService {
             );
         }
 
-        if (comment == null) {
-
-            errors.reject("not exist", new Object[]{"NULL"}, "Comment that has id does not exist");
+        if (errors.hasErrors()) {
 
             throw new ApiResponseException(
                     ResData.of(
                             ResCode.F_04_04_02,
-                        errors
+                            errors
                     )
             );
         }
 
-        if (!comment.getAuthor().getUsername().equals(user.getUsername())) {
+        if (!this.getCommentById(id).getAuthor().getUsername().equals(user.getUsername())) {
 
-            errors.reject("miss match", new Object[]{user.getUsername()}, "Author' username and user's username is miss match ");
+            errors.reject("not authorized", new Object[]{user.getUsername()}, "member that has username is not authorized to modify");
 
             throw new ApiResponseException(
                     ResData.of(
@@ -146,111 +271,98 @@ public class CommentService {
                     )
             );
         }
-
-        return null;
     }
 
-    public ResData deleteValidate(User user, Comment comment) {
+    @Transactional
+    public void delete(Long id, User user) {
 
-        if (comment == null) {
-            Errors errors = AppConfig.getMockErrors("comment");
+        this.deleteValidate(id, user);
 
-            errors.reject("not exist", new Object[]{"NULL"}, "Comment that has id does not exist");
+        this.commentRepository.deleteById(id);
+    }
+
+    public void deleteValidate(Long id, User user) {
+
+        Errors errors = AppConfig.getMockErrors("comment");
+
+        if (!this.commentRepository.existsById(id)) {
+
+            errors.reject("not exist", new Object[]{id}, "comment that has id does not exist");
 
             throw new ApiResponseException(
                     ResData.of(
                             ResCode.F_04_05_01,
-                        errors
+                            errors
                     )
             );
         }
 
-        if (!comment.getAuthor().getUsername().equals(user.getUsername())) {
-            Errors errors = AppConfig.getMockErrors("comment");
+        if (!this.getCommentById(id).getAuthor().getUsername().equals(user.getUsername())) {
 
-            errors.reject("miss match", new Object[]{user.getUsername()}, "Author' username and user's username is miss match ");
+            errors.reject("not authorized", new Object[]{user.getUsername()}, "member that has username is not authorized to delete");
 
             throw new ApiResponseException(
                     ResData.of(
                             ResCode.F_04_05_02,
-                        errors
+                            errors
                     )
             );
         }
-
-        return null;
-    }
-
-    public ResData likeValidate(User user, Comment comment) {
-
-        if (comment == null) {
-            Errors errors = AppConfig.getMockErrors("comment");
-
-            errors.reject("not exist", new Object[]{"NULL"}, "Comment that has id does not exist");
-
-            throw new ApiResponseException(
-                    ResData.of(
-                            ResCode.F_04_06_01,
-                        errors
-                    )
-            );
-        }
-
-        if (comment.getAuthor().getUsername().equals(user.getUsername())) {
-            Errors errors = AppConfig.getMockErrors("comment");
-
-            errors.reject("like not allowed", new Object[]{user.getUsername()}, "Author can not like their own comment");
-
-            throw new ApiResponseException(
-                    ResData.of(
-                            ResCode.F_04_06_02,
-                        errors
-                    )
-            );
-        }
-
-        return null;
     }
 
     @Transactional
-    public void update(Comment comment, String content) {
-        comment = comment.toBuilder()
-                .content(content)
-                .modifyDate(LocalDateTime.now())
-                .build();
-        this.commentRepository.save(comment);
-    }
+    public Comment toggleLike(Long id, Member member) {
 
-    @Transactional
-    public void delete(Comment comment) {
-        this.commentRepository.delete(comment);
-    }
+        this.toggleLikeValidate(id, member);
 
-    public List<Comment> getAllByAuthor(Member author) {
-        return this.commentRepository.findAllByAuthor(author);
-    }
+        Comment comment = this.getCommentById(id);
 
-
-    @Transactional
-    public void toggleLike(Comment comment, Member user) {
-
-        if (comment.getLikedMember().contains(user)) {
+        if (comment.getLikedMember().contains(member)) {
 
             comment = comment.toBuilder()
                     .liked(comment.getLiked() - 1)
                     .build();
-            comment.getLikedMember().remove(user);
-            this.commentRepository.save(comment);
+            comment.getLikedMember().remove(member);
 
         } else {
 
             comment = comment.toBuilder()
                     .liked(comment.getLiked() + 1)
                     .build();
-            comment.getLikedMember().add(user);
-            this.commentRepository.save(comment);
-
+            comment.getLikedMember().add(member);
         }
+
+        this.commentRepository.save(comment);
+
+        return comment;
     }
 
+    public void toggleLikeValidate(Long id, Member member) {
+
+        Errors errors = AppConfig.getMockErrors("comment");
+
+        if (!this.commentRepository.existsById(id)) {
+
+            errors.reject("not exist", new Object[]{id}, "comment that has id does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_04_06_01,
+                            errors
+                    )
+            );
+        }
+
+        if (this.getCommentById(id).getAuthor().getUsername().equals(member.getUsername())) {
+
+            errors.reject("not authorized", new Object[]{member.getUsername()}, "author cannot like own comment");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_04_06_02,
+                            errors
+                    )
+            );
+        }
+    }
 }
