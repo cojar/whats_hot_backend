@@ -208,7 +208,7 @@ public class CommentService {
 
         if (!sort.equals("new") && !sort.equals("old") && !sort.equals("like")) {
 
-            errors.reject("not allowed", new Object[]{size}, "sort does not allowed");
+            errors.reject("not allowed", new Object[]{sort}, "sort does not allowed");
 
             throw new ApiResponseException(
                     ResData.of(
