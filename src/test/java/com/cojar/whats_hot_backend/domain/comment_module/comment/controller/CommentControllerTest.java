@@ -809,7 +809,7 @@ class CommentControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("DELETE /api/comments/1")
+    @DisplayName("delete:/api/comments/{id} - ok, S-04-05")
     void deleteComment_OK() throws Exception {
 
         // given
@@ -817,12 +817,14 @@ class CommentControllerTest extends BaseControllerTest {
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
 
-        // when
-        ResultActions resultActions = mockMvc
-                .perform(
-                        delete("/api/comments/1")
-                                .header("Authorization", accessToken)
+        Long id = 1L;
 
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(delete("/api/comments/%s".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -832,10 +834,14 @@ class CommentControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value("OK"))
                 .andExpect(jsonPath("success").value("true"))
                 .andExpect(jsonPath("code").value("S-04-05"))
-                .andExpect(jsonPath("message").exists());
+                .andExpect(jsonPath("message").value(ResCode.S_04_05.getMessage()))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
 
-        assertThat(commentRepository.findById(1L)).isEmpty();
-
+        ResData resData = assertThrows(ApiResponseException.class, () -> this.commentService.getCommentById(id)).getResData();
+        assertThat(resData).isNotNull();
+        assertThat(resData.getCode()).isEqualTo(ResCode.F_04_02_01.getCode());
     }
 
     @Test
