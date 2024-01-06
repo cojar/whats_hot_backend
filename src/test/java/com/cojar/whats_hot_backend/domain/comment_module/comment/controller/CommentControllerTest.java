@@ -759,34 +759,30 @@ class CommentControllerTest extends BaseControllerTest {
         checkNotUpdated(before, after);
     }
 
-    private void checkNotUpdated(Comment before, Comment after) {
-        assertThat(before.getContent().equals(after.getContent()));
-    }
-
     @Test
-    @DisplayName("PATCH /api/comments/1")
-    void updateComment_BadRequest_MismatchedUser() throws Exception {
+    @DisplayName("patch:/api/comments/{id} - bad request not allowed, F-04-04-03")
+    void updateComment_BadRequest_NotAllowed() throws Exception {
 
         // given
-        String username = "admin";
+        String username = "user2";
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
 
-        String content = "안녕하세요";
+        Long id = 1L;
+        Comment before = this.commentService.getCommentById(id);
+        String content = "수정 테스트 댓글";
+        CommentRequest.UpdateComment request = CommentRequest.UpdateComment.builder()
+                .content(content)
+                .build();
 
         // when
         ResultActions resultActions = mockMvc
                 .perform(
-                        patch("/api/comments/1")
-                                .contentType(MediaType.APPLICATION_JSON)
+                        patch("/api/comments/%s".formatted(id))
                                 .header("Authorization", accessToken)
-                                .content("""
-                                        {
-                                        "content": "%s"
-                                        }
-                                        """.formatted(content).stripIndent())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(this.objectMapper.writeValueAsString(request))
                                 .accept(MediaTypes.HAL_JSON)
-
                 )
                 .andDo(print());
 
@@ -796,7 +792,20 @@ class CommentControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("success").value("false"))
                 .andExpect(jsonPath("code").value("F-04-04-03"))
-                .andExpect(jsonPath("message").exists());
+                .andExpect(jsonPath("message").value(ResCode.F_04_04_03.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(username))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+
+        Comment after = this.commentService.getCommentById(id);
+        checkNotUpdated(before, after);
+    }
+
+    private void checkNotUpdated(Comment before, Comment after) {
+        assertThat(before.getContent().equals(after.getContent()));
     }
 
     @Test
