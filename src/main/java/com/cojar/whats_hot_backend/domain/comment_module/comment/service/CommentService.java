@@ -43,6 +43,10 @@ public class CommentService {
     private final ReviewService reviewService;
     private final MemberService memberService;
 
+    public long count() {
+        return this.commentRepository.count();
+    }
+
     @Transactional
     public Comment create(CommentRequest.CreateComment request, Errors errors, User user) {
 

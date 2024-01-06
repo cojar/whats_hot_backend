@@ -5,6 +5,7 @@
 - [x] comment_module 서비스 로직 수정
 - [x] InitConfig 수정
 - [x] S-04-01 TC 수정
+- [x] F-04-01-01 TC 수정
 
 ## 24-01-05
 ### dev

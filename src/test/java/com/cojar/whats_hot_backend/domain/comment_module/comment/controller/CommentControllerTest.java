@@ -6,7 +6,9 @@ import com.cojar.whats_hot_backend.domain.comment_module.comment.request.Comment
 import com.cojar.whats_hot_backend.domain.comment_module.comment.service.CommentService;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
+import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.ResCode;
+import com.cojar.whats_hot_backend.global.response.ResData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,10 +20,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -60,6 +64,7 @@ class CommentControllerTest extends BaseControllerTest {
                                 .header("Authorization", accessToken)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(this.objectMapper.writeValueAsString(request))
+                                .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -85,6 +90,61 @@ class CommentControllerTest extends BaseControllerTest {
         return Stream.of(
                 Arguments.of("테스트 댓글", 1L, 1L),
                 Arguments.of("테스트 댓글", 1L, null)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("argsFor_createComment_BadRequest_NotBlank")
+    @DisplayName("post:/api/comments - bad request not blank, F-04-01-01")
+    void createComment_BadRequest_NotBlank(String content, Long reviewId) throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        List<Long> checkList = getCheckListNotCreated();
+
+        CommentRequest.CreateComment request = CommentRequest.CreateComment.builder()
+                .content(content)
+                .reviewId(reviewId)
+                .build();
+
+        // when
+        ResultActions resultActions = mockMvc
+                .perform(
+                        post("/api/comments")
+                                .header("Authorization", accessToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(this.objectMapper.writeValueAsString(request))
+                                .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-04-01-01"))
+                .andExpect(jsonPath("message").value(ResCode.F_04_01_01.getMessage()))
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+
+        if (reviewId == null) resultActions.andExpect(jsonPath("data[0].rejectedValue").doesNotExist());
+        else resultActions.andExpect(jsonPath("data[0].rejectedValue").value(""));
+
+        checkNotCreated(checkList);
+    }
+
+    private static Stream<Arguments> argsFor_createComment_BadRequest_NotBlank() {
+        return Stream.of(
+                Arguments.of("", 1L),
+                Arguments.of("테스트 댓글", null)
         );
     }
 
@@ -125,44 +185,17 @@ class CommentControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("message").exists());
     }
 
-    @Test
-    @DisplayName("POST /api/comments")
-    void createComment_BadRequest_NotNull() throws Exception {
+    private List<Long> getCheckListNotCreated() {
+        return List.of(
+                this.commentService.count() + 1
+        );
+    }
 
-        // given
-        String username = "user1";
-        String password = "1234";
-        String accessToken = this.getAccessToken(username, password);
-
-        Long reviewId = 2L;
-        String content = "  ";
-        Long tagId = 1L;
-
-        // when
-        ResultActions resultActions = mockMvc
-                .perform(
-                        post("/api/comments")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("Authorization", accessToken)
-                                .content("""
-                                        {
-                                        "reviewId": %d,
-                                        "content": "%s",
-                                        "tagId": %d
-                                        }
-                                        """.formatted(reviewId, content, tagId).stripIndent())
-                                .accept(MediaTypes.HAL_JSON)
-
-                )
-                .andDo(print());
-
-        // then
-        resultActions
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("success").value("false"))
-                .andExpect(jsonPath("code").value("F-04-01-02"))
-                .andExpect(jsonPath("message").exists());
+    private void checkNotCreated(List<Long> checkList) {
+        int i = 0;
+        ResData resData = assertThrows(ApiResponseException.class, () -> this.commentService.getCommentById(checkList.get(i))).getResData();
+        assertThat(resData).isNotNull();
+        assertThat(resData.getCode()).isEqualTo(ResCode.F_04_02_01.getCode());
     }
 
     @Test
