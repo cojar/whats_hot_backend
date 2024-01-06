@@ -9057,7 +9057,7 @@ public class InitConfig {
                             .reviewId(review2.getId())
                             .build(),
                     AppConfig.getMockErrors(),
-                    AppConfig.toUser(user2)
+                    AppConfig.toUser(user1)
             );
         };
     }

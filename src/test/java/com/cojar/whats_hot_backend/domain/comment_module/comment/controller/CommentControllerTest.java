@@ -342,19 +342,18 @@ class CommentControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("GET /api/comments/1")
-    void getComments_BadRequest_CommentsNotExist() throws Exception {
+    @DisplayName("get:/api/comments/{id} - bad request not exist, F-04-02-01")
+    void getComments_BadRequest_NotExist() throws Exception {
 
         // given
-
+        Long id = 100000000L;
 
         // when
         ResultActions resultActions = mockMvc
                 .perform(
-                        get("/api/comments/3")
-                                .contentType(MediaType.APPLICATION_JSON)
+                        get("/api/comments/%s".formatted(id))
+                                .contentType(MediaType.ALL)
                                 .accept(MediaTypes.HAL_JSON)
-
                 )
                 .andDo(print());
 
@@ -364,7 +363,13 @@ class CommentControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("success").value("false"))
                 .andExpect(jsonPath("code").value("F-04-02-01"))
-                .andExpect(jsonPath("message").exists());
+                .andExpect(jsonPath("message").value(ResCode.F_04_02_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(id))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
     }
 
     @Test
