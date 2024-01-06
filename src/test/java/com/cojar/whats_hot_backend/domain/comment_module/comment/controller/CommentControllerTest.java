@@ -505,6 +505,45 @@ class CommentControllerTest extends BaseControllerTest {
     }
 
     @Test
+    @DisplayName("get:/api/comments/me - bad request size not allowed, F-04-03-02")
+    void getMyComments_BadRequest_SizeNotAllowed() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        int size = 22;
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("size", size + "");
+
+        // when
+        ResultActions resultActions = mockMvc
+                .perform(
+                        get("/api/comments/me")
+                                .header("Authorization", accessToken)
+                                .params(params)
+                                .contentType(MediaType.ALL)
+                                .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-04-03-02"))
+                .andExpect(jsonPath("message").value(ResCode.F_04_03_02.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(size))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    @Test
     @DisplayName("PATCH /api/comments/1")
     void updateComment_OK() throws Exception {
 
