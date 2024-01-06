@@ -68,8 +68,6 @@ public class CommentService {
 
         if (errors.hasErrors()) {
 
-            log.info("F_04_01_01");
-
             throw new ApiResponseException(
                     ResData.of(
                             ResCode.F_04_01_01,
@@ -79,8 +77,6 @@ public class CommentService {
         }
 
         if (!this.reviewRepository.existsById(request.getReviewId())) {
-
-            log.info("F_04_01_02");
 
             errors.rejectValue("reviewId", "not exist", "review that has reviewId does not exist");
 
@@ -96,8 +92,6 @@ public class CommentService {
 
             if (!this.commentRepository.existsById(request.getTagId())) {
 
-                log.info("F_04_01_03");
-
                 errors.rejectValue("tagId", "not exist", "comment that has tagId does not exist");
 
                 throw new ApiResponseException(
@@ -109,8 +103,6 @@ public class CommentService {
             }
 
             if (this.getCommentById(request.getTagId()).getReview().getId() != request.getReviewId()) {
-
-                log.info("F_04_01_04");
 
                 errors.rejectValue("tagId", "not include", "comment that has tagId does not include in review");
 

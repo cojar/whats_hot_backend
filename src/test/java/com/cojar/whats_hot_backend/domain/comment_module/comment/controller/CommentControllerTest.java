@@ -42,9 +42,9 @@ class CommentControllerTest extends BaseControllerTest {
 
     @Transactional
     @ParameterizedTest
-    @MethodSource("argsFor_createComment_OK")
-    @DisplayName("post:/api/comments - ok, S-04-01")
-    void createComment_OK(String content, Long reviewId, Long tagId) throws Exception {
+    @MethodSource("argsFor_createComment_CREATED")
+    @DisplayName("post:/api/comments - created, S-04-01")
+    void createComment_CREATED(String content, Long reviewId, Long tagId) throws Exception {
 
         // given
         String username = "user1";
@@ -86,7 +86,7 @@ class CommentControllerTest extends BaseControllerTest {
         if (tagId != null) resultActions.andExpect(jsonPath("data.tagId").value(tagId));
     }
 
-    private static Stream<Arguments> argsFor_createComment_OK() {
+    private static Stream<Arguments> argsFor_createComment_CREATED() {
         return Stream.of(
                 Arguments.of("테스트 댓글", 1L, 1L),
                 Arguments.of("테스트 댓글", 1L, null)
@@ -157,6 +157,8 @@ class CommentControllerTest extends BaseControllerTest {
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
 
+        List<Long> checkList = getCheckListNotCreated();
+
         String content = "테스트 댓글";
         Long reviewId = 100000000L;
         CommentRequest.CreateComment request = CommentRequest.CreateComment.builder()
@@ -189,6 +191,57 @@ class CommentControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue").value(reviewId))
                 .andExpect(jsonPath("_links.index").exists())
         ;
+
+        checkNotCreated(checkList);
+    }
+
+    @Test
+    @DisplayName("post:/api/comments - bad request tag not exist, F-04-01-03")
+    void createComment_BadRequest_TagNotExist() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        List<Long> checkList = getCheckListNotCreated();
+
+        String content = "테스트 댓글";
+        Long reviewId = 1L;
+        Long tagId = 10000000L;
+        CommentRequest.CreateComment request = CommentRequest.CreateComment.builder()
+                .content(content)
+                .reviewId(reviewId)
+                .tagId(tagId)
+                .build();
+
+        // when
+        ResultActions resultActions = mockMvc
+                .perform(
+                        post("/api/comments")
+                                .header("Authorization", accessToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(this.objectMapper.writeValueAsString(request))
+                                .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-04-01-03"))
+                .andExpect(jsonPath("message").value(ResCode.F_04_01_03.getMessage()))
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(tagId))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+
+        checkNotCreated(checkList);
     }
 
     private List<Long> getCheckListNotCreated() {
@@ -206,7 +259,7 @@ class CommentControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("GET /api/comments/1")
-    void getComments_OK() throws Exception {
+    void getComment_OK() throws Exception {
 
         // given
 

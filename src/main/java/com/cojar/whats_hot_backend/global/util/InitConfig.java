@@ -9054,7 +9054,7 @@ public class InitConfig {
             Comment comment2 = this.commentService.create(
                     CommentRequest.CreateComment.builder()
                             .content("댓글내용2")
-                            .reviewId(review1.getId())
+                            .reviewId(review2.getId())
                             .build(),
                     AppConfig.getMockErrors(),
                     AppConfig.toUser(user2)
