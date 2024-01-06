@@ -15,6 +15,7 @@ import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+@Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
@@ -50,7 +52,7 @@ public class CommentService {
                 .author(this.memberService.getUserByUsername(user.getUsername()))
                 .content(request.getContent())
                 .review(this.reviewService.getReviewById(request.getReviewId()))
-                .tag(this.getCommentById(request.getTagId()))
+                .tag(request.getTagId() != null ? this.getCommentById(request.getTagId()) : null)
                 .build();
 
         this.commentRepository.save(comment);
@@ -62,6 +64,8 @@ public class CommentService {
 
         if (errors.hasErrors()) {
 
+            log.info("F_04_01_01");
+
             throw new ApiResponseException(
                     ResData.of(
                             ResCode.F_04_01_01,
@@ -70,7 +74,9 @@ public class CommentService {
             );
         }
 
-        if (this.reviewRepository.existsById(request.getReviewId())) {
+        if (!this.reviewRepository.existsById(request.getReviewId())) {
+
+            log.info("F_04_01_02");
 
             errors.rejectValue("reviewId", "not exist", "review that has reviewId does not exist");
 
@@ -82,28 +88,35 @@ public class CommentService {
             );
         }
 
-        if (request.getTagId() != null && !this.commentRepository.existsById(request.getTagId())) {
+        if (request.getTagId() != null) {
 
-            errors.rejectValue("tagId", "not exist", "comment that has tagId does not exist");
+            if (!this.commentRepository.existsById(request.getTagId())) {
 
-            throw new ApiResponseException(
-                    ResData.of(
-                            ResCode.F_04_01_03,
-                            errors
-                    )
-            );
-        }
+                log.info("F_04_01_03");
 
-        if (this.getCommentById(request.getTagId()).getReview().getId() != request.getReviewId()) {
+                errors.rejectValue("tagId", "not exist", "comment that has tagId does not exist");
 
-            errors.rejectValue("tagId", "not include", "comment that has tagId does not include in review");
+                throw new ApiResponseException(
+                        ResData.of(
+                                ResCode.F_04_01_03,
+                                errors
+                        )
+                );
+            }
 
-            throw new ApiResponseException(
-                    ResData.of(
-                            ResCode.F_04_01_04,
-                            errors
-                    )
-            );
+            if (this.getCommentById(request.getTagId()).getReview().getId() != request.getReviewId()) {
+
+                log.info("F_04_01_04");
+
+                errors.rejectValue("tagId", "not include", "comment that has tagId does not include in review");
+
+                throw new ApiResponseException(
+                        ResData.of(
+                                ResCode.F_04_01_04,
+                                errors
+                        )
+                );
+            }
         }
     }
 

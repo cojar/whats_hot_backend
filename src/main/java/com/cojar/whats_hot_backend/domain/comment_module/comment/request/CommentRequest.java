@@ -17,13 +17,13 @@ public class CommentRequest {
     @Builder
     public static class CreateComment {
 
-        @Schema(example = "1")
-        @NotNull
-        private Long reviewId;
-
         @Schema(example = "댓글내용1")
         @NotBlank
         private String content;
+
+        @Schema(example = "1")
+        @NotNull
+        private Long reviewId;
 
         @Schema(example = "1")
         private Long tagId;
