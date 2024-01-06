@@ -244,6 +244,55 @@ class CommentControllerTest extends BaseControllerTest {
         checkNotCreated(checkList);
     }
 
+    @Test
+    @DisplayName("post:/api/comments - bad request tag not include in review, F-04-01-04")
+    void createComment_BadRequest_TagNotIncludeInReview() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        List<Long> checkList = getCheckListNotCreated();
+
+        String content = "테스트 댓글";
+        Long reviewId = 1L;
+        Long tagId = 2L;
+        CommentRequest.CreateComment request = CommentRequest.CreateComment.builder()
+                .content(content)
+                .reviewId(reviewId)
+                .tagId(tagId)
+                .build();
+
+        // when
+        ResultActions resultActions = mockMvc
+                .perform(
+                        post("/api/comments")
+                                .header("Authorization", accessToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(this.objectMapper.writeValueAsString(request))
+                                .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-04-01-04"))
+                .andExpect(jsonPath("message").value(ResCode.F_04_01_04.getMessage()))
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(tagId))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+
+        checkNotCreated(checkList);
+    }
+
     private List<Long> getCheckListNotCreated() {
         return List.of(
                 this.commentService.count() + 1
