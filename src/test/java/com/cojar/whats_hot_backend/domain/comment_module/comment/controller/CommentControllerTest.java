@@ -976,23 +976,22 @@ class CommentControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("PATCH /api/comments/10/like")
-    void likeComment_BadRequest_CommentNotExist() throws Exception {
+    @DisplayName("patch:/api/comments/{id}/like - bad request not exist, F-04-06-01")
+    void likeComment_BadRequest_NotExist() throws Exception {
 
         // given
-        String username = "user1";
+        String username = "user2";
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
 
-        String content = "안녕하세요";
+        Long id = 1000000L;
 
         // when
-        ResultActions resultActions = mockMvc
-                .perform(
-                        patch("/api/comments/10/like")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("Authorization", accessToken)
-
+        ResultActions resultActions = this.mockMvc
+                .perform(patch("/api/comments/%s/like".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -1002,7 +1001,13 @@ class CommentControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("success").value("false"))
                 .andExpect(jsonPath("code").value("F-04-06-01"))
-                .andExpect(jsonPath("message").exists());
+                .andExpect(jsonPath("message").value(ResCode.F_04_06_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(id))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
     }
 
     @Test
