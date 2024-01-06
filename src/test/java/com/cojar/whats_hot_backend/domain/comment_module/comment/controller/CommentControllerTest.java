@@ -464,7 +464,7 @@ class CommentControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("get:/api/comments/me - bad request not exist, F-04-03-01")
-    void getMyComments_BadRequest_NotExist() throws Exception {
+    public void getMyComments_BadRequest_NotExist() throws Exception {
 
         // given
         String username = "user2";

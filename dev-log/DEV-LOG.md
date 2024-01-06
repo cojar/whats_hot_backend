@@ -16,6 +16,7 @@
 - [x] S-04-06 TC 수정
 - [x] F-04-06-01 TC 수정
 - [x] F-04-06-02 TC 수정
+- [x] 테스트 코드 전반 점검
 
 ## 24-01-06
 ### feature/comment_module-comment
