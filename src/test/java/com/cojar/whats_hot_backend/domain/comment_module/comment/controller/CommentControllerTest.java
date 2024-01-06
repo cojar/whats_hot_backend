@@ -714,29 +714,29 @@ class CommentControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("PATCH /api/comments/1")
-    void updateComment_BadRequest_NotNull() throws Exception {
+    @DisplayName("patch:/api/comments/{id} - bad request not blank, F-04-04-02")
+    void updateComment_BadRequest_NotBlank() throws Exception {
 
         // given
         String username = "user1";
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
 
-        String content = "  ";
+        Long id = 1L;
+        Comment before = this.commentService.getCommentById(id);
+        String content = "";
+        CommentRequest.UpdateComment request = CommentRequest.UpdateComment.builder()
+                .content(content)
+                .build();
 
         // when
         ResultActions resultActions = mockMvc
                 .perform(
-                        patch("/api/comments/1")
-                                .contentType(MediaType.APPLICATION_JSON)
+                        patch("/api/comments/%s".formatted(id))
                                 .header("Authorization", accessToken)
-                                .content("""
-                                        {
-                                        "content": "%s"
-                                        }
-                                        """.formatted(content).stripIndent())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(this.objectMapper.writeValueAsString(request))
                                 .accept(MediaTypes.HAL_JSON)
-
                 )
                 .andDo(print());
 
@@ -744,15 +744,23 @@ class CommentControllerTest extends BaseControllerTest {
         resultActions
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("success").value(false))
-                .andExpect(jsonPath("code").value("F-04-04-01"))
-                .andExpect(jsonPath("message").value("내용을 작성해주십시오."))
-                .andExpect(jsonPath("data[0].field").value("content"))
-                .andExpect(jsonPath("data[0].objectName").value("updateComment"))
-                .andExpect(jsonPath("data[0].code").value("NotBlank"))
-                .andExpect(jsonPath("data[0].defaultMessage").value("must not be blank"))
-                .andExpect(jsonPath("data[0].rejectedValue").value("  "));
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-04-04-02"))
+                .andExpect(jsonPath("message").value(ResCode.F_04_04_02.getMessage()))
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(""))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
 
+        Comment after = this.commentService.getCommentById(id);
+        checkNotUpdated(before, after);
+    }
+
+    private void checkNotUpdated(Comment before, Comment after) {
+        assertThat(before.getContent().equals(after.getContent()));
     }
 
     @Test

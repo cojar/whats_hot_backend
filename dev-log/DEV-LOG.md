@@ -8,6 +8,7 @@
 - [x] F-04-03-04 TC 작성
 - [x] S-04-04 TC 수정
 - [x] F-04-04-01 TC 수정
+- [x] F-04-04-02 TC 수정
 
 ## 24-01-06
 ### feature/comment_module-comment
