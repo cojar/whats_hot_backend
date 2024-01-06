@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 24-01-06
+### feature/comment_module-comment
+- [x] comment_module 서비스 로직 수정
+
 ## 24-01-05
 ### dev
 - [x] 내장 톰캣 https로 설정 변경
