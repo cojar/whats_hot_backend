@@ -4,6 +4,7 @@
 ### feature/comment_module-comment
 - [x] F-04-03-01 TC 수정
 - [x] F-04-03-02 TC 작성
+- [x] F-04-03-03 TC 작성
 
 ## 24-01-06
 ### feature/comment_module-comment

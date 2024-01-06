@@ -543,6 +543,56 @@ class CommentControllerTest extends BaseControllerTest {
         ;
     }
 
+    @ParameterizedTest
+    @MethodSource("argsFor_getMyComments_BadRequest_PageNotExist")
+    @DisplayName("get:/api/comments/me - bad request page not exist, F-04-03-03")
+    void getMyComments_BadRequest_PageNotExist(int size) throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        int page = 100000;
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("page", page + "");
+        if (size != 0) params.add("size", size + "");
+
+        // when
+        ResultActions resultActions = mockMvc
+                .perform(
+                        get("/api/comments/me")
+                                .header("Authorization", accessToken)
+                                .params(params)
+                                .contentType(MediaType.ALL)
+                                .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-04-03-03"))
+                .andExpect(jsonPath("message").value(ResCode.F_04_03_03.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(page))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    private static Stream<Arguments> argsFor_getMyComments_BadRequest_PageNotExist() {
+        return Stream.of(
+                Arguments.of(0),
+                Arguments.of(20),
+                Arguments.of(50),
+                Arguments.of(100)
+        );
+    }
+
     @Test
     @DisplayName("PATCH /api/comments/1")
     void updateComment_OK() throws Exception {
