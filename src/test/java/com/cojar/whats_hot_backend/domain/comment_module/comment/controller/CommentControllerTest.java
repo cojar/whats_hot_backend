@@ -632,8 +632,9 @@ class CommentControllerTest extends BaseControllerTest {
         ;
     }
 
+    @Transactional
     @Test
-    @DisplayName("PATCH /api/comments/1")
+    @DisplayName("patch:/api/comments/{id} - ok, S-04-04")
     void updateComment_OK() throws Exception {
 
         // given
@@ -641,18 +642,20 @@ class CommentControllerTest extends BaseControllerTest {
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
 
+        Long id = 1L;
+        String content = "수정 테스트 댓글";
+        CommentRequest.UpdateComment request = CommentRequest.UpdateComment.builder()
+                .content(content)
+                .build();
+
         // when
         ResultActions resultActions = mockMvc
                 .perform(
-                        patch("/api/comments/1")
-                                .contentType(MediaType.APPLICATION_JSON)
+                        patch("/api/comments/%s".formatted(id))
                                 .header("Authorization", accessToken)
-                                .content("""
-                                        {
-                                        "content": "댓글내용10"
-                                        }
-                                        """
-                                )
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(this.objectMapper.writeValueAsString(request))
+                                .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -662,8 +665,11 @@ class CommentControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value("OK"))
                 .andExpect(jsonPath("success").value("true"))
                 .andExpect(jsonPath("code").value("S-04-04"))
-                .andExpect(jsonPath("message").exists())
-                .andExpect(jsonPath("data.content").value("댓글내용10"));
+                .andExpect(jsonPath("message").value(ResCode.S_04_04.getMessage()))
+                .andExpect(jsonPath("data.id").value(id))
+                .andExpect(jsonPath("data.content").value(content))
+                .andExpect(jsonPath("data.author").value(username))
+        ;
     }
 
     @Test

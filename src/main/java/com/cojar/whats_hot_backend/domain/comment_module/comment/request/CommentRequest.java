@@ -30,6 +30,9 @@ public class CommentRequest {
     }
 
     @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class UpdateComment {
 
         @Schema(example = "댓글내용1")
