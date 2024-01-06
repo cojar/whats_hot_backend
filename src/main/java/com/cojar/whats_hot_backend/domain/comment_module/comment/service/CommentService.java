@@ -182,7 +182,7 @@ public class CommentService {
             );
         }
 
-        if (size != 20 || size != 50 || size != 100) {
+        if (size != 20 && size != 50 && size != 100) {
 
             errors.reject("not allowed", new Object[]{size}, "size does not allowed");
 
@@ -206,7 +206,7 @@ public class CommentService {
             );
         }
 
-        if (!sort.equals("new") || !sort.equals("old") || !sort.equals("like")) {
+        if (!sort.equals("new") && !sort.equals("old") && !sort.equals("like")) {
 
             errors.reject("not allowed", new Object[]{size}, "sort does not allowed");
 

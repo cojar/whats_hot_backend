@@ -19,6 +19,8 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 import java.util.Set;
@@ -372,22 +374,29 @@ class CommentControllerTest extends BaseControllerTest {
         ;
     }
 
-    @Test
-    @DisplayName("GET /api/comments/me")
-    void getMyComments_OK() throws Exception {
+    @ParameterizedTest
+    @MethodSource("argsFor_getMyComments_OK")
+    @DisplayName("get:/api/comments/me - ok, S-04-03")
+    void getMyComments_OK(int page, int size, String sort) throws Exception {
 
         // given
-
         String username = "user1";
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
 
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        if (page != 0) params.add("page", page + "");
+        if (size != 0) params.add("size", size + "");
+        if (!sort.isBlank()) params.add("sort", sort);
 
         // when
         ResultActions resultActions = mockMvc
                 .perform(
                         get("/api/comments/me")
                                 .header("Authorization", accessToken)
+                                .params(params)
+                                .contentType(MediaType.ALL)
+                                .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -397,13 +406,68 @@ class CommentControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value("OK"))
                 .andExpect(jsonPath("success").value("true"))
                 .andExpect(jsonPath("code").value("S-04-03"))
-                .andExpect(jsonPath("message").exists())
-                .andExpect(jsonPath("data").isArray())
-                .andExpect(jsonPath("data[0].content").value("댓글내용1"))
-                .andExpect(jsonPath("data[0].id").value("1"))
-                .andExpect(jsonPath("data[0].createDate").exists())
-                .andExpect(jsonPath("data[0].modifyDate").exists())
-                .andExpect(jsonPath("data[0].author").value("user1"));
+                .andExpect(jsonPath("message").value(ResCode.S_04_03.getMessage()))
+                .andExpect(jsonPath("data.list[0].id").exists())
+                .andExpect(jsonPath("data.list[0].createDate").exists())
+                .andExpect(jsonPath("data.list[0].modifyDate").exists())
+                .andExpect(jsonPath("data.list[0].content").exists())
+                .andExpect(jsonPath("data.list[0].liked").exists())
+                .andExpect(jsonPath("data.list[0].author").exists())
+                .andExpect(jsonPath("data.list[0].reviewId").exists())
+                .andExpect(jsonPath("data.list[0]._links.self").exists())
+        ;
+        if (sort.equals("new") || sort.isBlank()) {
+            resultActions
+                    .andExpect(jsonPath("data.sort[0].property").value("createDate"))
+                    .andExpect(jsonPath("data.sort[0].direction").value("desc"))
+            ;
+        } else if (sort.equals("old")) {
+            resultActions
+                    .andExpect(jsonPath("data.sort[0].property").value("createDate"))
+                    .andExpect(jsonPath("data.sort[0].direction").value("asc"))
+            ;
+        } else if (sort.equals("like")) {
+            resultActions
+                    .andExpect(jsonPath("data.sort[0].property").value("liked"))
+                    .andExpect(jsonPath("data.sort[0].direction").value("desc"))
+                    .andExpect(jsonPath("data.sort[1].property").value("createDate"))
+                    .andExpect(jsonPath("data.sort[1].direction").value("desc"))
+            ;
+        }
+    }
+
+    private static Stream<Arguments> argsFor_getMyComments_OK() {
+        return Stream.of(
+                Arguments.of(0, 0, ""),
+                Arguments.of(1, 0, ""),
+                Arguments.of(0, 20, ""),
+                Arguments.of(0, 50, ""),
+                Arguments.of(0, 100, ""),
+                Arguments.of(1, 20, ""),
+                Arguments.of(1, 50, ""),
+                Arguments.of(1, 100, ""),
+                Arguments.of(1, 0, "new"),
+                Arguments.of(0, 20, "new"),
+                Arguments.of(0, 50, "new"),
+                Arguments.of(0, 100, "new"),
+                Arguments.of(1, 20, "new"),
+                Arguments.of(1, 50, "new"),
+                Arguments.of(1, 100, "new"),
+                Arguments.of(1, 0, "old"),
+                Arguments.of(0, 20, "old"),
+                Arguments.of(0, 50, "old"),
+                Arguments.of(0, 100, "old"),
+                Arguments.of(1, 20, "old"),
+                Arguments.of(1, 50, "old"),
+                Arguments.of(1, 100, "old"),
+                Arguments.of(1, 0, "like"),
+                Arguments.of(0, 20, "like"),
+                Arguments.of(0, 50, "like"),
+                Arguments.of(0, 100, "like"),
+                Arguments.of(1, 20, "like"),
+                Arguments.of(1, 50, "like"),
+                Arguments.of(1, 100, "like")
+        );
     }
 
     @Test
