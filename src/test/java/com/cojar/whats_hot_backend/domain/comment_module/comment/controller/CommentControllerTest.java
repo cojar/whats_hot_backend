@@ -33,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 class CommentControllerTest extends BaseControllerTest {
 
     @Autowired
@@ -46,7 +45,7 @@ class CommentControllerTest extends BaseControllerTest {
     @ParameterizedTest
     @MethodSource("argsFor_createComment_CREATED")
     @DisplayName("post:/api/comments - created, S-04-01")
-    void createComment_CREATED(String content, Long reviewId, Long tagId) throws Exception {
+    public void createComment_CREATED(String content, Long reviewId, Long tagId) throws Exception {
 
         // given
         String username = "user1";
@@ -97,7 +96,7 @@ class CommentControllerTest extends BaseControllerTest {
     @ParameterizedTest
     @MethodSource("argsFor_createComment_BadRequest_NotBlank")
     @DisplayName("post:/api/comments - bad request not blank, F-04-01-01")
-    void createComment_BadRequest_NotBlank(String content, Long reviewId) throws Exception {
+    public void createComment_BadRequest_NotBlank(String content, Long reviewId) throws Exception {
 
         // given
         String username = "user1";
@@ -150,7 +149,7 @@ class CommentControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("post:/api/comments - bad request review not exist, F-04-01-02")
-    void createComment_BadRequest_ReviewNotExist() throws Exception {
+    public void createComment_BadRequest_ReviewNotExist() throws Exception {
 
         // given
         String username = "user1";
@@ -196,7 +195,7 @@ class CommentControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("post:/api/comments - bad request tag not exist, F-04-01-03")
-    void createComment_BadRequest_TagNotExist() throws Exception {
+    public void createComment_BadRequest_TagNotExist() throws Exception {
 
         // given
         String username = "user1";
@@ -244,7 +243,7 @@ class CommentControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("post:/api/comments - bad request tag not include in review, F-04-01-04")
-    void createComment_BadRequest_TagNotIncludeInReview() throws Exception {
+    public void createComment_BadRequest_TagNotIncludeInReview() throws Exception {
 
         // given
         String username = "user1";
@@ -305,7 +304,7 @@ class CommentControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("get:/api/comments/{id} - ok, S-04-02")
-    void getComment_OK() throws Exception {
+    public void getComment_OK() throws Exception {
 
         // given
         Long id = 1L;
@@ -339,7 +338,7 @@ class CommentControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("get:/api/comments/{id} - bad request not exist, F-04-02-01")
-    void getComments_BadRequest_NotExist() throws Exception {
+    public void getComments_BadRequest_NotExist() throws Exception {
 
         // given
         Long id = 100000000L;
@@ -371,7 +370,7 @@ class CommentControllerTest extends BaseControllerTest {
     @ParameterizedTest
     @MethodSource("argsFor_getMyComments_OK")
     @DisplayName("get:/api/comments/me - ok, S-04-03")
-    void getMyComments_OK(int page, int size, String sort) throws Exception {
+    public void getMyComments_OK(int page, int size, String sort) throws Exception {
 
         // given
         String username = "user1";
@@ -498,7 +497,7 @@ class CommentControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("get:/api/comments/me - bad request size not allowed, F-04-03-02")
-    void getMyComments_BadRequest_SizeNotAllowed() throws Exception {
+    public void getMyComments_BadRequest_SizeNotAllowed() throws Exception {
 
         // given
         String username = "user1";
@@ -537,7 +536,7 @@ class CommentControllerTest extends BaseControllerTest {
     @ParameterizedTest
     @MethodSource("argsFor_getMyComments_BadRequest_PageNotExist")
     @DisplayName("get:/api/comments/me - bad request page not exist, F-04-03-03")
-    void getMyComments_BadRequest_PageNotExist(int size) throws Exception {
+    public void getMyComments_BadRequest_PageNotExist(int size) throws Exception {
 
         // given
         String username = "user1";
@@ -585,7 +584,7 @@ class CommentControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("get:/api/comments/me - bad request sort not allowed, F-04-03-04")
-    void getMyComments_BadRequest_SortNotAllowed() throws Exception {
+    public void getMyComments_BadRequest_SortNotAllowed() throws Exception {
 
         // given
         String username = "user1";
@@ -624,7 +623,7 @@ class CommentControllerTest extends BaseControllerTest {
     @Transactional
     @Test
     @DisplayName("patch:/api/comments/{id} - ok, S-04-04")
-    void updateComment_OK() throws Exception {
+    public void updateComment_OK() throws Exception {
 
         // given
         String username = "user1";
@@ -662,7 +661,7 @@ class CommentControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("patch:/api/comments/{id} - bad request not exist, F-04-04-01")
-    void updateComment_BadRequest_NotExist() throws Exception {
+    public void updateComment_BadRequest_NotExist() throws Exception {
 
         // given
         String username = "user1";
@@ -702,7 +701,7 @@ class CommentControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("patch:/api/comments/{id} - bad request not blank, F-04-04-02")
-    void updateComment_BadRequest_NotBlank() throws Exception {
+    public void updateComment_BadRequest_NotBlank() throws Exception {
 
         // given
         String username = "user1";
@@ -747,7 +746,7 @@ class CommentControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("patch:/api/comments/{id} - bad request not allowed, F-04-04-03")
-    void updateComment_BadRequest_NotAllowed() throws Exception {
+    public void updateComment_BadRequest_NotAllowed() throws Exception {
 
         // given
         String username = "user2";
@@ -790,13 +789,13 @@ class CommentControllerTest extends BaseControllerTest {
     }
 
     private void checkNotUpdated(Comment before, Comment after) {
-        assertThat(before.getContent().equals(after.getContent()));
+        assertThat(before.getContent()).isEqualTo(after.getContent());
     }
 
     @Transactional
     @Test
     @DisplayName("delete:/api/comments/{id} - ok, S-04-05")
-    void deleteComment_OK() throws Exception {
+    public void deleteComment_OK() throws Exception {
 
         // given
         String username = "user1";
@@ -832,7 +831,7 @@ class CommentControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("delete:/api/comments/{id} - bad request not exist, F-04-05-01")
-    void deleteComment_BadRequest_NotExist() throws Exception {
+    public void deleteComment_BadRequest_NotExist() throws Exception {
 
         // given
         String username = "user1";
@@ -867,7 +866,7 @@ class CommentControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("delete:/api/comments/{id} - bad request not allowed, F-04-05-02")
-    void deleteComment_BadRequest_NotAllowed() throws Exception {
+    public void deleteComment_BadRequest_NotAllowed() throws Exception {
 
         // given
         String username = "user2";
@@ -905,7 +904,7 @@ class CommentControllerTest extends BaseControllerTest {
     @Transactional
     @Test
     @DisplayName("patch:/api/comments/{id}/like - ok like, S-04-06")
-    void likeComment_OK_Like() throws Exception {
+    public void likeComment_OK_Like() throws Exception {
 
         // given
         String username = "user2";
@@ -939,7 +938,7 @@ class CommentControllerTest extends BaseControllerTest {
     @Transactional
     @Test
     @DisplayName("patch:/api/comments/{id}/like - ok undo like , S-04-06")
-    void likeComment_OK_UndoLike() throws Exception {
+    public void likeComment_OK_UndoLike() throws Exception {
 
         // given
         String username = "user2";
@@ -977,7 +976,7 @@ class CommentControllerTest extends BaseControllerTest {
 
     @Test
     @DisplayName("patch:/api/comments/{id}/like - bad request not exist, F-04-06-01")
-    void likeComment_BadRequest_NotExist() throws Exception {
+    public void likeComment_BadRequest_NotExist() throws Exception {
 
         // given
         String username = "user2";
@@ -1011,20 +1010,23 @@ class CommentControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("PATCH /api/comments/1/like")
-    void likeComment_BadRequest_MatchedUser() throws Exception {
+    @DisplayName("patch:/api/comments/{id}/like - bad request not allowed, F-04-06-02")
+    public void likeComment_BadRequest_NotAllowed() throws Exception {
 
         // given
         String username = "user1";
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
 
-        // when
-        ResultActions resultActions = mockMvc
-                .perform(
-                        patch("/api/comments/1/like")
-                                .header("Authorization", accessToken)
+        Long id = 1L;
+        Comment before = this.commentService.getCommentById(id);
 
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(patch("/api/comments/%s/like".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -1034,7 +1036,19 @@ class CommentControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("success").value("false"))
                 .andExpect(jsonPath("code").value("F-04-06-02"))
-                .andExpect(jsonPath("message").exists());
+                .andExpect(jsonPath("message").value(ResCode.F_04_06_02.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(username))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+
+        Comment after = this.commentService.getCommentById(id);
+        checkNotLiked(before, after);
     }
 
+    private void checkNotLiked(Comment before, Comment after) {
+        assertThat(before.getLiked()).isEqualTo(after.getLiked());
+    }
 }

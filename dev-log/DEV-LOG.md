@@ -15,6 +15,7 @@
 - [x] F-04-05-02 TC 수정
 - [x] S-04-06 TC 수정
 - [x] F-04-06-01 TC 수정
+- [x] F-04-06-02 TC 수정
 
 ## 24-01-06
 ### feature/comment_module-comment
