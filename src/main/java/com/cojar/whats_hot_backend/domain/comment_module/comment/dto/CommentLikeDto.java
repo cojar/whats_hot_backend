@@ -11,11 +11,11 @@ public class CommentLikeDto {
 
     private final Long liked;
 
-    private final boolean isLike;
+    private final boolean like;
 
     public CommentLikeDto (Comment comment, Member member) {
         this.liked = comment.getLiked();
-        this.isLike = comment.getLikedMember().contains(member);
+        this.like = comment.getLikedMember().contains(member);
     }
 
     public static CommentLikeDto of(Comment comment, Member member) {

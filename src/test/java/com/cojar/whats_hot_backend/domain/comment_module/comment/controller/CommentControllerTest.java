@@ -4,7 +4,6 @@ import com.cojar.whats_hot_backend.domain.comment_module.comment.entity.Comment;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.repository.CommentRepository;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.request.CommentRequest;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.service.CommentService;
-import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.ResCode;
@@ -62,12 +61,11 @@ class CommentControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = mockMvc
-                .perform(
-                        post("/api/comments")
-                                .header("Authorization", accessToken)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(this.objectMapper.writeValueAsString(request))
-                                .accept(MediaTypes.HAL_JSON)
+                .perform(post("/api/comments")
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -115,12 +113,11 @@ class CommentControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = mockMvc
-                .perform(
-                        post("/api/comments")
-                                .header("Authorization", accessToken)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(this.objectMapper.writeValueAsString(request))
-                                .accept(MediaTypes.HAL_JSON)
+                .perform(post("/api/comments")
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -171,12 +168,11 @@ class CommentControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = mockMvc
-                .perform(
-                        post("/api/comments")
-                                .header("Authorization", accessToken)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(this.objectMapper.writeValueAsString(request))
-                                .accept(MediaTypes.HAL_JSON)
+                .perform(post("/api/comments")
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -220,12 +216,11 @@ class CommentControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = mockMvc
-                .perform(
-                        post("/api/comments")
-                                .header("Authorization", accessToken)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(this.objectMapper.writeValueAsString(request))
-                                .accept(MediaTypes.HAL_JSON)
+                .perform(post("/api/comments")
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -269,12 +264,11 @@ class CommentControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = mockMvc
-                .perform(
-                        post("/api/comments")
-                                .header("Authorization", accessToken)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(this.objectMapper.writeValueAsString(request))
-                                .accept(MediaTypes.HAL_JSON)
+                .perform(post("/api/comments")
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -319,10 +313,9 @@ class CommentControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = mockMvc
-                .perform(
-                        get("/api/comments/%s".formatted(id))
-                                .contentType(MediaType.ALL)
-                                .accept(MediaTypes.HAL_JSON)
+                .perform(get("/api/comments/%s".formatted(id))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -392,12 +385,11 @@ class CommentControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = mockMvc
-                .perform(
-                        get("/api/comments/me")
-                                .header("Authorization", accessToken)
-                                .params(params)
-                                .contentType(MediaType.ALL)
-                                .accept(MediaTypes.HAL_JSON)
+                .perform(get("/api/comments/me")
+                        .header("Authorization", accessToken)
+                        .params(params)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -482,11 +474,10 @@ class CommentControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = mockMvc
-                .perform(
-                        get("/api/comments/me")
-                                .header("Authorization", accessToken)
-                                .contentType(MediaType.ALL)
-                                .accept(MediaTypes.HAL_JSON)
+                .perform(get("/api/comments/me")
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -520,12 +511,11 @@ class CommentControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = mockMvc
-                .perform(
-                        get("/api/comments/me")
-                                .header("Authorization", accessToken)
-                                .params(params)
-                                .contentType(MediaType.ALL)
-                                .accept(MediaTypes.HAL_JSON)
+                .perform(get("/api/comments/me")
+                        .header("Authorization", accessToken)
+                        .params(params)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -561,12 +551,11 @@ class CommentControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = mockMvc
-                .perform(
-                        get("/api/comments/me")
-                                .header("Authorization", accessToken)
-                                .params(params)
-                                .contentType(MediaType.ALL)
-                                .accept(MediaTypes.HAL_JSON)
+                .perform(get("/api/comments/me")
+                        .header("Authorization", accessToken)
+                        .params(params)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -609,12 +598,11 @@ class CommentControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = mockMvc
-                .perform(
-                        get("/api/comments/me")
-                                .header("Authorization", accessToken)
-                                .params(params)
-                                .contentType(MediaType.ALL)
-                                .accept(MediaTypes.HAL_JSON)
+                .perform(get("/api/comments/me")
+                        .header("Authorization", accessToken)
+                        .params(params)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -651,12 +639,11 @@ class CommentControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = mockMvc
-                .perform(
-                        patch("/api/comments/%s".formatted(id))
-                                .header("Authorization", accessToken)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(this.objectMapper.writeValueAsString(request))
-                                .accept(MediaTypes.HAL_JSON)
+                .perform(patch("/api/comments/%s".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -690,12 +677,11 @@ class CommentControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = mockMvc
-                .perform(
-                        patch("/api/comments/%s".formatted(id))
-                                .header("Authorization", accessToken)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(this.objectMapper.writeValueAsString(request))
-                                .accept(MediaTypes.HAL_JSON)
+                .perform(patch("/api/comments/%s".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -732,12 +718,11 @@ class CommentControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = mockMvc
-                .perform(
-                        patch("/api/comments/%s".formatted(id))
-                                .header("Authorization", accessToken)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(this.objectMapper.writeValueAsString(request))
-                                .accept(MediaTypes.HAL_JSON)
+                .perform(patch("/api/comments/%s".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -778,12 +763,11 @@ class CommentControllerTest extends BaseControllerTest {
 
         // when
         ResultActions resultActions = mockMvc
-                .perform(
-                        patch("/api/comments/%s".formatted(id))
-                                .header("Authorization", accessToken)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(this.objectMapper.writeValueAsString(request))
-                                .accept(MediaTypes.HAL_JSON)
+                .perform(patch("/api/comments/%s".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request))
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -809,6 +793,7 @@ class CommentControllerTest extends BaseControllerTest {
         assertThat(before.getContent().equals(after.getContent()));
     }
 
+    @Transactional
     @Test
     @DisplayName("delete:/api/comments/{id} - ok, S-04-05")
     void deleteComment_OK() throws Exception {
@@ -917,20 +902,25 @@ class CommentControllerTest extends BaseControllerTest {
         assertDoesNotThrow(() -> this.commentService.getCommentById(id));
     }
 
+    @Transactional
     @Test
-    @DisplayName("PATCH /api/comments/{id}/like - Like Comment")
-    void likeComment_OK() throws Exception {
+    @DisplayName("patch:/api/comments/{id}/like - ok like, S-04-06")
+    void likeComment_OK_Like() throws Exception {
+
         // given
-        String username = "admin";
+        String username = "user2";
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
 
+        Long id = 1L;
+        Long liked = this.commentService.getCommentById(id).getLiked();
+
         // when
-        ResultActions resultActions = mockMvc
-                .perform(
-                        patch("/api/comments/1/like")
-                                .header("Authorization", accessToken)
-                                .contentType(MediaType.APPLICATION_JSON)
+        ResultActions resultActions = this.mockMvc
+                .perform(patch("/api/comments/%s/like".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -940,37 +930,36 @@ class CommentControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value("OK"))
                 .andExpect(jsonPath("success").value("true"))
                 .andExpect(jsonPath("code").value("S-04-06"))
-                .andExpect(jsonPath("message").exists())
-                .andExpect(jsonPath("data.liked").value("1"));
+                .andExpect(jsonPath("message").value(ResCode.S_04_06.getMessage()))
+                .andExpect(jsonPath("data.liked").value(liked + 1))
+                .andExpect(jsonPath("data.like").value(true))
+        ;
     }
 
-    @Test
     @Transactional
-    @DisplayName("PATCH /api/comments/{id}/like - Unlike Comment")
-    void unlikeComment_OK() throws Exception {
+    @Test
+    @DisplayName("patch:/api/comments/{id}/like - ok undo like , S-04-06")
+    void likeComment_OK_UndoLike() throws Exception {
+
         // given
-
-        Member member = this.memberService.getUserByUsername("admin");
-
-        Comment comment = this.commentService.getCommentById(1L);
-
-        comment = comment.toBuilder()
-                .liked(1L)
-                .likedMember(Set.of(member))
-                .build();
-
-        this.commentRepository.save(comment);
-
-        String username = "admin";
+        String username = "user2";
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
 
+        Long id = 1L;
+        Comment comment = this.commentService.getCommentById(1L).toBuilder()
+                .liked(1L)
+                .likedMember(Set.of(this.memberService.getUserByUsername(username)))
+                .build();
+        this.commentRepository.save(comment);
+        Long liked = comment.getLiked();
+
         // when
-        ResultActions resultActions = mockMvc
-                .perform(
-                        patch("/api/comments/1/like")
-                                .header("Authorization", accessToken)
-                                .contentType(MediaType.APPLICATION_JSON)
+        ResultActions resultActions = this.mockMvc
+                .perform(patch("/api/comments/%s/like".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -980,8 +969,10 @@ class CommentControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value("OK"))
                 .andExpect(jsonPath("success").value("true"))
                 .andExpect(jsonPath("code").value("S-04-06"))
-                .andExpect(jsonPath("message").exists())
-                .andExpect(jsonPath("data.liked").value("0"));
+                .andExpect(jsonPath("message").value(ResCode.S_04_06.getMessage()))
+                .andExpect(jsonPath("data.liked").value(liked - 1))
+                .andExpect(jsonPath("data.like").value(false))
+        ;
     }
 
     @Test
