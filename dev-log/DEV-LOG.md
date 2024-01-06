@@ -3,6 +3,7 @@
 ## 24-01-06
 ### feature/comment_module-comment
 - [x] comment_module 서비스 로직 수정
+- [x] InitConfig 수정
 
 ## 24-01-05
 ### dev

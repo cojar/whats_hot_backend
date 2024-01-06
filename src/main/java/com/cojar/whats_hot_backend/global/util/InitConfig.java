@@ -1,8 +1,7 @@
 package com.cojar.whats_hot_backend.global.util;
 
-import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
-import com.cojar.whats_hot_backend.domain.base_module.hashtag.service.HashtagService;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.entity.Comment;
+import com.cojar.whats_hot_backend.domain.comment_module.comment.request.CommentRequest;
 import com.cojar.whats_hot_backend.domain.comment_module.comment.service.CommentService;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.request.MemberRequest;
@@ -13,12 +12,9 @@ import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewSer
 import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.category.service.CategoryService;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.dto.MenuItemDto;
-import com.cojar.whats_hot_backend.domain.spot_module.menu_item.service.MenuItemService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
-import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.service.SpotHashtagService;
-import com.cojar.whats_hot_backend.domain.spot_module.spot_image.service.SpotImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
@@ -36,15 +32,11 @@ public class InitConfig {
 
     private final MemberService memberService;
     private final CategoryService categoryService;
-    private final HashtagService hashtagService;
-    private final MenuItemService menuItemService;
-    private final FileService fileService;
     private final SpotService spotService;
     private final ReviewService reviewService;
     private final CommentService commentService;
-    private final SpotHashtagService spotHashtagService;
+
     private final ResourceLoader resourceLoader;
-    private final SpotImageService spotImageService;
 
     @Bean
     public ApplicationRunner runner() {
@@ -9050,9 +9042,23 @@ public class InitConfig {
 
 
             // comment init data
-            Comment comment1 = this.commentService.create(user1, review1, "댓글내용1", null);
-            Comment comment2 = this.commentService.create(user1, review1, "댓글내용2", null);
+            Comment comment1 = this.commentService.create(
+                    CommentRequest.CreateComment.builder()
+                            .content("댓글내용1")
+                            .reviewId(review1.getId())
+                            .build(),
+                    AppConfig.getMockErrors(),
+                    AppConfig.toUser(user1)
+            );
 
+            Comment comment2 = this.commentService.create(
+                    CommentRequest.CreateComment.builder()
+                            .content("댓글내용2")
+                            .reviewId(review1.getId())
+                            .build(),
+                    AppConfig.getMockErrors(),
+                    AppConfig.toUser(user2)
+            );
         };
     }
 }
