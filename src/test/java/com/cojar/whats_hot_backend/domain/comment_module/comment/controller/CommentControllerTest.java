@@ -307,19 +307,19 @@ class CommentControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("GET /api/comments/1")
+    @DisplayName("get:/api/comments/{id} - ok, S-04-02")
     void getComment_OK() throws Exception {
 
         // given
-
+        Long id = 1L;
+        Comment comment = this.commentService.getCommentById(id);
 
         // when
         ResultActions resultActions = mockMvc
                 .perform(
-                        get("/api/comments/1")
-                                .contentType(MediaType.APPLICATION_JSON)
+                        get("/api/comments/%s".formatted(id))
+                                .contentType(MediaType.ALL)
                                 .accept(MediaTypes.HAL_JSON)
-
                 )
                 .andDo(print());
 
@@ -329,12 +329,16 @@ class CommentControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value("OK"))
                 .andExpect(jsonPath("success").value("true"))
                 .andExpect(jsonPath("code").value("S-04-02"))
-                .andExpect(jsonPath("message").exists())
-                .andExpect(jsonPath("data.id").value(1))
-                .andExpect(jsonPath("data.content").value("댓글내용1"))
+                .andExpect(jsonPath("message").value(ResCode.S_04_02.getMessage()))
+                .andExpect(jsonPath("data.id").value(id))
                 .andExpect(jsonPath("data.createDate").exists())
                 .andExpect(jsonPath("data.modifyDate").exists())
-                .andExpect(jsonPath("data.author").value("user1"));
+                .andExpect(jsonPath("data.content").exists())
+                .andExpect(jsonPath("data.liked").exists())
+                .andExpect(jsonPath("data.author").exists())
+                .andExpect(jsonPath("data.reviewId").exists())
+        ;
+        if (comment.getTag() != null) resultActions.andExpect(jsonPath("data.tagId").exists());
     }
 
     @Test
