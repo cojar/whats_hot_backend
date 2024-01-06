@@ -845,20 +845,22 @@ class CommentControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("DELETE /api/comments/10")
-    void deleteComment_BadRequest_CommentNotExist() throws Exception {
+    @DisplayName("delete:/api/comments/{id} - ok, F-04-05-01")
+    void deleteComment_BadRequest() throws Exception {
 
         // given
         String username = "user1";
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
 
-        // when
-        ResultActions resultActions = mockMvc
-                .perform(
-                        delete("/api/comments/10")
-                                .header("Authorization", accessToken)
+        Long id = 1000000L;
 
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(delete("/api/comments/%s".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -868,7 +870,13 @@ class CommentControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("success").value("false"))
                 .andExpect(jsonPath("code").value("F-04-05-01"))
-                .andExpect(jsonPath("message").exists());
+                .andExpect(jsonPath("message").value(ResCode.F_04_05_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(id))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
     }
 
     @Test
