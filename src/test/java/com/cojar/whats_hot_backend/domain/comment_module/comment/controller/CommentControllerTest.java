@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -845,8 +846,8 @@ class CommentControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("delete:/api/comments/{id} - ok, F-04-05-01")
-    void deleteComment_BadRequest() throws Exception {
+    @DisplayName("delete:/api/comments/{id} - bad request not exist, F-04-05-01")
+    void deleteComment_BadRequest_NotExist() throws Exception {
 
         // given
         String username = "user1";
@@ -880,20 +881,22 @@ class CommentControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("DELETE /api/comments/1")
-    void deleteComment_BadRequest_MismatchedUser() throws Exception {
+    @DisplayName("delete:/api/comments/{id} - bad request not allowed, F-04-05-02")
+    void deleteComment_BadRequest_NotAllowed() throws Exception {
 
         // given
-        String username = "admin";
+        String username = "user2";
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
 
-        // when
-        ResultActions resultActions = mockMvc
-                .perform(
-                        delete("/api/comments/1")
-                                .header("Authorization", accessToken)
+        Long id = 1L;
 
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(delete("/api/comments/%s".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -903,7 +906,15 @@ class CommentControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("success").value("false"))
                 .andExpect(jsonPath("code").value("F-04-05-02"))
-                .andExpect(jsonPath("message").exists());
+                .andExpect(jsonPath("message").value(ResCode.F_04_05_02.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(username))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+
+        assertDoesNotThrow(() -> this.commentService.getCommentById(id));
     }
 
     @Test
