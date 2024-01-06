@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 24-01-07
+### feature/comment_module-comment
+- [x] F-04-03-01 TC 수정
+
 ## 24-01-06
 ### feature/comment_module-comment
 - [x] comment_module 서비스 로직 수정

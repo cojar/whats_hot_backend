@@ -471,21 +471,21 @@ class CommentControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("GET /api/comments/me")
-    void getMyComments_BadRequest_CommentsNotExist() throws Exception {
+    @DisplayName("get:/api/comments/me - bad request not exist, F-04-03-01")
+    void getMyComments_BadRequest_NotExist() throws Exception {
 
         // given
-
-        String username = "admin";
+        String username = "user2";
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
-
 
         // when
         ResultActions resultActions = mockMvc
                 .perform(
                         get("/api/comments/me")
                                 .header("Authorization", accessToken)
+                                .contentType(MediaType.ALL)
+                                .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -495,7 +495,13 @@ class CommentControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("success").value("false"))
                 .andExpect(jsonPath("code").value("F-04-03-01"))
-                .andExpect(jsonPath("message").exists());
+                .andExpect(jsonPath("message").value(ResCode.F_04_03_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(username))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
     }
 
     @Test
