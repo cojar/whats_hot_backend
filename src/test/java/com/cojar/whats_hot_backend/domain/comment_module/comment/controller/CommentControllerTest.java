@@ -149,7 +149,7 @@ class CommentControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("POST /api/comments")
+    @DisplayName("post:/api/comments - bad request review not exist, F-04-01-02")
     void createComment_BadRequest_ReviewNotExist() throws Exception {
 
         // given
@@ -157,22 +157,21 @@ class CommentControllerTest extends BaseControllerTest {
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
 
-        Long review = 3L;
+        String content = "테스트 댓글";
+        Long reviewId = 100000000L;
+        CommentRequest.CreateComment request = CommentRequest.CreateComment.builder()
+                .content(content)
+                .reviewId(reviewId)
+                .build();
 
         // when
         ResultActions resultActions = mockMvc
                 .perform(
                         post("/api/comments")
-                                .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", accessToken)
-                                .content("""
-                                        {
-                                        "reviewId": 3,
-                                        "content": "댓글내용2",
-                                        "tagId": null
-                                        }
-                                        """
-                                )
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(this.objectMapper.writeValueAsString(request))
+                                .accept(MediaTypes.HAL_JSON)
                 )
                 .andDo(print());
 
@@ -181,8 +180,15 @@ class CommentControllerTest extends BaseControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("success").value("false"))
-                .andExpect(jsonPath("code").value("F-04-01-01"))
-                .andExpect(jsonPath("message").exists());
+                .andExpect(jsonPath("code").value("F-04-01-02"))
+                .andExpect(jsonPath("message").value(ResCode.F_04_01_02.getMessage()))
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(reviewId))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
     }
 
     private List<Long> getCheckListNotCreated() {
