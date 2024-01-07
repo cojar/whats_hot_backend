@@ -250,6 +250,12 @@ class SpotControllerTest extends BaseControllerTest {
     }
 
     @Test
+    @DisplayName("Get:/api/spots - search ok , S-02-02")
+    public void searchSpots_ok(){
+
+    }
+
+    @Test
     @DisplayName("post:/api/spots - bad request category not exist, F-02-01-02")
     public void createSpot_BadRequest_CategoryNotExist() throws Exception {
 

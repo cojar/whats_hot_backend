@@ -24,15 +24,14 @@ import com.cojar.whats_hot_backend.global.util.AppConfig;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -151,11 +150,17 @@ public class SpotService {
     }
 
     public Page<DataModel> getSpotList(int page, int size, String kw) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("averageScore"));
+        sorts.add(Sort.Order.asc("createDate"));
 
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Specification<Spot> spec = search(kw);
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sorts));
 
-        return this.spotRepository.findAll(spec, pageable)
+        // 검색어를 이용한 조회
+        List<Spot> spots = spotRepository.searchSpotWithCategoryAndKeywordOrNoCategory(kw);
+
+        // 조회된 결과를 Page로 변환하여 반환
+        return new PageImpl<>(spots, pageable, spots.size())
                 .map(spot -> {
                     DataModel dataModel = DataModel.of(
                             SpotListDto.of(spot),
@@ -166,21 +171,13 @@ public class SpotService {
     }
 
 
-    private Specification<Spot> search(String kw) {
-        return new Specification<>() {
-            private static final long serialVersionUID = 1L;
-            @Override
-            public Predicate toPredicate(Root<Spot> s, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                query.distinct(true);  // 중복을 제거
-                Join<Spot, Hashtag> h = s.join("hashtags", JoinType.LEFT);
-                Join<Spot, Category> c = s.join("category", JoinType.LEFT);
-                return cb.or(cb.like(s.get("name"), "%" + kw + "%"), // 장소이름
-                        cb.like(h.get("name"), "%" + kw + "%"),      // 해쉬태그
-                        cb.like(c.get("name"), "%" + kw + "%"));   // 카테고리
-                // 내추럴 쿼리 ,
-            }
-        };
+
+    public List<Spot> searchSpots(String kw) {
+
+        return spotRepository.searchSpotWithCategoryAndKeywordOrNoCategory(kw);
     }
+
+
 
 
     @Transactional
