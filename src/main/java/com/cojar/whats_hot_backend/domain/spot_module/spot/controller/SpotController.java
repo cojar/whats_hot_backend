@@ -57,7 +57,7 @@ public class SpotController {
     @SpotApiResponse.List
     @GetMapping(consumes = MediaType.ALL_VALUE)
     public ResponseEntity list(@RequestParam(value = "page", defaultValue = "1") int page,
-                               @RequestParam(value = "size", defaultValue = "2") int size,
+                               @RequestParam(value = "size", defaultValue = "20") int size,
                                @RequestParam(value = "kw", defaultValue = "") String kw) {
 
         Page<DataModel> spotList = this.spotService.getSpotList(page, size, kw);
