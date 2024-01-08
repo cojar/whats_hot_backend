@@ -18,6 +18,9 @@
 - [x] F-04-06-02 TC 수정
 - [x] 테스트 코드 전반 점검
 
+### feature/patch-api-reviews-id
+- [x] S-03-04 TC 작성
+
 ## 24-01-06
 ### feature/comment_module-comment
 - [x] comment_module 서비스 로직 수정
@@ -45,7 +48,7 @@
 
 ## 24-01-04
 ### feature/post-api-categories
-- [x] InitConfig 카테고리데이터 세부지역 제거 및 뎁스별 재정립
+- [x] InitConfig 카테고리 데이터 세부 지역 제거 및 뎁스별 재정립
 
 ### feature/spring_doc
 - [x] swagger-ui 문제 해결 시도

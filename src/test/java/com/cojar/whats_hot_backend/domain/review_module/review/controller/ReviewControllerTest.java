@@ -802,6 +802,87 @@ class ReviewControllerTest extends BaseControllerTest {
 
     @Transactional
     @Test
+    @DisplayName("patch:/api/reviews/{id} - ok, S-03-04")
+    public void updateReview_OK() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1L;
+        String title = "수정 테스트 제목";
+        String content = "수정 테스트 내용";
+        Double score = 4.0;
+        String hashtag1 = "수정태그1", hashtag2 = "수정태그2";
+        ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder()
+                .title(title)
+                .content(content)
+                .score(score)
+                .hashtags(List.of(hashtag1, hashtag2))
+                .lock(true)
+                .build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        String fileName = "test";
+        String ext = "png";
+        Resource resource = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(fileName, ext));
+        MockMultipartFile _file1 = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName, ext),
+                MediaType.IMAGE_PNG_VALUE,
+                resource.getInputStream()
+        );
+        MockMultipartFile _file2 = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName, ext),
+                MediaType.IMAGE_PNG_VALUE,
+                resource.getInputStream()
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.POST, "/api/reviews")
+                        .file(_request)
+                        .file(_file1)
+                        .file(_file2)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("status").value("CREATED"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-03-01"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data.id").exists())
+                .andExpect(jsonPath("data.createDate").exists())
+                .andExpect(jsonPath("data.modifyDate").exists())
+                .andExpect(jsonPath("data.spot.averageScore").exists())
+                .andExpect(jsonPath("data.title").value(title))
+                .andExpect(jsonPath("data.content").value(content))
+                .andExpect(jsonPath("data.score").value(score))
+                .andExpect(jsonPath("data.hashtags[0]").value(hashtag1))
+                .andExpect(jsonPath("data.hashtags[1]").value(hashtag2))
+                .andExpect(jsonPath("data.imageUri[0]").exists())
+                .andExpect(jsonPath("data.imageUri[1]").exists())
+                .andExpect(jsonPath("data.status").value(ReviewStatus.PRIVATE.getType()))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+    }
+
+    @Transactional
+    @Test
     @DisplayName("delete:/api/reviews/{id} - ok, S-03-05")
     public void deleteReview_OK() throws Exception {
 
