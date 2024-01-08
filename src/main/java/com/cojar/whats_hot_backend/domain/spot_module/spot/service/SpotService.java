@@ -158,7 +158,7 @@ public class SpotService {
         Pageable pageable = PageRequest.of(page - 1, size);
         Specification<Spot> spec = search(kw);
 
-        return this.spotRepository.findAll(spec, pageable)
+        return this.spotRepository.findAll(pageable)
                 .map(spot -> {
                     DataModel dataModel = DataModel.of(
                             SpotListDto.of(spot),
