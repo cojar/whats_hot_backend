@@ -13,6 +13,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -48,8 +53,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(apiAuthenticationExceptionHandler) // 인증 에러
                         .accessDeniedHandler(apiAuthorizationExceptionHandler)
                 )
-                .cors(cors -> cors
-                        .disable() // 타 도메인에서 API 호출 가능
+                .cors(cors -> corsConfigurationSource()
                 )
                 .csrf(csrf -> csrf
                         .disable() // CSRF 토큰 끄기
@@ -77,5 +81,20 @@ public class SecurityConfig {
         return web -> web.ignoring()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**")
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowCredentials(true);
+        config.setAllowedOrigins(List.of("http://localhost:5173", "https://whats-hot-frontend.vercel.app"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("*"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 }
