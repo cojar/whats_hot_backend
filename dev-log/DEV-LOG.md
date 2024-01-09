@@ -5,6 +5,9 @@
 - [x] SpotCategory 매핑 테이블 도입
 - [x] TC 점검
 
+### feature/util
+- [x] cors 허용 테스트
+
 ## 24-01-08
 ### fix/get-api-spots
 - [x] fix list
