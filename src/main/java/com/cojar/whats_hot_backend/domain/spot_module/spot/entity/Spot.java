@@ -1,12 +1,14 @@
 package com.cojar.whats_hot_backend.domain.spot_module.spot.entity;
 
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
-import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.entity.MenuItem;
+import com.cojar.whats_hot_backend.domain.spot_module.spot_category.entity.SpotCategory;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.entity.SpotHashtag;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.entity.SpotImage;
 import com.cojar.whats_hot_backend.global.jpa.BaseEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -20,8 +22,8 @@ import java.util.List;
 @Entity
 public class Spot extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Category category;
+    @OneToMany(mappedBy = "spot", cascade = CascadeType.REMOVE)
+    List<SpotCategory> categories;
 
     private String name;
 
