@@ -30,7 +30,7 @@ public class SpotListDto {
 
     public SpotListDto (Spot spot) {
         this.id = spot.getId();
-        this.category = spot.getCategory().toLine();
+        this.category = spot.getCategories().get(0).getCategory().toLine();
         this.name = spot.getName();
         this.address = spot.getAddress();
         this.contact = spot.getContact();

@@ -43,7 +43,7 @@ public class SpotDto {
         this.id = spot.getId();
         this.createDate = spot.getCreateDate();
         this.modifyDate = spot.getModifyDate();
-        this.category = spot.getCategory().toLine();
+        this.category = spot.getCategories().get(0).getCategory().toLine();
         this.name = spot.getName();
         this.address = spot.getAddress();
         this.contact = spot.getContact();

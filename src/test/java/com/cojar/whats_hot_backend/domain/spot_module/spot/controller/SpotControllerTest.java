@@ -920,7 +920,7 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data.id").value(id))
                 .andExpect(jsonPath("data.createDate").exists())
                 .andExpect(jsonPath("data.modifyDate").exists())
-                .andExpect(jsonPath("data.category").value(categoryId != null ? this.categoryService.getCategoryById(categoryId).toLine() : spot.getCategory().toLine()))
+                .andExpect(jsonPath("data.category").value(categoryId != null ? this.categoryService.getCategoryById(categoryId).toLine() : spot.getCategories().get(0).getCategory().toLine()))
                 .andExpect(jsonPath("data.name").value(name != null ? name : spot.getName()))
                 .andExpect(jsonPath("data.address").value(address != null ? address : spot.getAddress()))
                 .andExpect(jsonPath("data.contact").value(contact != null ? contact : spot.getContact()))
@@ -1549,7 +1549,7 @@ class SpotControllerTest extends BaseControllerTest {
     }
 
     private void checkNotUpdated(Spot before, Spot after) {
-        assertThat(before.getCategory().toLine()).isEqualTo(after.getCategory().toLine());
+        assertThat(before.getCategories().get(0).getCategory().toLine()).isEqualTo(after.getCategories().get(0).getCategory().toLine());
         assertThat(before.getName()).isEqualTo(after.getName());
         assertThat(before.getAddress()).isEqualTo(after.getAddress());
         assertThat(before.getLatitude()).isEqualTo(after.getLatitude());

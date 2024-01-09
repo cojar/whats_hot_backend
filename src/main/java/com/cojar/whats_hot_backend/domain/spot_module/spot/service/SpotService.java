@@ -14,6 +14,7 @@ import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotListDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.repository.SpotRepository;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
+import com.cojar.whats_hot_backend.domain.spot_module.spot_category.service.SpotCategoryService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.service.SpotHashtagService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.service.SpotImageService;
 import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
@@ -51,6 +52,7 @@ public class SpotService {
     private final SpotHashtagService spotHashtagService;
     private final MenuItemService menuItemService;
     private final SpotImageService spotImageService;
+    private final SpotCategoryService spotCategoryService;
 
     private final EntityManager entityManager;
 
@@ -67,17 +69,16 @@ public class SpotService {
         // images 에러 검증
         this.fileService.validateAll(images);
 
-        // 검증 단계에서 에러 걸러짐
-        Category category = this.categoryService.getCategoryById(request.getCategoryId());
-
         Spot spot = Spot.builder()
-                .category(category)
                 .name(request.getName())
                 .address(request.getAddress())
                 .contact(request.getContact())
                 .build();
 
         this.spotRepository.save(spot);
+
+        // categories 생성
+        this.spotCategoryService.createAll(request.getCategoryId(), spot);
 
         // hashtags 생성
         this.spotHashtagService.createAll(request.getHashtags(), spot);
@@ -119,8 +120,6 @@ public class SpotService {
                     )
             );
         }
-
-
 
         if ((category.getRootName().equals("맛집") && category.getDepth() != 3) || (category.getRootName().equals("여행지") && category.getDepth() != 2)
                 || (category.getRootName().equals("숙박") && category.getDepth() != 2)) {
@@ -172,6 +171,7 @@ public class SpotService {
     private Specification<Spot> search(String kw) {
         return new Specification<>() {
             private static final long serialVersionUID = 1L;
+
             @Override
             public Predicate toPredicate(Root<Spot> s, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 query.distinct(true);  // 중복을 제거
@@ -198,16 +198,16 @@ public class SpotService {
         // 검증 단계에서 에러 걸러짐
         Spot spot = this.getSpotById(id);
 
-        Category category = this.categoryService.getCategoryById(request.getCategoryId());
-
         spot = spot.toBuilder()
-                .category(category != null ? category : spot.getCategory())
                 .name(request.getName() != null ? request.getName() : spot.getName())
                 .address(request.getAddress() != null ? request.getAddress() : spot.getAddress())
                 .contact(request.getContact() != null ? request.getContact() : spot.getContact())
                 .build();
 
         spot = this.spotRepository.save(spot);
+
+        // categories 생성
+        this.spotCategoryService.updateAll(request.getCategoryId(), spot);
 
         // hashtags 수정
         this.spotHashtagService.updateAll(request.getHashtags(), spot);
@@ -257,7 +257,7 @@ public class SpotService {
 
                 errors.rejectValue("categoryId", "not exist", "category that has request id does not exist");
 
-                throw new  ApiResponseException(
+                throw new ApiResponseException(
                         ResData.of(
                                 ResCode.F_02_04_03,
                                 errors
@@ -340,7 +340,7 @@ public class SpotService {
         this.spotRepository.save(spot);
     }
 
-    public ResData getSpotValidate(Long spotid){
+    public ResData getSpotValidate(Long spotid) {
         Errors errors = AppConfig.getMockErrors("spot");
 
         errors.reject("not exist", new Object[]{spotid}, "Spot that has id does not exist");
