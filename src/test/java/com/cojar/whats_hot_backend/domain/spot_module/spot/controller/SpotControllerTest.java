@@ -9,6 +9,8 @@ import com.cojar.whats_hot_backend.domain.spot_module.menu_item.service.MenuItem
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
+import com.cojar.whats_hot_backend.domain.spot_module.spot_category.entity.SpotCategory;
+import com.cojar.whats_hot_backend.domain.spot_module.spot_category.service.SpotCategoryService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.entity.SpotHashtag;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.service.SpotHashtagService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.entity.SpotImage;
@@ -50,6 +52,9 @@ class SpotControllerTest extends BaseControllerTest {
     private SpotService spotService;
 
     @Autowired
+    private SpotCategoryService spotCategoryService;
+
+    @Autowired
     private SpotHashtagService spotHashtagService;
 
     @Autowired
@@ -71,7 +76,7 @@ class SpotControllerTest extends BaseControllerTest {
         String password = "1234";
         String accessToken = this.getAccessToken(username, password);
 
-        Category category = this.categoryService.getCategoryById(3L);
+        Category category = this.categoryService.getCategoryById(9L);
         String name = "쿠우쿠우 대전둔산점";
         String address = "대전 서구 대덕대로233번길 17 해운빌딩 4층";
         String contact = "042-489-6274";
@@ -240,12 +245,12 @@ class SpotControllerTest extends BaseControllerTest {
     private static Stream<Arguments> argsFor_createSpot_BadRequest_NotBlank() {
         return Stream.of(
                 Arguments.of(null, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "20,900원"),
-                Arguments.of(3L, "", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "20,900원"),
-                Arguments.of(3L, "쿠우쿠우 대전둔산점", "", "042-489-6274", "뷔페", "평일점심", "20,900원"),
-                Arguments.of(3L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "", "뷔페", "평일점심", "20,900원"),
-                Arguments.of(3L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "", "평일점심", "20,900원"),
-                Arguments.of(3L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "", "20,900원"),
-                Arguments.of(3L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "")
+                Arguments.of(9L, "", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "20,900원"),
+                Arguments.of(9L, "쿠우쿠우 대전둔산점", "", "042-489-6274", "뷔페", "평일점심", "20,900원"),
+                Arguments.of(9L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "", "뷔페", "평일점심", "20,900원"),
+                Arguments.of(9L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "", "평일점심", "20,900원"),
+                Arguments.of(9L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "", "20,900원"),
+                Arguments.of(9L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "")
         );
     }
 
@@ -423,9 +428,9 @@ class SpotControllerTest extends BaseControllerTest {
 
         List<Long> checkList = getCheckListNotCreated();
 
-        Long categoryId = 3L;
-        String name = "장소1";
-        String address = "대전 서구 대덕대로 179";
+        Long categoryId = 9L;
+        String name = "아저씨족발";
+        String address = "대전 서구 대덕대로 157-1";
         String contact = "042-489-6274";
         String hashtag = "뷔페";
         String menuName = "평일점심", menuPrice = "20,900원";
@@ -500,7 +505,7 @@ class SpotControllerTest extends BaseControllerTest {
 
         List<Long> checkList = getCheckListNotCreated();
 
-        Long categoryId = 3L;
+        Long categoryId = 9L;
         String name = "쿠우쿠우 대전둔산점";
         String address = "대전 서구 대덕대로233번길 17 해운빌딩 4층";
         String contact = "042-489-6274";
@@ -570,7 +575,7 @@ class SpotControllerTest extends BaseControllerTest {
 
         List<Long> checkList = getCheckListNotCreated();
 
-        Long categoryId = 3L;
+        Long categoryId = 9L;
         String name = "쿠우쿠우 대전둔산점";
         String address = "대전 서구 대덕대로233번길 17 해운빌딩 4층";
         String contact = "042-489-6274";
@@ -640,7 +645,7 @@ class SpotControllerTest extends BaseControllerTest {
 
         List<Long> checkList = getCheckListNotCreated();
 
-        Long categoryId = 3L;
+        Long categoryId = 9L;
         String name = "쿠우쿠우 대전둔산점";
         String address = "대전 서구 대덕대로233번길 17 해운빌딩 4층";
         String contact = "042-489-6274";
@@ -718,6 +723,7 @@ class SpotControllerTest extends BaseControllerTest {
     private List<Long> getCheckListNotCreated() {
         return List.of(
                 this.spotService.count() + 1,
+                this.spotCategoryService.count(),
                 this.spotHashtagService.count(),
                 this.menuItemService.count(),
                 this.spotImageService.count(),
@@ -728,6 +734,7 @@ class SpotControllerTest extends BaseControllerTest {
     private void checkNotCreated(List<Long> checkList) {
         int i = 0;
         assertThat(this.spotService.getSpotById(checkList.get(i++))).isNull();
+        assertThat(this.spotCategoryService.count()).isEqualTo(checkList.get(i++));
         assertThat(this.spotHashtagService.count()).isEqualTo(checkList.get(i++));
         assertThat(this.menuItemService.count()).isEqualTo(checkList.get(i++));
         assertThat(this.spotImageService.count()).isEqualTo(checkList.get(i++));
@@ -745,7 +752,7 @@ class SpotControllerTest extends BaseControllerTest {
         String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
-        Category category = this.categoryService.getCategoryById(4L);
+        Category category = this.categoryService.getCategoryById(10L);
         String name = "쿠우쿠우 대전둔산점";
         String address = "대전 서구 대덕대로233번길 17 해운빌딩 4층";
         String contact = "042-489-6274";
@@ -831,6 +838,8 @@ class SpotControllerTest extends BaseControllerTest {
         ;
 
         Spot spot = this.spotService.getSpotById(id);
+        List<SpotCategory> spotCategories = this.spotCategoryService.getAllBySpot(spot);
+        assertThat(spotCategories.get(0).getCategory().toLine()).isEqualTo(category.toLine());
         List<SpotHashtag> spotHashtags = this.spotHashtagService.getAllBySpot(spot);
         assertThat(spotHashtags.size()).isEqualTo(hashtags.size());
         for (int i = 0; i < spotHashtags.size(); i++) {
@@ -937,11 +946,11 @@ class SpotControllerTest extends BaseControllerTest {
     private static Stream<Arguments> argsFor_updateSpot_OK_PartialInput_Request() {
         return Stream.of(
                 Arguments.of(null, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "20,900원"),
-                Arguments.of(4L, null, "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "20,900원"),
-                Arguments.of(4L, "쿠우쿠우 대전둔산점", null, "042-489-6274", "뷔페", "평일점심", "20,900원"),
-                Arguments.of(4L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", null, "뷔페", "평일점심", "20,900원"),
-                Arguments.of(4L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", null, "평일점심", "20,900원"),
-                Arguments.of(4L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", null, null)
+                Arguments.of(10L, null, "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "20,900원"),
+                Arguments.of(10L, "쿠우쿠우 대전둔산점", null, "042-489-6274", "뷔페", "평일점심", "20,900원"),
+                Arguments.of(10L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", null, "뷔페", "평일점심", "20,900원"),
+                Arguments.of(10L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", null, "평일점심", "20,900원"),
+                Arguments.of(10L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", null, null)
         );
     }
 
@@ -956,7 +965,7 @@ class SpotControllerTest extends BaseControllerTest {
         String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
-        Category category = this.categoryService.getCategoryById(4L);
+        Category category = this.categoryService.getCategoryById(10L);
         String name = "쿠우쿠우 대전둔산점";
         String address = "대전 서구 대덕대로233번길 17 해운빌딩 4층";
         String contact = "042-489-6274";
@@ -1144,6 +1153,10 @@ class SpotControllerTest extends BaseControllerTest {
 
         Long id = 1L;
         Spot before = this.spotService.getSpotById(id);
+        List<SpotCategory> beforeCategories = this.spotCategoryService.getAllBySpot(before);
+        List<SpotHashtag> beforeHashtags = this.spotHashtagService.getAllBySpot(before);
+        List<MenuItem> beforeItems = this.menuItemService.getAllBySpot(before);
+        List<SpotImage> beforeImages = this.spotImageService.getAllBySpot(before);
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
                 .hashtags(List.of(hashtag))
                 .menuItems(List.of(MenuItemDto.of(menuName, menuPrice)))
@@ -1181,7 +1194,7 @@ class SpotControllerTest extends BaseControllerTest {
         ;
 
         Spot after = this.spotService.getSpotById(id);
-        checkNotUpdated(before, after);
+        checkNotUpdated(before, beforeCategories, beforeHashtags, beforeItems, beforeImages, after);
     }
 
     private static Stream<Arguments> argsFor_updateSpot_BadRequest_NotBlank() {
@@ -1204,6 +1217,10 @@ class SpotControllerTest extends BaseControllerTest {
         Long id = 1L;
         Long categoryId = 10000000L;
         Spot before = this.spotService.getSpotById(id);
+        List<SpotCategory> beforeCategories = this.spotCategoryService.getAllBySpot(before);
+        List<SpotHashtag> beforeHashtags = this.spotHashtagService.getAllBySpot(before);
+        List<MenuItem> beforeItems = this.menuItemService.getAllBySpot(before);
+        List<SpotImage> beforeImages = this.spotImageService.getAllBySpot(before);
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
                 .categoryId(categoryId)
                 .build();
@@ -1240,12 +1257,12 @@ class SpotControllerTest extends BaseControllerTest {
         ;
 
         Spot after = this.spotService.getSpotById(id);
-        checkNotUpdated(before, after);
+        checkNotUpdated(before, beforeCategories, beforeHashtags, beforeItems, beforeImages, after);
     }
 
     @ParameterizedTest
     @MethodSource("argsFor_updateSpot_BadRequest_InvalidCategoryId")
-    @DisplayName("patch:/api/spots/{id} - bad request category not exist, F-02-04-04")
+    @DisplayName("patch:/api/spots/{id} - bad request invalid category id, F-02-04-04")
     public void updateSpot_BadRequest_InvalidCategoryId(Long categoryId) throws Exception {
 
         // given
@@ -1255,6 +1272,10 @@ class SpotControllerTest extends BaseControllerTest {
 
         Long id = 1L;
         Spot before = this.spotService.getSpotById(id);
+        List<SpotCategory> beforeCategories = this.spotCategoryService.getAllBySpot(before);
+        List<SpotHashtag> beforeHashtags = this.spotHashtagService.getAllBySpot(before);
+        List<MenuItem> beforeItems = this.menuItemService.getAllBySpot(before);
+        List<SpotImage> beforeImages = this.spotImageService.getAllBySpot(before);
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
                 .categoryId(categoryId)
                 .build();
@@ -1291,7 +1312,7 @@ class SpotControllerTest extends BaseControllerTest {
         ;
 
         Spot after = this.spotService.getSpotById(id);
-        checkNotUpdated(before, after);
+        checkNotUpdated(before, beforeCategories, beforeHashtags, beforeItems, beforeImages, after);
     }
 
     private static Stream<Arguments> argsFor_updateSpot_BadRequest_InvalidCategoryId() {
@@ -1311,9 +1332,13 @@ class SpotControllerTest extends BaseControllerTest {
         String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
-        String name = "장소2";
-        String address = "대전 서구 대덕대로 179";
+        String name = "옥천순대매운족발";
+        String address = "대전 대덕구 송촌로 9";
         Spot before = this.spotService.getSpotById(id);
+        List<SpotCategory> beforeCategories = this.spotCategoryService.getAllBySpot(before);
+        List<SpotHashtag> beforeHashtags = this.spotHashtagService.getAllBySpot(before);
+        List<MenuItem> beforeItems = this.menuItemService.getAllBySpot(before);
+        List<SpotImage> beforeImages = this.spotImageService.getAllBySpot(before);
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
                 .name(name)
                 .address(address)
@@ -1351,7 +1376,7 @@ class SpotControllerTest extends BaseControllerTest {
         ;
 
         Spot after = this.spotService.getSpotById(id);
-        checkNotUpdated(before, after);
+        checkNotUpdated(before, beforeCategories, beforeHashtags, beforeItems, beforeImages, after);
     }
 
     @Test
@@ -1365,6 +1390,10 @@ class SpotControllerTest extends BaseControllerTest {
 
         Long id = 1L;
         Spot before = this.spotService.getSpotById(id);
+        List<SpotCategory> beforeCategories = this.spotCategoryService.getAllBySpot(before);
+        List<SpotHashtag> beforeHashtags = this.spotHashtagService.getAllBySpot(before);
+        List<MenuItem> beforeItems = this.menuItemService.getAllBySpot(before);
+        List<SpotImage> beforeImages = this.spotImageService.getAllBySpot(before);
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
                 .build();
         MockMultipartFile _request = new MockMultipartFile(
@@ -1410,7 +1439,7 @@ class SpotControllerTest extends BaseControllerTest {
         ;
 
         Spot after = this.spotService.getSpotById(id);
-        checkNotUpdated(before, after);
+        checkNotUpdated(before, beforeCategories, beforeHashtags, beforeItems, beforeImages, after);
     }
 
     @Test
@@ -1424,6 +1453,10 @@ class SpotControllerTest extends BaseControllerTest {
 
         Long id = 1L;
         Spot before = this.spotService.getSpotById(id);
+        List<SpotCategory> beforeCategories = this.spotCategoryService.getAllBySpot(before);
+        List<SpotHashtag> beforeHashtags = this.spotHashtagService.getAllBySpot(before);
+        List<MenuItem> beforeItems = this.menuItemService.getAllBySpot(before);
+        List<SpotImage> beforeImages = this.spotImageService.getAllBySpot(before);
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
                 .build();
         MockMultipartFile _request = new MockMultipartFile(
@@ -1469,7 +1502,7 @@ class SpotControllerTest extends BaseControllerTest {
         ;
 
         Spot after = this.spotService.getSpotById(id);
-        checkNotUpdated(before, after);
+        checkNotUpdated(before, beforeCategories, beforeHashtags, beforeItems, beforeImages, after);
     }
 
     @Test
@@ -1483,6 +1516,10 @@ class SpotControllerTest extends BaseControllerTest {
 
         Long id = 1L;
         Spot before = this.spotService.getSpotById(id);
+        List<SpotCategory> beforeCategories = this.spotCategoryService.getAllBySpot(before);
+        List<SpotHashtag> beforeHashtags = this.spotHashtagService.getAllBySpot(before);
+        List<MenuItem> beforeItems = this.menuItemService.getAllBySpot(before);
+        List<SpotImage> beforeImages = this.spotImageService.getAllBySpot(before);
         SpotRequest.UpdateSpot request = SpotRequest.UpdateSpot.builder()
                 .build();
         MockMultipartFile _request = new MockMultipartFile(
@@ -1545,30 +1582,29 @@ class SpotControllerTest extends BaseControllerTest {
         ;
 
         Spot after = this.spotService.getSpotById(id);
-        checkNotUpdated(before, after);
+        checkNotUpdated(before, beforeCategories, beforeHashtags, beforeItems, beforeImages, after);
     }
 
-    private void checkNotUpdated(Spot before, Spot after) {
-        assertThat(before.getCategories().get(0).getCategory().toLine()).isEqualTo(after.getCategories().get(0).getCategory().toLine());
+    private void checkNotUpdated(Spot before, List<SpotCategory> beforeCategories, List<SpotHashtag> beforeHashtags, List<MenuItem> beforeItems, List<SpotImage> beforeImages, Spot after) {
+        List<SpotCategory> afterCategories = this.spotCategoryService.getAllBySpot(after);
+        assertThat(beforeCategories.size()).isEqualTo(afterCategories.size());
+        assertThat(beforeCategories.get(0).getCategory().toLine()).isEqualTo(beforeCategories.get(0).getCategory().toLine());
         assertThat(before.getName()).isEqualTo(after.getName());
         assertThat(before.getAddress()).isEqualTo(after.getAddress());
         assertThat(before.getLatitude()).isEqualTo(after.getLatitude());
         assertThat(before.getLongitude()).isEqualTo(after.getLongitude());
         assertThat(before.getContact()).isEqualTo(after.getContact());
-        List<SpotHashtag> beforeHashtags = this.spotHashtagService.getAllBySpot(before);
         List<SpotHashtag> afterHashtags = this.spotHashtagService.getAllBySpot(after);
         assertThat(beforeHashtags.size()).isEqualTo(afterHashtags.size());
         for (int i = 0; i < beforeHashtags.size(); i++) {
             assertThat(beforeHashtags.get(i).getHashtag().getName()).isEqualTo(afterHashtags.get(i).getHashtag().getName());
         }
-        List<MenuItem> beforeItems = this.menuItemService.getAllBySpot(before);
         List<MenuItem> afterItems = this.menuItemService.getAllBySpot(after);
         assertThat(beforeItems.size()).isEqualTo(afterItems.size());
         for (int i = 0; i < beforeItems.size(); i++) {
             assertThat(beforeItems.get(i).getName()).isEqualTo(afterItems.get(i).getName());
             assertThat(beforeItems.get(i).getPrice()).isEqualTo(afterItems.get(i).getPrice());
         }
-        List<SpotImage> beforeImages = this.spotImageService.getAllBySpot(before);
         List<SpotImage> afterImages = this.spotImageService.getAllBySpot(after);
         assertThat(beforeImages.size()).isEqualTo(afterImages.size());
         for (int i = 0; i < beforeImages.size(); i++) {

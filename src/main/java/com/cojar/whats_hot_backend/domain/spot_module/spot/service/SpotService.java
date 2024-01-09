@@ -265,7 +265,8 @@ public class SpotService {
                 );
             }
 
-            if (category.getDepth() != 3) {
+            if ((category.getRootName().equals("맛집") && category.getDepth() != 3) || (category.getRootName().equals("여행지") && category.getDepth() != 2)
+                    || (category.getRootName().equals("숙박") && category.getDepth() != 2)) {
 
                 errors.rejectValue("categoryId", "invalid", "category that has request id is invalid");
 

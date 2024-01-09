@@ -3,6 +3,7 @@
 ## 24-01-09
 ### feature/spot_module-spot
 - [x] SpotCategory 매핑 테이블 도입
+- [x] TC 점검
 
 ## 24-01-08
 ### fix/get-api-spots

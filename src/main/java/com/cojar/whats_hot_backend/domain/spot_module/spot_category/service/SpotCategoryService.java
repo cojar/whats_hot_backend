@@ -19,6 +19,10 @@ public class SpotCategoryService {
 
     private final CategoryService categoryService;
 
+    public long count() {
+        return this.spotCategoryRepository.count();
+    }
+
     @Transactional
     public List<SpotCategory> createAll(Long categoryId, Spot spot) {
 
@@ -50,5 +54,9 @@ public class SpotCategoryService {
         this.spotCategoryRepository.saveAll(spotCategories);
 
         return spotCategories;
+    }
+
+    public List<SpotCategory> getAllBySpot(Spot spot) {
+        return this.spotCategoryRepository.findAllBySpot(spot);
     }
 }
