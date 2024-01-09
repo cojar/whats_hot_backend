@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
@@ -37,5 +40,19 @@ public class CategoryService {
     public Category getCategoryById(Long id) {
         if (id == null) return null;
         return this.categoryRepository.findById(id).orElse(null);
+    }
+
+    public List<Category> getTreeList(Long categoryId) {
+
+        Category category = this.getCategoryById(categoryId);
+
+        List<Category> categories = new ArrayList<>();
+
+        while(category != null) {
+            categories.add(category);
+            category = category.getParent();
+        }
+
+        return categories;
     }
 }

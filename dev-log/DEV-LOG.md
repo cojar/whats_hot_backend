@@ -1,5 +1,18 @@
 # What's Hot Dev-Log
 
+## 24-01-09
+### feature/spot_module-spot
+- [x] SpotCategory 매핑 테이블 도입
+- [x] TC 점검
+
+### feature/util
+- [x] cors 허용 테스트
+- [x] cors 허용 테스트 2
+
+## 24-01-08
+### fix/get-api-spots
+- [x] fix list
+
 ## 24-01-07
 ### feature/comment_module-comment
 - [x] F-04-03-01 TC 수정
