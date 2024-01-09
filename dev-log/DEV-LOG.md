@@ -7,6 +7,7 @@
 
 ### feature/util
 - [x] cors 허용 테스트
+- [x] cors 허용 테스트 2
 
 ## 24-01-08
 ### fix/get-api-spots
