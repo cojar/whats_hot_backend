@@ -122,8 +122,28 @@ public class ReviewService {
     }
 
     public Review getReviewById(Long id) {
+
+        this.getReviewByIdValidate(id);
+
         return this.reviewRepository.findById(id)
                 .orElse(null);
+    }
+
+    private void getReviewByIdValidate(Long id) {
+
+        Errors errors = AppConfig.getMockErrors("review");
+
+        if (!this.reviewRepository.existsById(id)) {
+
+            errors.reject("not exist", new Object[]{id}, "review that has id does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_03_01,
+                            errors
+                    )
+            );
+        }
     }
 
     public Page<DataModel> getReviewList(int page, int size) {

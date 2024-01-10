@@ -837,6 +837,36 @@ class ReviewControllerTest extends BaseControllerTest {
         ;
     }
 
+    @Test
+    @DisplayName("get:/api/reviews/{id} - bad request not exist, F-03-03-01")
+    public void getReview_BadRequest_NotExist() throws Exception {
+
+        // given
+        Long id = 100000000L;
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/reviews/%s".formatted(id))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResCode.F_03_03_01.getStatus().name()))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value(ResCode.F_03_03_01.getCode()))
+                .andExpect(jsonPath("message").value(ResCode.F_03_03_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(id.toString()))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
     @Transactional
     @Test
     @DisplayName("delete:/api/reviews/{id} - ok, S-03-05")

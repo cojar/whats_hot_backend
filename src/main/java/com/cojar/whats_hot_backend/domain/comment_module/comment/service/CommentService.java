@@ -64,7 +64,7 @@ public class CommentService {
         return comment;
     }
 
-    public void createValidate(CommentRequest.CreateComment request, Errors errors) {
+    private void createValidate(CommentRequest.CreateComment request, Errors errors) {
 
         if (errors.hasErrors()) {
 
@@ -124,7 +124,7 @@ public class CommentService {
                 .orElse(null);
     }
 
-    public void getCommentByIdValidate(Long id) {
+    private void getCommentByIdValidate(Long id) {
 
         Errors errors = AppConfig.getMockErrors("comment");
 
@@ -166,7 +166,7 @@ public class CommentService {
                 });
     }
 
-    public void getPagingByAuthorValidate(int page, int size, String sort, Member author) {
+    private void getPagingByAuthorValidate(int page, int size, String sort, Member author) {
 
         Errors errors = AppConfig.getMockErrors("comment");
 
@@ -236,7 +236,7 @@ public class CommentService {
         return comment;
     }
 
-    public void updateValidate(Errors errors, Long id, User user) {
+    private void updateValidate(Errors errors, Long id, User user) {
 
         if (!this.commentRepository.existsById(id)) {
 
@@ -281,7 +281,7 @@ public class CommentService {
         this.commentRepository.deleteById(id);
     }
 
-    public void deleteValidate(Long id, User user) {
+    private void deleteValidate(Long id, User user) {
 
         Errors errors = AppConfig.getMockErrors("comment");
 
@@ -337,7 +337,7 @@ public class CommentService {
         return comment;
     }
 
-    public void toggleLikeValidate(Long id, Member member) {
+    private void toggleLikeValidate(Long id, Member member) {
 
         Errors errors = AppConfig.getMockErrors("comment");
 
