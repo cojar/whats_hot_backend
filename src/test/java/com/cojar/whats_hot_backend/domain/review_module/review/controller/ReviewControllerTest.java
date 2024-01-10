@@ -1062,4 +1062,39 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.profile").exists())
         ;
     }
+
+    @Test
+    @DisplayName("patch:/api/reviews/{id}/like - bad request not exist, F-03-06-01")
+    public void likeReview_BadRequest_NotExist() throws Exception {
+
+        // given
+        String username = "user2";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 10000000L;
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(patch("/api/reviews/%s/like".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-06-01"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_06_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(id))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
 }

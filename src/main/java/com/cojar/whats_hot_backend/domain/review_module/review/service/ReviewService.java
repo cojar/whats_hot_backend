@@ -205,6 +205,8 @@ public class ReviewService {
     @Transactional
     public Review toggleLike(Long id, Member member) {
 
+        this.toggleLikeValidate(id, member);
+
         Review review = this.getReviewById(id);
 
         if (review.getLikedMember().contains(member)) {
@@ -225,5 +227,22 @@ public class ReviewService {
         this.reviewRepository.save(review);
 
         return review;
+    }
+
+    private void toggleLikeValidate(Long id, Member member) {
+
+        Errors errors = AppConfig.getMockErrors("review");
+
+        if (!this.reviewRepository.existsById(id)) {
+
+            errors.reject("not exist", new Object[]{id}, "review that has id does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_06_01,
+                            errors
+                    )
+            );
+        }
     }
 }
