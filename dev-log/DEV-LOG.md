@@ -1,5 +1,19 @@
 # What's Hot Dev-Log
 
+## 24-01-11
+### feature/patch-api-reviews-id-like
+- [x] S-03-06 TC 작성
+- [x] F-03-06-01 TC 작성
+- [x] F-03-06-02 TC 작성
+- 
+### feature/patch-api-reviews-id
+- [x] conflict issue 해결
+
+## 24-01-10
+### feature/get-api-reviews-id
+- [x] S-03-03 TC 작성
+- [x] F-03-03-01 TC 작성
+
 ## 24-01-09
 ### feature/spot_module-spot
 - [x] SpotCategory 매핑 테이블 도입
@@ -8,9 +22,6 @@
 ### feature/util
 - [x] cors 허용 테스트
 - [x] cors 허용 테스트 2
-
-### feature/patch-api-reviews-id
-- [x] S-03-04 TC 작성
 
 ## 24-01-08
 ### fix/get-api-spots

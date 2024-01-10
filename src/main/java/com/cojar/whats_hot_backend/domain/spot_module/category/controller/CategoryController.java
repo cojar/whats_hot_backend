@@ -1,24 +1,18 @@
 package com.cojar.whats_hot_backend.domain.spot_module.category.controller;
 
-import com.cojar.whats_hot_backend.domain.review_module.review.api_response.ReviewApiResponse;
-import com.cojar.whats_hot_backend.domain.review_module.review.controller.ReviewController;
-import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewDto;
 import com.cojar.whats_hot_backend.domain.spot_module.category.dto.CategoryDto;
 import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.category.request.CategoryRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.category.service.CategoryService;
-import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotDto;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
-import io.micrometer.common.util.StringUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;

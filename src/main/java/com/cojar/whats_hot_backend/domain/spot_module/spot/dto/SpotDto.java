@@ -1,6 +1,6 @@
 package com.cojar.whats_hot_backend.domain.spot_module.spot.dto;
 
-import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewDto;
+import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewCreateDto;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.dto.MenuItemDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
@@ -37,7 +37,7 @@ public class SpotDto {
 
     private final List<String> imageUri;
 
-    private final List<ReviewDto> reviews;
+    private final List<ReviewCreateDto> reviews;
 
     public SpotDto(Spot spot) {
         this.id = spot.getId();
@@ -58,7 +58,7 @@ public class SpotDto {
                 .map(image -> image.getImage().toUri(AppConfig.getBaseFileURL()))
                 .collect(Collectors.toList());
         this.reviews = spot.getReviews().stream()
-                .map(ReviewDto::of)
+                .map(ReviewCreateDto::of)
                 .collect(Collectors.toList());
     }
 
@@ -77,7 +77,7 @@ public class SpotDto {
         else return this.imageUri;
     }
 
-    public List<ReviewDto> getReviews() {
+    public List<ReviewCreateDto> getReviews() {
         if (this.reviews.isEmpty()) return null;
         else return this.reviews;
     }
