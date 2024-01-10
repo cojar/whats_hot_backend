@@ -3,7 +3,8 @@ package com.cojar.whats_hot_backend.domain.review_module.review.controller;
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.cojar.whats_hot_backend.domain.review_module.review.api_response.ReviewApiResponse;
-import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewDto;
+import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewCreateDto;
+import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewGetDto;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.review_module.review.request.ReviewRequest;
 import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
@@ -56,7 +57,7 @@ public class ReviewController {
 
         ResData resData = ResData.of(
                 ResCode.S_03_01,
-                ReviewDto.of(review),
+                ReviewCreateDto.of(review),
                 linkTo(ReviewController.class).slash(review.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/createReview").withRel("profile"));
@@ -91,7 +92,7 @@ public class ReviewController {
 
         ResData resData = ResData.of(
                 ResCode.S_03_03,
-                ReviewDto.of(review),
+                ReviewGetDto.of(review),
                 linkTo(this.getClass()).slash(review.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/getReview").withRel("profile"));
@@ -111,7 +112,7 @@ public class ReviewController {
 
         ResData resData = ResData.of(
                 ResCode.S_03_04,
-                ReviewDto.of(review),
+                ReviewCreateDto.of(review),
                 linkTo(this.getClass()).slash(review.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/updateReview").withRel("profile"));
@@ -146,7 +147,7 @@ public class ReviewController {
 
         ResData resData = ResData.of(
                 ResCode.S_03_06,
-                ReviewDto.of(review),
+                ReviewCreateDto.of(review),
                 linkTo(this.getClass()).slash(review.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/likeReview").withRel("profile"));
