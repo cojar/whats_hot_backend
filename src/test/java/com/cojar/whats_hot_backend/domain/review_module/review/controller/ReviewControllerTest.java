@@ -1097,4 +1097,47 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.index").exists())
         ;
     }
+
+    @Test
+    @DisplayName("patch:/api/reviews/{id}/like - bad request not allowed, F-03-06-02")
+    public void likeReview_BadRequest_NotAllowed() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1L;
+        Review before = this.reviewService.getReviewById(id);
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(patch("/api/reviews/%s/like".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-06-02"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_06_02.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(username))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+
+        Review after = this.reviewService.getReviewById(id);
+        checkNotLiked(before, after);
+    }
+
+    private void checkNotLiked(Review before, Review after) {
+        assertThat(before.getLiked()).isEqualTo(after.getLiked());
+    }
 }

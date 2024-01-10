@@ -244,5 +244,17 @@ public class ReviewService {
                     )
             );
         }
+
+        if (this.getReviewById(id).getAuthor().getUsername().equals(member.getUsername())) {
+
+            errors.reject("not authorized", new Object[]{member.getUsername()}, "author cannot like own review");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_06_02,
+                            errors
+                    )
+            );
+        }
     }
 }

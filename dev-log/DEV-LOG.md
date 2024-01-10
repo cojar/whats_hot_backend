@@ -4,6 +4,7 @@
 ### feature/patch-api-reviews-id-like
 - [x] S-03-06 TC 작성
 - [x] F-03-06-01 TC 작성
+- [x] F-03-06-02 TC 작성
 
 ## 24-01-10
 ### feature/get-api-reviews-id
