@@ -2,7 +2,6 @@ package com.cojar.whats_hot_backend.domain.review_module.review.dto;
 
 import com.cojar.whats_hot_backend.domain.comment_module.comment.dto.CommentDto;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
-import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotAbbrDto;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
@@ -13,15 +12,13 @@ import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
-public class ReviewDto {
+public class ReviewGetDto {
 
     private final Long id;
 
     private final LocalDateTime createDate;
 
     private final LocalDateTime modifyDate;
-
-    private final SpotAbbrDto spot;
 
     private final String author;
 
@@ -45,11 +42,10 @@ public class ReviewDto {
 
     private final List<CommentDto> comments;
 
-    public ReviewDto(Review review) {
+    public ReviewGetDto(Review review) {
         this.id = review.getId();
         this.createDate = review.getCreateDate();
         this.modifyDate = review.getModifyDate();
-        this.spot = SpotAbbrDto.of(review.getSpot());
         this.author = review.getAuthor().getUsername();
         this.visitDate = review.getVisitDate();
         this.title = review.getTitle();
@@ -84,7 +80,7 @@ public class ReviewDto {
         else return this.comments;
     }
 
-    public static ReviewDto of(Review review) {
-        return new ReviewDto(review);
+    public static ReviewGetDto of(Review review) {
+        return new ReviewGetDto(review);
     }
 }

@@ -1,5 +1,10 @@
 # What's Hot Dev-Log
 
+## 24-01-10
+### feature/get-api-reviews-id
+- [x] S-03-03 TC 작성
+- [x] F-03-03-01 TC 작성
+
 ## 24-01-09
 ### feature/spot_module-spot
 - [x] SpotCategory 매핑 테이블 도입

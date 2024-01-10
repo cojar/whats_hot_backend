@@ -5,7 +5,7 @@ import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
-import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewDto;
+import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewCreateDto;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.ReviewStatus;
 import com.cojar.whats_hot_backend.domain.review_module.review.repository.ReviewRepository;
@@ -122,8 +122,28 @@ public class ReviewService {
     }
 
     public Review getReviewById(Long id) {
+
+        this.getReviewByIdValidate(id);
+
         return this.reviewRepository.findById(id)
                 .orElse(null);
+    }
+
+    private void getReviewByIdValidate(Long id) {
+
+        Errors errors = AppConfig.getMockErrors("review");
+
+        if (!this.reviewRepository.existsById(id)) {
+
+            errors.reject("not exist", new Object[]{id}, "review that has id does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_03_01,
+                            errors
+                    )
+            );
+        }
     }
 
     public Page<DataModel> getReviewList(int page, int size) {
@@ -133,7 +153,7 @@ public class ReviewService {
         return this.reviewRepository.findAll(pageable)
                 .map(review -> {
                     DataModel dataModel = DataModel.of(
-                            ReviewDto.of(review),
+                            ReviewCreateDto.of(review),
                             linkTo(SpotController.class).slash(review.getId())
                     );
                     return dataModel;

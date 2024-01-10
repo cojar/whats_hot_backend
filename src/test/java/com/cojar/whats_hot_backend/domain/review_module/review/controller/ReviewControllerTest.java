@@ -27,8 +27,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -800,6 +799,74 @@ class ReviewControllerTest extends BaseControllerTest {
         assertThat(this.fileService.count()).isEqualTo(checkList.get(i));
     }
 
+    @Test
+    @DisplayName("get:/api/reviews/{id} - ok, S-03-03")
+    public void getReview_OK() throws Exception {
+
+        // given
+        Long id = 1L;
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/reviews/%s".formatted(id))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(ResCode.S_03_03.getStatus().name()))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value(ResCode.S_03_03.getCode()))
+                .andExpect(jsonPath("message").value(ResCode.S_03_03.getMessage()))
+                .andExpect(jsonPath("data.id").value(id))
+                .andExpect(jsonPath("data.createDate").exists())
+                .andExpect(jsonPath("data.visitDate").exists())
+                .andExpect(jsonPath("data.author").exists())
+                .andExpect(jsonPath("data.visitDate").exists())
+                .andExpect(jsonPath("data.title").exists())
+                .andExpect(jsonPath("data.content").exists())
+                .andExpect(jsonPath("data.score").exists())
+                .andExpect(jsonPath("data.status").exists())
+                .andExpect(jsonPath("data.validated").exists())
+                .andExpect(jsonPath("data.liked").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+    }
+
+    @Test
+    @DisplayName("get:/api/reviews/{id} - bad request not exist, F-03-03-01")
+    public void getReview_BadRequest_NotExist() throws Exception {
+
+        // given
+        Long id = 100000000L;
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/reviews/%s".formatted(id))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResCode.F_03_03_01.getStatus().name()))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value(ResCode.F_03_03_01.getCode()))
+                .andExpect(jsonPath("message").value(ResCode.F_03_03_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(id.toString()))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
     @Transactional
     @Test
     @DisplayName("delete:/api/reviews/{id} - ok, S-03-05")
@@ -871,8 +938,8 @@ class ReviewControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("delete:/api/reviews/{id} - bad request has no authority, F-03-05-02")
-    public void deleteReview_BadRequest_HasNoAuthority() throws Exception {
+    @DisplayName("delete:/api/reviews/{id} - bad request not allowed, F-03-05-02")
+    public void deleteReview_BadRequest_NotAllowed() throws Exception {
 
         // given
         String username = "user2";
