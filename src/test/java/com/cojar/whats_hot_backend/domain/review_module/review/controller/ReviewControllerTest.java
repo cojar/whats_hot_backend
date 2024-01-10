@@ -1,13 +1,17 @@
 package com.cojar.whats_hot_backend.domain.review_module.review.controller;
 
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
+import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.ReviewStatus;
+import com.cojar.whats_hot_backend.domain.review_module.review.repository.ReviewRepository;
 import com.cojar.whats_hot_backend.domain.review_module.review.request.ReviewRequest;
 import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
 import com.cojar.whats_hot_backend.domain.review_module.review_hashtag.service.ReviewHashtagService;
 import com.cojar.whats_hot_backend.domain.review_module.review_image.service.ReviewImageService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
+import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.ResCode;
+import com.cojar.whats_hot_backend.global.response.ResData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,9 +28,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -45,6 +52,9 @@ class ReviewControllerTest extends BaseControllerTest {
 
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @Transactional
     @Test
@@ -793,10 +803,11 @@ class ReviewControllerTest extends BaseControllerTest {
 
     private void checkNotCreated(List<Long> checkList) {
         int i = 0;
-        assertThat(this.reviewService.getReviewById(checkList.get(i++))).isNull();
-        assertThat(this.reviewHashtagService.count()).isEqualTo(checkList.get(i++));
-        assertThat(this.reviewImageService.count()).isEqualTo(checkList.get(i++));
-        assertThat(this.fileService.count()).isEqualTo(checkList.get(i));
+        ResData resData = assertThrows(ApiResponseException.class, () -> this.reviewService.getReviewById(checkList.get(0))).getResData();
+        assertThat(resData.getCode()).isEqualTo(ResCode.F_03_03_01.getCode());
+        assertThat(this.reviewHashtagService.count()).isEqualTo(checkList.get(++i));
+        assertThat(this.reviewImageService.count()).isEqualTo(checkList.get(++i));
+        assertThat(this.fileService.count()).isEqualTo(checkList.get(++i));
     }
 
     @Test
@@ -899,7 +910,8 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.profile").exists())
         ;
 
-        assertThat(this.reviewService.getReviewById(id)).isNull();
+        ResData resData = assertThrows(ApiResponseException.class, () -> this.reviewService.getReviewById(id)).getResData();
+        assertThat(resData.getCode()).isEqualTo(ResCode.F_03_03_01.getCode());
     }
 
     @Test
@@ -969,6 +981,85 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
                 .andExpect(jsonPath("data[0].rejectedValue[0]").value(username))
                 .andExpect(jsonPath("_links.index").exists())
+        ;
+
+        assertDoesNotThrow(() -> this.reviewService.getReviewById(id));
+    }
+
+    @Transactional
+    @Test
+    @DisplayName("patch:/api/reviews/{id}/like - ok like, S-03-06")
+    public void likeReview_OK_Like() throws Exception {
+
+        // given
+        String username = "user2";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1L;
+        Long liked = this.reviewService.getReviewById(id).getLiked();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(patch("/api/reviews/%s/like".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("OK"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-03-06"))
+                .andExpect(jsonPath("message").value(ResCode.S_03_06.getMessage()))
+                .andExpect(jsonPath("data.liked").value(liked + 1))
+                .andExpect(jsonPath("data.like").value(true))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+    }
+
+    @Transactional
+    @Test
+    @DisplayName("patch:/api/reviews/{id}/like - ok undo like, S-03-06")
+    public void likeReview_OK_UndoLike() throws Exception {
+
+        // given
+        String username = "user2";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1L;
+        Review review = this.reviewService.getReviewById(1L).toBuilder()
+                .liked(1L)
+                .likedMember(Set.of(this.memberService.getUserByUsername(username)))
+                .build();
+        this.reviewRepository.save(review);
+        Long liked = review.getLiked();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(patch("/api/reviews/%s/like".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("OK"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-03-06"))
+                .andExpect(jsonPath("message").value(ResCode.S_03_06.getMessage()))
+                .andExpect(jsonPath("data.liked").value(liked - 1))
+                .andExpect(jsonPath("data.like").value(false))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
         ;
     }
 }

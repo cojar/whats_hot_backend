@@ -201,4 +201,29 @@ public class ReviewService {
             );
         }
     }
+
+    @Transactional
+    public Review toggleLike(Long id, Member member) {
+
+        Review review = this.getReviewById(id);
+
+        if (review.getLikedMember().contains(member)) {
+
+            review = review.toBuilder()
+                    .liked(review.getLiked() - 1)
+                    .build();
+            review.getLikedMember().remove(member);
+
+        } else {
+
+            review = review.toBuilder()
+                    .liked(review.getLiked() + 1)
+                    .build();
+            review.getLikedMember().add(member);
+        }
+
+        this.reviewRepository.save(review);
+
+        return review;
+    }
 }
