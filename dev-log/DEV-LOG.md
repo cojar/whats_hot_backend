@@ -9,6 +9,9 @@
 - [x] cors 허용 테스트
 - [x] cors 허용 테스트 2
 
+### feature/patch-api-reviews-id
+- [x] S-03-04 TC 작성
+
 ## 24-01-08
 ### fix/get-api-spots
 - [x] fix list
@@ -30,9 +33,6 @@
 - [x] F-04-06-01 TC 수정
 - [x] F-04-06-02 TC 수정
 - [x] 테스트 코드 전반 점검
-
-### feature/patch-api-reviews-id
-- [x] S-03-04 TC 작성
 
 ## 24-01-06
 ### feature/comment_module-comment
