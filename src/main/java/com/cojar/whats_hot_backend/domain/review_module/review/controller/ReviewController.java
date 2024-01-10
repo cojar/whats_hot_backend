@@ -1,10 +1,12 @@
 package com.cojar.whats_hot_backend.domain.review_module.review.controller;
 
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
+import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.cojar.whats_hot_backend.domain.review_module.review.api_response.ReviewApiResponse;
 import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewCreateDto;
 import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewGetDto;
+import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewLikeDto;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.review_module.review.request.ReviewRequest;
 import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
@@ -143,11 +145,12 @@ public class ReviewController {
     public ResponseEntity likeReview(@PathVariable(value = "id") Long id,
                                      @AuthenticationPrincipal User user) {
 
-        Review review = this.reviewService.getReviewById(id);
+        Member member = this.memberService.getUserByUsername(user.getUsername());
+        Review review = this.reviewService.toggleLike(id, member);
 
         ResData resData = ResData.of(
                 ResCode.S_03_06,
-                ReviewCreateDto.of(review),
+                ReviewLikeDto.of(review, member),
                 linkTo(this.getClass()).slash(review.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/likeReview").withRel("profile"));

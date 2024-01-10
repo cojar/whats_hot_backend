@@ -201,4 +201,60 @@ public class ReviewService {
             );
         }
     }
+
+    @Transactional
+    public Review toggleLike(Long id, Member member) {
+
+        this.toggleLikeValidate(id, member);
+
+        Review review = this.getReviewById(id);
+
+        if (review.getLikedMember().contains(member)) {
+
+            review = review.toBuilder()
+                    .liked(review.getLiked() - 1)
+                    .build();
+            review.getLikedMember().remove(member);
+
+        } else {
+
+            review = review.toBuilder()
+                    .liked(review.getLiked() + 1)
+                    .build();
+            review.getLikedMember().add(member);
+        }
+
+        this.reviewRepository.save(review);
+
+        return review;
+    }
+
+    private void toggleLikeValidate(Long id, Member member) {
+
+        Errors errors = AppConfig.getMockErrors("review");
+
+        if (!this.reviewRepository.existsById(id)) {
+
+            errors.reject("not exist", new Object[]{id}, "review that has id does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_06_01,
+                            errors
+                    )
+            );
+        }
+
+        if (this.getReviewById(id).getAuthor().getUsername().equals(member.getUsername())) {
+
+            errors.reject("not authorized", new Object[]{member.getUsername()}, "author cannot like own review");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_06_02,
+                            errors
+                    )
+            );
+        }
+    }
 }
