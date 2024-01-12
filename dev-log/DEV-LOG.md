@@ -7,6 +7,7 @@
 - [x] F-03-04-02 TC 작성
 - [x] F-03-04-03 TC 작성
 - [x] F-00-00-01 TC 작성
+- [x] F-00-00-02 TC 작성
 
 ## 24-01-11
 ### feature/patch-api-reviews-id-like
