@@ -1154,7 +1154,7 @@ class ReviewControllerTest extends BaseControllerTest {
         );
 
         String fileName = "test";
-        String ext = "png";
+        String ext = "a";
         Resource resource = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(fileName, ext));
         MockMultipartFile _file = new MockMultipartFile(
                 "images",
@@ -1193,6 +1193,78 @@ class ReviewControllerTest extends BaseControllerTest {
     @Test
     @DisplayName("patch:/api/reviews/{id} - bad request extension, F-00-00-02")
     public void updateReview_BadRequest_Extension() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1L;
+        ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder().build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        String fileName1 = "test";
+        String ext1 = "a";
+        Resource resource1 = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(fileName1, ext1));
+        MockMultipartFile _file1 = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName1, ext1),
+                MediaType.TEXT_MARKDOWN_VALUE,
+                resource1.getInputStream()
+        );
+        String fileName2 = "test";
+        String ext2 = "gif";
+        Resource resource2 = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(fileName2, ext2));
+        MockMultipartFile _file2 = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName2, ext2),
+                MediaType.IMAGE_GIF_VALUE,
+                resource2.getInputStream()
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.PATCH, "/api/reviews/%s".formatted(id))
+                        .file(_request)
+                        .file(_file1)
+                        .file(_file2)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code[0]").value("F-00-00-01"))
+                .andExpect(jsonPath("code[1]").value("F-00-00-02"))
+                .andExpect(jsonPath("message[0]").value(ResCode.F_00_00_01.getMessage()))
+                .andExpect(jsonPath("message[1]").value(ResCode.F_00_00_02.getMessage()))
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(MediaType.TEXT_MARKDOWN_VALUE))
+                .andExpect(jsonPath("data[1].field").exists())
+                .andExpect(jsonPath("data[1].objectName").exists())
+                .andExpect(jsonPath("data[1].code").exists())
+                .andExpect(jsonPath("data[1].defaultMessage").exists())
+                .andExpect(jsonPath("data[1].rejectedValue").value(MediaType.IMAGE_GIF_VALUE))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    @Test
+    @DisplayName("patch:/api/reviews/{id} - bad request multiple file error, F-00-00-01 & F-00-00-02")
+    public void updateReview_BadRequest_MultipleFileError() throws Exception {
 
         // given
         String username = "user1";
