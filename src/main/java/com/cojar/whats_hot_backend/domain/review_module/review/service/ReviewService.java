@@ -58,6 +58,13 @@ public class ReviewService {
         return this.reviewRepository.count();
     }
 
+    private Review refresh(Review review) {
+        entityManager.flush();
+        review = this.getReviewById(review.getId());
+        entityManager.refresh(review);
+        return review;
+    }
+
     @Transactional
     public Review create(ReviewRequest.CreateReview request, List<MultipartFile> images, Errors errors, User user) {
 
@@ -77,7 +84,7 @@ public class ReviewService {
                 .score(request.getScore())
                 .spot(spot)
                 .author(author)
-                .status(request.isLock() ? ReviewStatus.PRIVATE : ReviewStatus.PUBLIC)
+                .status(request.getLock() ? ReviewStatus.PRIVATE : ReviewStatus.PUBLIC)
                 .build();
 
         this.reviewRepository.save(review);
@@ -91,10 +98,7 @@ public class ReviewService {
 
         this.spotService.updateReview(spot, review);
 
-        entityManager.flush();
-        entityManager.refresh(review);
-
-        return review;
+        return this.refresh(review);
     }
 
     private void createValidate(ReviewRequest.CreateReview request, Errors errors) {
@@ -158,6 +162,32 @@ public class ReviewService {
                     );
                     return dataModel;
                 });
+    }
+
+    @Transactional
+    public Review update(ReviewRequest.UpdateReview request, List<MultipartFile> images, Errors errors, Long id, User user) {
+
+        Review review = this.getReviewById(id);
+
+        review = review.toBuilder()
+                .title((request.getTitle() != null && !request.getTitle().isBlank()) ? request.getTitle() : review.getTitle())
+                .content((request.getContent() != null && !request.getContent().isBlank()) ? request.getContent() : review.getContent())
+                .score(request.getScore() != null ? request.getScore() : review.getScore())
+                .status(request.getLock() != null ? (request.getLock() ? ReviewStatus.PRIVATE : ReviewStatus.PUBLIC) : review.getStatus())
+                .build();
+
+        this.reviewRepository.save(review);
+
+        // hashtags 수정
+        this.reviewHashtagService.updateAll(request.getHashtags(), review);
+
+        // images 수정
+        List<_File> files = this.fileService.createAll(images, FileDomain.REVIEW);
+        this.reviewImageService.updateAll(files, review);
+
+        this.spotService.updateReview(review.getSpot(), review);
+
+        return this.refresh(review);
     }
 
     @Transactional

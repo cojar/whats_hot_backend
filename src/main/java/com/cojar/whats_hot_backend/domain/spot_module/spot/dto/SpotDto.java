@@ -29,7 +29,7 @@ public class SpotDto {
 
     private final String contact;
 
-    private final Double averageScore;
+    private final String averageScore;
 
     private final List<String> hashtags;
 
@@ -47,7 +47,7 @@ public class SpotDto {
         this.name = spot.getName();
         this.address = spot.getAddress();
         this.contact = spot.getContact();
-        this.averageScore = spot.getAverageScore();
+        this.averageScore = "%.2f".formatted(spot.getAverageScore());
         this.hashtags = spot.getHashtags().stream()
                 .map(h -> h.getHashtag().getName())
                 .collect(Collectors.toList());

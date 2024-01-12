@@ -60,6 +60,13 @@ public class SpotService {
         return this.spotRepository.count();
     }
 
+    private Spot refresh(Spot spot) {
+        entityManager.flush();
+        spot = this.getSpotById(spot.getId());
+        entityManager.refresh(spot);
+        return spot;
+    }
+
     @Transactional
     public Spot create(SpotRequest.CreateSpot request, List<MultipartFile> images, Errors errors) {
 
@@ -90,9 +97,7 @@ public class SpotService {
         List<_File> files = this.fileService.createAll(images, FileDomain.SPOT);
         this.spotImageService.createAll(files, spot);
 
-        entityManager.refresh(spot);
-
-        return spot;
+        return this.refresh(spot);
     }
 
     private void createValidate(SpotRequest.CreateSpot request, Errors errors) {
@@ -219,10 +224,7 @@ public class SpotService {
         List<_File> files = this.fileService.createAll(images, FileDomain.SPOT);
         this.spotImageService.updateAll(files, spot);
 
-        entityManager.flush();
-        entityManager.refresh(spot);
-
-        return spot;
+        return this.refresh(spot);
     }
 
     private void updateValidate(Long id, SpotRequest.UpdateSpot request, Errors errors) {
@@ -330,8 +332,10 @@ public class SpotService {
     public void updateReview(Spot spot, Review review) {
 
         List<Review> reviews = spot.getReviews();
-        reviews.add(review);
-        Double averageScore = (spot.getAverageScore() + review.getScore()) / reviews.size();
+        if (!reviews.contains(review)) reviews.add(review);
+        Double averageScore = reviews.stream()
+                .map(r -> r.getScore())
+                .reduce(0D, Double::sum) / reviews.size();
 
         spot = spot.toBuilder()
                 .averageScore(averageScore)

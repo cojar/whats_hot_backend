@@ -6,8 +6,12 @@ import com.cojar.whats_hot_backend.domain.review_module.review.entity.ReviewStat
 import com.cojar.whats_hot_backend.domain.review_module.review.repository.ReviewRepository;
 import com.cojar.whats_hot_backend.domain.review_module.review.request.ReviewRequest;
 import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
+import com.cojar.whats_hot_backend.domain.review_module.review_hashtag.entity.ReviewHashtag;
 import com.cojar.whats_hot_backend.domain.review_module.review_hashtag.service.ReviewHashtagService;
+import com.cojar.whats_hot_backend.domain.review_module.review_image.entity.ReviewImage;
 import com.cojar.whats_hot_backend.domain.review_module.review_image.service.ReviewImageService;
+import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
+import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.ResCode;
@@ -55,6 +59,9 @@ class ReviewControllerTest extends BaseControllerTest {
 
     @Autowired
     private ReviewRepository reviewRepository;
+
+    @Autowired
+    private SpotService spotService;
 
     @Transactional
     @Test
@@ -879,9 +886,16 @@ class ReviewControllerTest extends BaseControllerTest {
     }
 
     @Transactional
-    @Test
+    @ParameterizedTest
+    @MethodSource("argsFor_updateReview_OK")
     @DisplayName("patch:/api/reviews/{id} - ok, S-03-04")
-    public void updateReview_OK() throws Exception {
+    public void updateReview_OK(String title,
+                                String content,
+                                Double score,
+                                String hashtag,
+                                Boolean lock,
+                                String fileName,
+                                String ext) throws Exception {
 
         // given
         String username = "user1";
@@ -889,16 +903,17 @@ class ReviewControllerTest extends BaseControllerTest {
         String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
-        String title = "수정 테스트 제목";
-        String content = "수정 테스트 내용";
-        Double score = 4.0;
-        String hashtag1 = "수정태그1", hashtag2 = "수정태그2";
+        Review review = this.reviewService.getReviewById(id);
+        Spot spot = this.spotService.getSpotById(review.getSpot().getId());
+        Double averageScore = score != null ?
+                (spot.getAverageScore() * spot.getReviews().size() - review.getScore() + score) / spot.getReviews().size() : spot.getAverageScore();
+        List<String> hashtags = hashtag != null ? List.of(hashtag) : null;
         ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder()
                 .title(title)
                 .content(content)
                 .score(score)
-                .hashtags(List.of(hashtag1, hashtag2))
-                .lock(true)
+                .hashtags(hashtags)
+                .lock(lock)
                 .build();
         MockMultipartFile _request = new MockMultipartFile(
                 "request",
@@ -907,28 +922,27 @@ class ReviewControllerTest extends BaseControllerTest {
                 this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
         );
 
-        String fileName = "test";
-        String ext = "png";
-        Resource resource = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(fileName, ext));
-        MockMultipartFile _file1 = new MockMultipartFile(
-                "images",
-                "%s.%s".formatted(fileName, ext),
-                MediaType.IMAGE_PNG_VALUE,
-                resource.getInputStream()
-        );
-        MockMultipartFile _file2 = new MockMultipartFile(
-                "images",
-                "%s.%s".formatted(fileName, ext),
-                MediaType.IMAGE_PNG_VALUE,
-                resource.getInputStream()
-        );
+        MockMultipartFile _file = (fileName.isBlank() || ext.isBlank()) ? null :
+                new MockMultipartFile(
+                        "images",
+                        "%s.%s".formatted(fileName, ext),
+                        MediaType.IMAGE_PNG_VALUE,
+                        resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(fileName, ext)).getInputStream()
+                );
+        List<MockMultipartFile> files = _file != null ? List.of(_file) : null;
 
         // when
-        ResultActions resultActions = this.mockMvc
-                .perform(multipart(HttpMethod.POST, "/api/reviews")
+        ResultActions resultActions = _file != null ? this.mockMvc
+                .perform(multipart(HttpMethod.PATCH, "/api/reviews/%s".formatted(id))
                         .file(_request)
-                        .file(_file1)
-                        .file(_file2)
+                        .file(_file)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print()) : this.mockMvc
+                .perform(multipart(HttpMethod.PATCH, "/api/reviews/%s".formatted(id))
+                        .file(_request)
                         .header("Authorization", accessToken)
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .accept(MediaTypes.HAL_JSON)
@@ -937,26 +951,54 @@ class ReviewControllerTest extends BaseControllerTest {
 
         // then
         resultActions
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("status").value("CREATED"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("OK"))
                 .andExpect(jsonPath("success").value("true"))
-                .andExpect(jsonPath("code").value("S-03-01"))
+                .andExpect(jsonPath("code").value("S-03-04"))
                 .andExpect(jsonPath("message").exists())
                 .andExpect(jsonPath("data.id").exists())
                 .andExpect(jsonPath("data.createDate").exists())
                 .andExpect(jsonPath("data.modifyDate").exists())
-                .andExpect(jsonPath("data.spot.averageScore").exists())
-                .andExpect(jsonPath("data.title").value(title))
-                .andExpect(jsonPath("data.content").value(content))
-                .andExpect(jsonPath("data.score").value(score))
-                .andExpect(jsonPath("data.hashtags[0]").value(hashtag1))
-                .andExpect(jsonPath("data.hashtags[1]").value(hashtag2))
+                .andExpect(jsonPath("data.spot.averageScore").value("%.2f".formatted(averageScore)))
+                .andExpect(jsonPath("data.title").value(title.isBlank() ? review.getTitle() : title))
+                .andExpect(jsonPath("data.content").value(content.isBlank() ? review.getContent() : content))
+                .andExpect(jsonPath("data.score").value(score == null ? review.getScore() : score))
+                .andExpect(jsonPath("data.hashtags[0]").value(hashtag))
                 .andExpect(jsonPath("data.imageUri[0]").exists())
-                .andExpect(jsonPath("data.imageUri[1]").exists())
-                .andExpect(jsonPath("data.status").value(ReviewStatus.PRIVATE.getType()))
+                .andExpect(jsonPath("data.status").value(lock != null ? (lock ? ReviewStatus.PRIVATE.getType() : ReviewStatus.PUBLIC.getType()) : review.getStatus().getType()))
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
         ;
+
+        if (hashtags != null) {
+            List<ReviewHashtag> reviewHashtags = this.reviewHashtagService.getAllByReview(review);
+            assertThat(reviewHashtags.size()).isEqualTo(hashtags.size());
+            for (int i = 0; i < reviewHashtags.size(); i++) {
+                assertThat(reviewHashtags.get(i).getHashtag().getName()).isEqualTo(hashtags.get(i));
+            }
+        }
+        if (files != null) {
+            List<ReviewImage> reviewImages = this.reviewImageService.getAllByReview(review);
+            assertThat(reviewImages.size()).isEqualTo(files.size());
+            for (int i = 0; i < reviewImages.size(); i++) {
+                assertThat(reviewImages.get(i).getImage().getName()).isEqualTo(files.get(i).getOriginalFilename());
+                assertThat(reviewImages.get(i).getImage().getExt()).isEqualTo(files.get(i).getContentType().split("/")[1]);
+            }
+        }
+    }
+
+    private static Stream<Arguments> argsFor_updateReview_OK() {
+        return Stream.of(
+                Arguments.of("수정 테스트 제목", "수정 테스트 내용", 4.0, "수정태그", true, "test_update", "png"),
+                Arguments.of("", "수정 테스트 내용", 4.0, "수정태그", true, "test_update", "png"),
+                Arguments.of("수정 테스트 제목", "", 4.0, "수정태그", true, "test_update", "png"),
+                Arguments.of("수정 테스트 제목", "수정 테스트 내용", null, "수정태그", true, "test_update", "png"),
+                Arguments.of("수정 테스트 제목", "수정 테스트 내용", 4.0, "", true, "test_update", "png"),
+                Arguments.of("수정 테스트 제목", "수정 테스트 내용", 4.0, "수정태그", null, "test_update", "png"),
+                Arguments.of("수정 테스트 제목", "수정 테스트 내용", 4.0, "수정태그", true, "", ""),
+                Arguments.of("수정 테스트 제목", "수정 테스트 내용", 4.0, "수정태그", true, "test_update", ""),
+                Arguments.of("수정 테스트 제목", "수정 테스트 내용", 4.0, "수정태그", true, "", "png")
+        );
     }
 
     @Transactional

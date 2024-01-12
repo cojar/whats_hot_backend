@@ -48,7 +48,7 @@ public class ReviewRequest {
 
         @Schema(example = "true")
         @Builder.Default
-        private boolean lock = false;
+        private Boolean lock = false;
     }
 
     @Getter
@@ -69,6 +69,6 @@ public class ReviewRequest {
         private List<@NotBlank String> hashtags;
 
         @Schema(example = "true")
-        private boolean lock;
+        private Boolean lock;
     }
 }

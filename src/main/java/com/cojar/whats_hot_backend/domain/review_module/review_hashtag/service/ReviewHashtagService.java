@@ -47,4 +47,34 @@ public class ReviewHashtagService {
 
         return reviewHashtags;
     }
+
+    @Transactional
+    public List<ReviewHashtag> updateAll(List<String> hashtags, Review review) {
+
+        if (hashtags == null) return null;
+
+        List<ReviewHashtag> reviewHashtags = hashtags.stream()
+                .map(hashtag -> {
+                            Hashtag _hashtag = this.hashtagRepository.findByName(hashtag).orElse(null);
+                            if (_hashtag == null) {
+                                _hashtag = Hashtag.builder().name(hashtag).build();
+                                this.hashtagRepository.save(_hashtag);
+                            }
+                            return ReviewHashtag.builder()
+                                    .hashtag(_hashtag)
+                                    .review(review)
+                                    .build();
+                        }
+                )
+                .collect(Collectors.toList());
+
+        this.reviewHashtagRepository.deleteAll(review.getHashtags());
+        this.reviewHashtagRepository.saveAll(reviewHashtags);
+
+        return reviewHashtags;
+    }
+
+    public List<ReviewHashtag> getAllByReview(Review review) {
+        return this.reviewHashtagRepository.findAllByReview(review);
+    }
 }
