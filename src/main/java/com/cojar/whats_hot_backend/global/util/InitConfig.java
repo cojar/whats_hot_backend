@@ -104,63 +104,63 @@ public class InitConfig {
             // category init data
 
             // 국내맛집 대분류
-            Category gourmet = this.categoryService.createForInit("맛집", 1, -1L);
+            Category gourmet = this.categoryService.create("맛집", null, true);
 
             // 국내맛집 중분류
-            Category koreanFood = this.categoryService.createForInit("한식", 2, gourmet.getId());
-            Category asianFood = this.categoryService.createForInit("아시아", 2, gourmet.getId());
-            Category westernFood = this.categoryService.createForInit("양식", 2, gourmet.getId());
-            Category chineseFood = this.categoryService.createForInit("중식", 2, gourmet.getId());
-            Category japaneseFood = this.categoryService.createForInit("일식", 2, gourmet.getId());
-            Category snackFood = this.categoryService.createForInit("분식", 2, gourmet.getId());
-            Category dessert = this.categoryService.createForInit("디저트", 2, gourmet.getId());
+            Category koreanFood = this.categoryService.create("한식", gourmet.getId(),false);
+            Category asianFood = this.categoryService.create("아시아", gourmet.getId(),false);
+            Category westernFood = this.categoryService.create("양식", gourmet.getId(),false);
+            Category chineseFood = this.categoryService.create("중식", gourmet.getId(),false);
+            Category japaneseFood = this.categoryService.create("일식", gourmet.getId(), false);
+            Category snackFood = this.categoryService.create("분식",  gourmet.getId(), false);
+            Category dessert = this.categoryService.create("디저트", gourmet.getId(), false);
 
             // 국내맛집 소분류
-            Category pigFeetAndNapaWrapsWithPork = this.categoryService.createForInit("족발/보쌈", 3, koreanFood.getId());
-            Category noodle = this.categoryService.createForInit("면", 3, koreanFood.getId());
-            Category grilledMeat = this.categoryService.createForInit("고기/구이", 3, koreanFood.getId());
-            Category stewAndSoup = this.categoryService.createForInit("찜/탕/찌개", 3, koreanFood.getId());
-            Category lunchBox = this.categoryService.createForInit("도시락", 3, koreanFood.getId());
-            Category midnightSnack = this.categoryService.createForInit("야식", 3, koreanFood.getId());
-            Category sashimi = this.categoryService.createForInit("회", 3, japaneseFood.getId());
-            Category cutletUdon = this.categoryService.createForInit("돈가스/우동", 3, japaneseFood.getId());
-            Category pizza = this.categoryService.createForInit("피자", 3, westernFood.getId());
-            Category chicken = this.categoryService.createForInit("치킨", 3, westernFood.getId());
-            Category italianCuisine = this.categoryService.createForInit("이탈리안", 3, westernFood.getId());
-            Category fastFood = this.categoryService.createForInit("패스트푸드", 3, westernFood.getId());
-            Category chineseCuisine = this.categoryService.createForInit("중화", 3, chineseFood.getId());
-            Category bakery = this.categoryService.createForInit("제과/빵/커피", 3, dessert.getId());
-            Category koreanSnack = this.categoryService.createForInit("떡볶이/순대/튀김/어묵", 3, snackFood.getId());
-            Category asianCuisine = this.categoryService.createForInit("아시안푸드", 3, asianFood.getId());
+            Category pigFeetAndNapaWrapsWithPork = this.categoryService.create("족발/보쌈", koreanFood.getId(),false);
+            Category noodle = this.categoryService.create("면", koreanFood.getId(),false);
+            Category grilledMeat = this.categoryService.create("고기/구이", koreanFood.getId(),false);
+            Category stewAndSoup = this.categoryService.create("찜/탕/찌개", koreanFood.getId(), false);
+            Category lunchBox = this.categoryService.create("도시락", koreanFood.getId(), false);
+            Category midnightSnack = this.categoryService.create("야식", koreanFood.getId(), false);
+            Category sashimi = this.categoryService.create("회", japaneseFood.getId(), false);
+            Category cutletUdon = this.categoryService.create("돈가스/우동", japaneseFood.getId(), false);
+            Category pizza = this.categoryService.create("피자", westernFood.getId(), false);
+            Category chicken = this.categoryService.create("치킨", westernFood.getId(), false);
+            Category italianCuisine = this.categoryService.create("이탈리안", westernFood.getId(), false);
+            Category fastFood = this.categoryService.create("패스트푸드", westernFood.getId(), false);
+            Category chineseCuisine = this.categoryService.create("중화", chineseFood.getId(), false);
+            Category bakery = this.categoryService.create("제과/빵/커피", dessert.getId(), false);
+            Category koreanSnack = this.categoryService.create("떡볶이/순대/튀김/어묵", snackFood.getId(), false);
+            Category asianCuisine = this.categoryService.create("아시안푸드", asianFood.getId(), false);
 
 
             // 국내여행지 대분류
-            Category destination = this.categoryService.createForInit("여행지", 1, -1L);
+            Category destination = this.categoryService.create("여행지", null, true);
 
             // 국내여행지 
-            Category Palaces = this.categoryService.createForInit("궁궐", 2, destination.getId());
-            Category Parks = this.categoryService.createForInit("공원", 2, destination.getId());
-            Category Museums = this.categoryService.createForInit("박물관", 2, destination.getId());
-            Category Markets = this.categoryService.createForInit("재래시장", 2, destination.getId());
-            Category Landmarks = this.categoryService.createForInit("랜드마크", 2, destination.getId());
-            Category Mountain = this.categoryService.createForInit("산", 2, destination.getId());
-            Category Ocean = this.categoryService.createForInit("바다", 2, destination.getId());
-            Category Valley = this.categoryService.createForInit("계곡", 2, destination.getId());
-            Category Ruins = this.categoryService.createForInit("유적", 2, destination.getId());
-            Category ThemePark = this.categoryService.createForInit("테마파크", 2, destination.getId());
-            Category Activity = this.categoryService.createForInit("액티비티", 2, destination.getId());
+            Category Palaces = this.categoryService.create("궁궐", destination.getId(), false);
+            Category Parks = this.categoryService.create("공원", destination.getId(), false);
+            Category Museums = this.categoryService.create("박물관", destination.getId(), false);
+            Category Markets = this.categoryService.create("재래시장", destination.getId(), false);
+            Category Landmarks = this.categoryService.create("랜드마크", destination.getId(), false);
+            Category Mountain = this.categoryService.create("산", destination.getId(), false);
+            Category Ocean = this.categoryService.create("바다", destination.getId(), false);
+            Category Valley = this.categoryService.create("계곡", destination.getId(), false);
+            Category Ruins = this.categoryService.create("유적", destination.getId(), false);
+            Category ThemePark = this.categoryService.create("테마파크", destination.getId(), false);
+            Category Activity = this.categoryService.create("액티비티", destination.getId(), false);
 
             // 숙박 대분류
-            Category lodging = this.categoryService.createForInit("숙박", 1, -1L);
+            Category lodging = this.categoryService.create("숙박", null, true);
 
             // 숙박 중분류
-            Category hotelAndResort = this.categoryService.createForInit("호텔/리조트", 2, lodging.getId());
-            Category Pension = this.categoryService.createForInit("펜션", 2, lodging.getId());
-            Category poolVilla = this.categoryService.createForInit("풀빌라", 2, lodging.getId());
-            Category familyStyle = this.categoryService.createForInit("가족형숙소", 2, lodging.getId());
-            Category motel = this.categoryService.createForInit("모텔", 2, lodging.getId());
-            Category camping = this.categoryService.createForInit("캠핑", 2, lodging.getId());
-            Category guesthouse = this.categoryService.createForInit("게스트하우스", 2, lodging.getId());
+            Category hotelAndResort = this.categoryService.create("호텔/리조트", lodging.getId(),false);
+            Category Pension = this.categoryService.create("펜션", lodging.getId(),false);
+            Category poolVilla = this.categoryService.create("풀빌라", lodging.getId(),false);
+            Category familyStyle = this.categoryService.create("가족형숙소", lodging.getId(),false);
+            Category motel = this.categoryService.create("모텔", lodging.getId(), false);
+            Category camping = this.categoryService.create("캠핑", lodging.getId(), false);
+            Category guesthouse = this.categoryService.create("게스트하우스", lodging.getId(), false);
 
             // spot init data
             Spot spot1 = this.spotService.create(

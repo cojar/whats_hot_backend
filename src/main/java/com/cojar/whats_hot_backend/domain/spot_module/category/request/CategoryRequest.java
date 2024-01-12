@@ -2,10 +2,7 @@ package com.cojar.whats_hot_backend.domain.spot_module.category.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 public class CategoryRequest {
@@ -20,7 +17,6 @@ public class CategoryRequest {
 
         private Long parentId;
 
-        @NotNull
-        private Integer depth;
+        private Boolean allowRoot;
     }
 }

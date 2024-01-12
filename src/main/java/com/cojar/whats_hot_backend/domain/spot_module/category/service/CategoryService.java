@@ -20,31 +20,16 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public Category create(String name, Integer depth, Long parentId) {
-        // 1차 카테고리는 만들지 않고 4차부터도 만들지 않음
-        if(depth == 1 || depth >= 4){
-            throw new ApiResponseException(
-                    ResData.of(
-                            ResCode.F_05_01_01
-                    )
-            );
-        }
+    public Category create(String name, Long parentId, Boolean allowRoot) {
 
         Category parent = this.categoryRepository.findById(parentId == null ? -1 : parentId)
                 .orElse(null);
 
-        // 최상단 카테고리가 맛집일 경우 depth 3, 나머지는 2까지 생성 가능
-        if( depth == 3 && !parent.getRootName().equals("맛집")){
-            throw new ApiResponseException(
-                    ResData.of(
-                            ResCode.F_05_01_01
-                    )
-            );
-        }
+        createValidate(name, parentId, allowRoot, parent);
 
         Category category = Category.builder()
                 .name(name)
-                .depth(depth)
+                .depth(parent == null ? 1 : parent.getDepth()+1)
                 .parent(parent)
                 .build();
 
@@ -53,22 +38,54 @@ public class CategoryService {
         return category;
     }
 
-    // InitConfig용
-    @Transactional
-    public Category createForInit(String name, Integer depth, Long parentId) {
 
-        Category parent = this.categoryRepository.findById(parentId == null ? -1 : parentId)
-                .orElse(null);
+    private void createValidate(String name, Long parentId, Boolean allowRoot, Category parent) {
 
-        Category category = Category.builder()
-                .name(name)
-                .depth(depth)
-                .parent(parent)
-                .build();
+        // 첫 카테고리 등록인데 parent 가 있는 경우
+        if((parent != null && allowRoot)) {
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_05_01_01
+                    )
+            );
+        }
 
-        this.categoryRepository.save(category);
+        // 허용되지 않은 1차 카테고리 등록시
+        if(!allowRoot && parentId == null){
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_05_01_02
+                    )
+            );
+        }
 
-        return category;
+        // 하위 카테고리 등록인데 상위 카테고리가 없는 경우
+        if((parent == null && (allowRoot == null || !allowRoot))){
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_05_01_03
+                    )
+            );
+        }
+
+
+        // 하위 카테고리 등록인데 depth가 4가 넘는 경우
+        if((parent != null && (parent.getDepth() + 1 >= 4))){
+            throw new ApiResponseException(
+                ResData.of(
+                        ResCode.F_05_01_04
+                )
+            );
+        }
+
+        // 맛집 카테고리가 아닌데 3차 카테고리인 경우
+        if((parent !=null && (parent.getDepth() + 1 == 3) && !parent.getRootName().equals("맛집"))){
+            throw new ApiResponseException(
+                ResData.of(
+                        ResCode.F_05_01_04
+                )
+            );
+        }
     }
 
     public Category getCategoryByName(String name) {

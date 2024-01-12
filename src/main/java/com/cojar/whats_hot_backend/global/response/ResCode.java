@@ -119,6 +119,9 @@ public enum ResCode {
 
     // category controller fail codes
     F_05_01_01(HttpStatus.BAD_REQUEST, "F-05-01-01", "요청 값이 올바르지 않습니다"),
+    F_05_01_02(HttpStatus.BAD_REQUEST, "F-05-01-02", "1차 카테고리는 등록할 수 없습니다."),
+    F_05_01_03(HttpStatus.BAD_REQUEST, "F-05-01-03", "상위 카테고리가 존재하지 않습니다."),
+    F_05_01_04(HttpStatus.BAD_REQUEST, "F-05-01-04", "지원 하지 않는 차수의 카테고리 입니다."),
 
     // security fail codes
     F_99_99_01(HttpStatus.UNAUTHORIZED, "F-99-99-01", "로그인이 필요한 요청입니다"),

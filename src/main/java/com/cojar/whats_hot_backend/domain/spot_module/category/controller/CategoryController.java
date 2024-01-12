@@ -4,6 +4,7 @@ import com.cojar.whats_hot_backend.domain.spot_module.category.dto.CategoryDto;
 import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.category.request.CategoryRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.category.service.CategoryService;
+import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
@@ -34,9 +35,9 @@ public class CategoryController {
     public ResponseEntity<?> createCategory(@Valid @RequestBody CategoryRequest.CreateCategory request, Errors errors) {
         // 유효성 검사
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body("Invalid request body");
+            throw new ApiResponseException(ResData.of(ResCode.F_05_01_01));
         }
-        Category category = this.categoryService.create(request.getName(), request.getDepth(), request.getParentId());
+        Category category = this.categoryService.create(request.getName(), request.getParentId(), request.getAllowRoot());
 
         ResData resData = ResData.of(
                 ResCode.S_05_01,
