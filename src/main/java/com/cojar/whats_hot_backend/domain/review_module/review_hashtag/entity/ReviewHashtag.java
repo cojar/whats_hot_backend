@@ -20,6 +20,6 @@ public class ReviewHashtag extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Review review;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Hashtag hashtag;
 }

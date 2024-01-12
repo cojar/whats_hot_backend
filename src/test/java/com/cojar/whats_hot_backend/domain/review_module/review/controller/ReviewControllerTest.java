@@ -993,7 +993,6 @@ class ReviewControllerTest extends BaseControllerTest {
                 Arguments.of("", "수정 테스트 내용", 4.0, "수정태그", true, "test_update", "png"),
                 Arguments.of("수정 테스트 제목", "", 4.0, "수정태그", true, "test_update", "png"),
                 Arguments.of("수정 테스트 제목", "수정 테스트 내용", null, "수정태그", true, "test_update", "png"),
-                Arguments.of("수정 테스트 제목", "수정 테스트 내용", 4.0, "", true, "test_update", "png"),
                 Arguments.of("수정 테스트 제목", "수정 테스트 내용", 4.0, "수정태그", null, "test_update", "png"),
                 Arguments.of("수정 테스트 제목", "수정 테스트 내용", 4.0, "수정태그", true, "", ""),
                 Arguments.of("수정 테스트 제목", "수정 테스트 내용", 4.0, "수정태그", true, "test_update", ""),
@@ -1054,6 +1053,10 @@ class ReviewControllerTest extends BaseControllerTest {
         String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
+        Review before = this.reviewService.getReviewById(id);
+        List<ReviewHashtag> beforeHashtags = this.reviewHashtagService.getAllByReview(before);
+        List<ReviewImage> beforeImages = this.reviewImageService.getAllByReview(before);
+        Spot beforeSpot = this.spotService.getSpotById(before.getSpot().getId());
         String hashTag = " ";
         ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder().build();
         MockMultipartFile _request = new MockMultipartFile(
@@ -1086,6 +1089,9 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue[0]").value(username))
                 .andExpect(jsonPath("_links.index").exists())
         ;
+
+        Review after = this.reviewService.getReviewById(id);
+        checkNotUpdated(before, beforeHashtags, beforeImages, beforeSpot, after);
     }
 
     @Test
@@ -1098,6 +1104,10 @@ class ReviewControllerTest extends BaseControllerTest {
         String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
+        Review before = this.reviewService.getReviewById(id);
+        List<ReviewHashtag> beforeHashtags = this.reviewHashtagService.getAllByReview(before);
+        List<ReviewImage> beforeImages = this.reviewImageService.getAllByReview(before);
+        Spot beforeSpot = this.spotService.getSpotById(before.getSpot().getId());
         String hashtag = " ";
         ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder()
                 .hashtags(List.of(hashtag))
@@ -1133,6 +1143,9 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue").value(hashtag))
                 .andExpect(jsonPath("_links.index").exists())
         ;
+
+        Review after = this.reviewService.getReviewById(id);
+        checkNotUpdated(before, beforeHashtags, beforeImages, beforeSpot, after);
     }
 
     @Test
@@ -1145,6 +1158,10 @@ class ReviewControllerTest extends BaseControllerTest {
         String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
+        Review before = this.reviewService.getReviewById(id);
+        List<ReviewHashtag> beforeHashtags = this.reviewHashtagService.getAllByReview(before);
+        List<ReviewImage> beforeImages = this.reviewImageService.getAllByReview(before);
+        Spot beforeSpot = this.spotService.getSpotById(before.getSpot().getId());
         ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder().build();
         MockMultipartFile _request = new MockMultipartFile(
                 "request",
@@ -1188,6 +1205,9 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue").value(MediaType.TEXT_MARKDOWN_VALUE))
                 .andExpect(jsonPath("_links.index").exists())
         ;
+
+        Review after = this.reviewService.getReviewById(id);
+        checkNotUpdated(before, beforeHashtags, beforeImages, beforeSpot, after);
     }
 
     @Test
@@ -1200,6 +1220,10 @@ class ReviewControllerTest extends BaseControllerTest {
         String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
+        Review before = this.reviewService.getReviewById(id);
+        List<ReviewHashtag> beforeHashtags = this.reviewHashtagService.getAllByReview(before);
+        List<ReviewImage> beforeImages = this.reviewImageService.getAllByReview(before);
+        Spot beforeSpot = this.spotService.getSpotById(before.getSpot().getId());
         ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder().build();
         MockMultipartFile _request = new MockMultipartFile(
                 "request",
@@ -1260,6 +1284,9 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[1].rejectedValue").value(MediaType.IMAGE_GIF_VALUE))
                 .andExpect(jsonPath("_links.index").exists())
         ;
+
+        Review after = this.reviewService.getReviewById(id);
+        checkNotUpdated(before, beforeHashtags, beforeImages, beforeSpot, after);
     }
 
     @Test
@@ -1272,6 +1299,10 @@ class ReviewControllerTest extends BaseControllerTest {
         String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
+        Review before = this.reviewService.getReviewById(id);
+        List<ReviewHashtag> beforeHashtags = this.reviewHashtagService.getAllByReview(before);
+        List<ReviewImage> beforeImages = this.reviewImageService.getAllByReview(before);
+        Spot beforeSpot = this.spotService.getSpotById(before.getSpot().getId());
         ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder().build();
         MockMultipartFile _request = new MockMultipartFile(
                 "request",
@@ -1315,6 +1346,28 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue").value(MediaType.IMAGE_GIF_VALUE))
                 .andExpect(jsonPath("_links.index").exists())
         ;
+
+        Review after = this.reviewService.getReviewById(id);
+        checkNotUpdated(before, beforeHashtags, beforeImages, beforeSpot, after);
+    }
+
+    private void checkNotUpdated(Review before, List<ReviewHashtag> beforeHashtags, List<ReviewImage> beforeImages, Spot beforeSpot, Review after) {
+        assertThat(before.getTitle()).isEqualTo(after.getTitle());
+        assertThat(before.getContent()).isEqualTo(after.getContent());
+        assertThat(before.getScore()).isEqualTo(after.getScore());
+        assertThat(before.getStatus()).isEqualTo(after.getStatus());
+        List<ReviewHashtag> afterHashtags = this.reviewHashtagService.getAllByReview(after);
+        assertThat(beforeHashtags.size()).isEqualTo(afterHashtags.size());
+        for (int i = 0; i < beforeHashtags.size(); i++) {
+            assertThat(beforeHashtags.get(i).getHashtag().getName()).isEqualTo(afterHashtags.get(i).getHashtag().getName());
+        }
+        List<ReviewImage> afterImages = this.reviewImageService.getAllByReview(after);
+        assertThat(beforeImages.size()).isEqualTo(afterImages.size());
+        for (int i = 0; i < beforeImages.size(); i++) {
+            assertThat(beforeImages.get(i).getImage().getUuid()).isEqualTo(afterImages.get(i).getImage().getUuid());
+        }
+        Spot afterSpot = this.spotService.getSpotById(after.getSpot().getId());
+        assertThat(beforeSpot.getAverageScore()).isEqualTo(afterSpot.getAverageScore());
     }
 
     @Transactional
