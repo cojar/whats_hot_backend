@@ -205,6 +205,26 @@ public class ReviewService {
                     )
             );
         }
+
+        if (!this.getReviewById(id).getAuthor().getUsername().equals(user.getUsername())) {
+            errors.reject("has no authority", new Object[]{user.getUsername()}, "user has no authority to modify this review");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_04_02,
+                            errors
+                    )
+            );
+        }
+
+        if (errors.hasErrors()) {
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_04_03,
+                            errors
+                    )
+            );
+        }
     }
 
     @Transactional
