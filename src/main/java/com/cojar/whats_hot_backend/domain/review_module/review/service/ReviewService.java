@@ -170,6 +170,9 @@ public class ReviewService {
         // request 에러 검증
         this.updateValidate(request, images, errors, id, user);
 
+        // images 에러 검증
+        this.fileService.validateAll(images);
+
         Review review = this.getReviewById(id);
 
         review = review.toBuilder()
