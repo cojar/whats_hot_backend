@@ -94,6 +94,8 @@ public enum ResCode {
 
     F_03_03_01(HttpStatus.BAD_REQUEST, "F-03-03-01", "해당 아이디를 가진 리뷰가 존재하지 않습니다"),
 
+    F_03_04_01(HttpStatus.BAD_REQUEST, "F-03-04-01", "해당 아이디를 가진 리뷰가 존재하지 않습니다"),
+
     F_03_05_01(HttpStatus.BAD_REQUEST, "F-03-05-01", "해당 아이디를 가진 리뷰가 존재하지 않습니다"),
     F_03_05_02(HttpStatus.BAD_REQUEST, "F-03-05-02", "해당 리뷰에 대한 삭제 권한이 없습니다"),
 

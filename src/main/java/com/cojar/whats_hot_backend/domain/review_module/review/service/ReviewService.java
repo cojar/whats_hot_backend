@@ -167,6 +167,9 @@ public class ReviewService {
     @Transactional
     public Review update(ReviewRequest.UpdateReview request, List<MultipartFile> images, Errors errors, Long id, User user) {
 
+        // request 에러 검증
+        this.updateValidate(request, images, errors, id, user);
+
         Review review = this.getReviewById(id);
 
         review = review.toBuilder()
@@ -188,6 +191,20 @@ public class ReviewService {
         this.spotService.updateReview(review.getSpot(), review);
 
         return this.refresh(review);
+    }
+
+    private void updateValidate(ReviewRequest.UpdateReview request, List<MultipartFile> images, Errors errors, Long id, User user) {
+
+        if (!this.reviewRepository.existsById(id)) {
+            errors.reject("not exist", new Object[]{id}, "review that has id does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_04_01,
+                            errors
+                    )
+            );
+        }
     }
 
     @Transactional

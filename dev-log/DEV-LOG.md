@@ -3,6 +3,7 @@
 ## 24-01-12
 ### feature/patch-api-reviews-id
 - [x] S-03-04 TC 작성
+- [x] F-03-04-01 TC 작성
 
 ## 24-01-11
 ### feature/patch-api-reviews-id-like

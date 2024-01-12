@@ -955,7 +955,7 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value("OK"))
                 .andExpect(jsonPath("success").value("true"))
                 .andExpect(jsonPath("code").value("S-03-04"))
-                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("message").value(ResCode.S_03_04.getMessage()))
                 .andExpect(jsonPath("data.id").exists())
                 .andExpect(jsonPath("data.createDate").exists())
                 .andExpect(jsonPath("data.modifyDate").exists())
@@ -999,6 +999,49 @@ class ReviewControllerTest extends BaseControllerTest {
                 Arguments.of("수정 테스트 제목", "수정 테스트 내용", 4.0, "수정태그", true, "test_update", ""),
                 Arguments.of("수정 테스트 제목", "수정 테스트 내용", 4.0, "수정태그", true, "", "png")
         );
+    }
+
+    @Test
+    @DisplayName("patch:/api/reviews/{id} - bad request not exist, F-03-04-01")
+    public void updateReview_BadRequest_NotExist() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1000000000L;
+        ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder().build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.PATCH, "/api/reviews/%s".formatted(id))
+                        .file(_request)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-04-01"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_04_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(id.toString()))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
     }
 
     @Transactional
