@@ -110,7 +110,7 @@ public class ReviewController {
                                        @PathVariable(value = "id") Long id,
                                        @AuthenticationPrincipal User user) {
 
-        Review review = this.reviewService.getReviewById(id);
+        Review review = this.reviewService.update(request, images, errors, id, user);
 
         ResData resData = ResData.of(
                 ResCode.S_03_04,

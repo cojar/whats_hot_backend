@@ -11,7 +11,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -37,22 +36,19 @@ public class Review extends BaseEntity {
 
     private Double score;
 
-    @Builder.Default
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
-    private List<ReviewHashtag> hashtags = new ArrayList<>();
+    private List<ReviewHashtag> hashtags;
 
-    @Builder.Default
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
-    private List<ReviewImage> images = new ArrayList<>();
+    private List<ReviewImage> images;
 
     @Enumerated(value = EnumType.STRING)
     private ReviewStatus status;
 
     private boolean validated;
 
-    @Builder.Default
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
-    private List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments;
 
     @Builder.Default
     private Long liked = 0L;

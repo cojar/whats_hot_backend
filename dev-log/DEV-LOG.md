@@ -1,10 +1,24 @@
 # What's Hot Dev-Log
 
+## 24-01-12
+### feature/patch-api-reviews-id
+- [x] S-03-04 TC 작성
+- [x] F-03-04-01 TC 작성
+- [x] F-03-04-02 TC 작성
+- [x] F-03-04-03 TC 작성
+- [x] F-00-00-01 TC 작성
+- [x] F-00-00-02 TC 작성
+- [x] 여러 파일 에러 동시 발생 TC 작성; F-00-00-01, F-00-00-02
+- [x] 실패 케이스 미수정 확인 코드 추가
+
 ## 24-01-11
 ### feature/patch-api-reviews-id-like
 - [x] S-03-06 TC 작성
 - [x] F-03-06-01 TC 작성
 - [x] F-03-06-02 TC 작성
+
+### feature/patch-api-reviews-id
+- [x] conflict issue 해결
 
 ## 24-01-10
 ### feature/get-api-reviews-id
@@ -69,7 +83,7 @@
 
 ## 24-01-04
 ### feature/post-api-categories
-- [x] InitConfig 카테고리데이터 세부지역 제거 및 뎁스별 재정립
+- [x] InitConfig 카테고리 데이터 세부 지역 제거 및 뎁스별 재정립
 
 ### feature/spring_doc
 - [x] swagger-ui 문제 해결 시도

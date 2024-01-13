@@ -1,6 +1,7 @@
 package com.cojar.whats_hot_backend.domain.review_module.review_image.service;
 
 import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
+import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.review_module.review_image.entity.ReviewImage;
 import com.cojar.whats_hot_backend.domain.review_module.review_image.repository.ReviewImageRepository;
@@ -16,6 +17,8 @@ import java.util.stream.Collectors;
 public class ReviewImageService {
 
     private final ReviewImageRepository reviewImageRepository;
+
+    private final FileService fileService;
 
     public long count() {
         return this.reviewImageRepository.count();
@@ -38,5 +41,30 @@ public class ReviewImageService {
         this.reviewImageRepository.saveAll(reviewImages);
 
         return reviewImages;
+    }
+
+    @Transactional
+    public List<ReviewImage> updateAll(List<_File> files, Review review) {
+
+        if (files == null) return null;
+
+        List<ReviewImage> reviewImages = files.stream()
+                .map(file ->
+                        ReviewImage.builder()
+                                .image(file)
+                                .review(review)
+                                .build()
+                )
+                .collect(Collectors.toList());
+
+        this.fileService.deleteFile(review.getImages().stream().map(reviewImage -> reviewImage.getImage()).collect(Collectors.toList()));
+        this.reviewImageRepository.deleteAll(review.getImages());
+        this.reviewImageRepository.saveAll(reviewImages);
+
+        return reviewImages;
+    }
+
+    public List<ReviewImage> getAllByReview(Review review) {
+        return this.reviewImageRepository.findAllByReview(review);
     }
 }

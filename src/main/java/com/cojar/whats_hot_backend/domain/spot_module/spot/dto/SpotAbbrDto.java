@@ -10,13 +10,13 @@ public class SpotAbbrDto {
 
     private final Long id;
 
-    private final Double averageScore;
+    private final String averageScore;
 
     private final Integer reviews;
 
     public SpotAbbrDto(Spot spot) {
         this.id = spot.getId();
-        this.averageScore = spot.getAverageScore();
+        this.averageScore = "%.2f".formatted(spot.getAverageScore());
         this.reviews = spot.getReviews().size();
     }
 

@@ -6,8 +6,12 @@ import com.cojar.whats_hot_backend.domain.review_module.review.entity.ReviewStat
 import com.cojar.whats_hot_backend.domain.review_module.review.repository.ReviewRepository;
 import com.cojar.whats_hot_backend.domain.review_module.review.request.ReviewRequest;
 import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
+import com.cojar.whats_hot_backend.domain.review_module.review_hashtag.entity.ReviewHashtag;
 import com.cojar.whats_hot_backend.domain.review_module.review_hashtag.service.ReviewHashtagService;
+import com.cojar.whats_hot_backend.domain.review_module.review_image.entity.ReviewImage;
 import com.cojar.whats_hot_backend.domain.review_module.review_image.service.ReviewImageService;
+import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
+import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.ResCode;
@@ -55,6 +59,9 @@ class ReviewControllerTest extends BaseControllerTest {
 
     @Autowired
     private ReviewRepository reviewRepository;
+
+    @Autowired
+    private SpotService spotService;
 
     @Transactional
     @Test
@@ -876,6 +883,491 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue[0]").value(id.toString()))
                 .andExpect(jsonPath("_links.index").exists())
         ;
+    }
+
+    @Transactional
+    @ParameterizedTest
+    @MethodSource("argsFor_updateReview_OK")
+    @DisplayName("patch:/api/reviews/{id} - ok, S-03-04")
+    public void updateReview_OK(String title,
+                                String content,
+                                Double score,
+                                String hashtag,
+                                Boolean lock,
+                                String fileName,
+                                String ext) throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1L;
+        Review review = this.reviewService.getReviewById(id);
+        Spot spot = this.spotService.getSpotById(review.getSpot().getId());
+        Double averageScore = score != null ?
+                (spot.getAverageScore() * spot.getReviews().size() - review.getScore() + score) / spot.getReviews().size() : spot.getAverageScore();
+        List<String> hashtags = hashtag != null ? List.of(hashtag) : null;
+        ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder()
+                .title(title)
+                .content(content)
+                .score(score)
+                .hashtags(hashtags)
+                .lock(lock)
+                .build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        MockMultipartFile _file = (fileName.isBlank() || ext.isBlank()) ? null :
+                new MockMultipartFile(
+                        "images",
+                        "%s.%s".formatted(fileName, ext),
+                        MediaType.IMAGE_PNG_VALUE,
+                        resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(fileName, ext)).getInputStream()
+                );
+        List<MockMultipartFile> files = _file != null ? List.of(_file) : null;
+
+        // when
+        ResultActions resultActions = _file != null ? this.mockMvc
+                .perform(multipart(HttpMethod.PATCH, "/api/reviews/%s".formatted(id))
+                        .file(_request)
+                        .file(_file)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print()) : this.mockMvc
+                .perform(multipart(HttpMethod.PATCH, "/api/reviews/%s".formatted(id))
+                        .file(_request)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("OK"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-03-04"))
+                .andExpect(jsonPath("message").value(ResCode.S_03_04.getMessage()))
+                .andExpect(jsonPath("data.id").exists())
+                .andExpect(jsonPath("data.createDate").exists())
+                .andExpect(jsonPath("data.modifyDate").exists())
+                .andExpect(jsonPath("data.spot.averageScore").value("%.2f".formatted(averageScore)))
+                .andExpect(jsonPath("data.title").value(title.isBlank() ? review.getTitle() : title))
+                .andExpect(jsonPath("data.content").value(content.isBlank() ? review.getContent() : content))
+                .andExpect(jsonPath("data.score").value(score == null ? review.getScore() : score))
+                .andExpect(jsonPath("data.hashtags[0]").value(hashtag))
+                .andExpect(jsonPath("data.imageUri[0]").exists())
+                .andExpect(jsonPath("data.status").value(lock != null ? (lock ? ReviewStatus.PRIVATE.getType() : ReviewStatus.PUBLIC.getType()) : review.getStatus().getType()))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+
+        if (hashtags != null) {
+            List<ReviewHashtag> reviewHashtags = this.reviewHashtagService.getAllByReview(review);
+            assertThat(reviewHashtags.size()).isEqualTo(hashtags.size());
+            for (int i = 0; i < reviewHashtags.size(); i++) {
+                assertThat(reviewHashtags.get(i).getHashtag().getName()).isEqualTo(hashtags.get(i));
+            }
+        }
+        if (files != null) {
+            List<ReviewImage> reviewImages = this.reviewImageService.getAllByReview(review);
+            assertThat(reviewImages.size()).isEqualTo(files.size());
+            for (int i = 0; i < reviewImages.size(); i++) {
+                assertThat(reviewImages.get(i).getImage().getName()).isEqualTo(files.get(i).getOriginalFilename());
+                assertThat(reviewImages.get(i).getImage().getExt()).isEqualTo(files.get(i).getContentType().split("/")[1]);
+            }
+        }
+    }
+
+    private static Stream<Arguments> argsFor_updateReview_OK() {
+        return Stream.of(
+                Arguments.of("수정 테스트 제목", "수정 테스트 내용", 4.0, "수정태그", true, "test_update", "png"),
+                Arguments.of("", "수정 테스트 내용", 4.0, "수정태그", true, "test_update", "png"),
+                Arguments.of("수정 테스트 제목", "", 4.0, "수정태그", true, "test_update", "png"),
+                Arguments.of("수정 테스트 제목", "수정 테스트 내용", null, "수정태그", true, "test_update", "png"),
+                Arguments.of("수정 테스트 제목", "수정 테스트 내용", 4.0, "수정태그", null, "test_update", "png"),
+                Arguments.of("수정 테스트 제목", "수정 테스트 내용", 4.0, "수정태그", true, "", ""),
+                Arguments.of("수정 테스트 제목", "수정 테스트 내용", 4.0, "수정태그", true, "test_update", ""),
+                Arguments.of("수정 테스트 제목", "수정 테스트 내용", 4.0, "수정태그", true, "", "png")
+        );
+    }
+
+    @Test
+    @DisplayName("patch:/api/reviews/{id} - bad request not exist, F-03-04-01")
+    public void updateReview_BadRequest_NotExist() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1000000000L;
+        ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder().build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.PATCH, "/api/reviews/%s".formatted(id))
+                        .file(_request)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-04-01"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_04_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(id.toString()))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    @Test
+    @DisplayName("patch:/api/reviews/{id} - bad request not allowed, F-03-04-02")
+    public void updateReview_BadRequest_NotAllowed() throws Exception {
+
+        // given
+        String username = "user2";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1L;
+        Review before = this.reviewService.getReviewById(id);
+        List<ReviewHashtag> beforeHashtags = this.reviewHashtagService.getAllByReview(before);
+        List<ReviewImage> beforeImages = this.reviewImageService.getAllByReview(before);
+        Spot beforeSpot = this.spotService.getSpotById(before.getSpot().getId());
+        String hashTag = " ";
+        ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder().build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.PATCH, "/api/reviews/%s".formatted(id))
+                        .file(_request)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-04-02"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_04_02.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(username))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+
+        Review after = this.reviewService.getReviewById(id);
+        checkNotUpdated(before, beforeHashtags, beforeImages, beforeSpot, after);
+    }
+
+    @Test
+    @DisplayName("patch:/api/reviews/{id} - bad request not blank, F-03-04-03")
+    public void updateReview_BadRequest_NotBlank() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1L;
+        Review before = this.reviewService.getReviewById(id);
+        List<ReviewHashtag> beforeHashtags = this.reviewHashtagService.getAllByReview(before);
+        List<ReviewImage> beforeImages = this.reviewImageService.getAllByReview(before);
+        Spot beforeSpot = this.spotService.getSpotById(before.getSpot().getId());
+        String hashtag = " ";
+        ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder()
+                .hashtags(List.of(hashtag))
+                .build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.PATCH, "/api/reviews/%s".formatted(id))
+                        .file(_request)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-04-03"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_04_03.getMessage()))
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(hashtag))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+
+        Review after = this.reviewService.getReviewById(id);
+        checkNotUpdated(before, beforeHashtags, beforeImages, beforeSpot, after);
+    }
+
+    @Test
+    @DisplayName("patch:/api/reviews/{id} - bad request content type, F-00-00-01")
+    public void updateReview_BadRequest_ContentType() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1L;
+        Review before = this.reviewService.getReviewById(id);
+        List<ReviewHashtag> beforeHashtags = this.reviewHashtagService.getAllByReview(before);
+        List<ReviewImage> beforeImages = this.reviewImageService.getAllByReview(before);
+        Spot beforeSpot = this.spotService.getSpotById(before.getSpot().getId());
+        ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder().build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        String fileName = "test";
+        String ext = "a";
+        Resource resource = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(fileName, ext));
+        MockMultipartFile _file = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName, ext),
+                MediaType.TEXT_MARKDOWN_VALUE,
+                resource.getInputStream()
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.PATCH, "/api/reviews/%s".formatted(id))
+                        .file(_request)
+                        .file(_file)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-00-00-01"))
+                .andExpect(jsonPath("message").value(ResCode.F_00_00_01.getMessage()))
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(MediaType.TEXT_MARKDOWN_VALUE))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+
+        Review after = this.reviewService.getReviewById(id);
+        checkNotUpdated(before, beforeHashtags, beforeImages, beforeSpot, after);
+    }
+
+    @Test
+    @DisplayName("patch:/api/reviews/{id} - bad request extension, F-00-00-02")
+    public void updateReview_BadRequest_Extension() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1L;
+        Review before = this.reviewService.getReviewById(id);
+        List<ReviewHashtag> beforeHashtags = this.reviewHashtagService.getAllByReview(before);
+        List<ReviewImage> beforeImages = this.reviewImageService.getAllByReview(before);
+        Spot beforeSpot = this.spotService.getSpotById(before.getSpot().getId());
+        ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder().build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        String fileName1 = "test";
+        String ext1 = "a";
+        Resource resource1 = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(fileName1, ext1));
+        MockMultipartFile _file1 = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName1, ext1),
+                MediaType.TEXT_MARKDOWN_VALUE,
+                resource1.getInputStream()
+        );
+        String fileName2 = "test";
+        String ext2 = "gif";
+        Resource resource2 = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(fileName2, ext2));
+        MockMultipartFile _file2 = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName2, ext2),
+                MediaType.IMAGE_GIF_VALUE,
+                resource2.getInputStream()
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.PATCH, "/api/reviews/%s".formatted(id))
+                        .file(_request)
+                        .file(_file1)
+                        .file(_file2)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code[0]").value("F-00-00-01"))
+                .andExpect(jsonPath("code[1]").value("F-00-00-02"))
+                .andExpect(jsonPath("message[0]").value(ResCode.F_00_00_01.getMessage()))
+                .andExpect(jsonPath("message[1]").value(ResCode.F_00_00_02.getMessage()))
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(MediaType.TEXT_MARKDOWN_VALUE))
+                .andExpect(jsonPath("data[1].field").exists())
+                .andExpect(jsonPath("data[1].objectName").exists())
+                .andExpect(jsonPath("data[1].code").exists())
+                .andExpect(jsonPath("data[1].defaultMessage").exists())
+                .andExpect(jsonPath("data[1].rejectedValue").value(MediaType.IMAGE_GIF_VALUE))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+
+        Review after = this.reviewService.getReviewById(id);
+        checkNotUpdated(before, beforeHashtags, beforeImages, beforeSpot, after);
+    }
+
+    @Test
+    @DisplayName("patch:/api/reviews/{id} - bad request multiple file error, F-00-00-01 & F-00-00-02")
+    public void updateReview_BadRequest_MultipleFileError() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1L;
+        Review before = this.reviewService.getReviewById(id);
+        List<ReviewHashtag> beforeHashtags = this.reviewHashtagService.getAllByReview(before);
+        List<ReviewImage> beforeImages = this.reviewImageService.getAllByReview(before);
+        Spot beforeSpot = this.spotService.getSpotById(before.getSpot().getId());
+        ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder().build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        String fileName = "test";
+        String ext = "gif";
+        Resource resource = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(fileName, ext));
+        MockMultipartFile _file = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName, ext),
+                MediaType.IMAGE_GIF_VALUE,
+                resource.getInputStream()
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.PATCH, "/api/reviews/%s".formatted(id))
+                        .file(_request)
+                        .file(_file)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-00-00-02"))
+                .andExpect(jsonPath("message").value(ResCode.F_00_00_02.getMessage()))
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(MediaType.IMAGE_GIF_VALUE))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+
+        Review after = this.reviewService.getReviewById(id);
+        checkNotUpdated(before, beforeHashtags, beforeImages, beforeSpot, after);
+    }
+
+    private void checkNotUpdated(Review before, List<ReviewHashtag> beforeHashtags, List<ReviewImage> beforeImages, Spot beforeSpot, Review after) {
+        assertThat(before.getTitle()).isEqualTo(after.getTitle());
+        assertThat(before.getContent()).isEqualTo(after.getContent());
+        assertThat(before.getScore()).isEqualTo(after.getScore());
+        assertThat(before.getStatus()).isEqualTo(after.getStatus());
+        List<ReviewHashtag> afterHashtags = this.reviewHashtagService.getAllByReview(after);
+        assertThat(beforeHashtags.size()).isEqualTo(afterHashtags.size());
+        for (int i = 0; i < beforeHashtags.size(); i++) {
+            assertThat(beforeHashtags.get(i).getHashtag().getName()).isEqualTo(afterHashtags.get(i).getHashtag().getName());
+        }
+        List<ReviewImage> afterImages = this.reviewImageService.getAllByReview(after);
+        assertThat(beforeImages.size()).isEqualTo(afterImages.size());
+        for (int i = 0; i < beforeImages.size(); i++) {
+            assertThat(beforeImages.get(i).getImage().getUuid()).isEqualTo(afterImages.get(i).getImage().getUuid());
+        }
+        Spot afterSpot = this.spotService.getSpotById(after.getSpot().getId());
+        assertThat(beforeSpot.getAverageScore()).isEqualTo(afterSpot.getAverageScore());
     }
 
     @Transactional
