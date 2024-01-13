@@ -3,6 +3,7 @@
 ## 24-01-13
 ### feature/util
 - [x] member 가데이터 수정
+- [x] 파일 업로드 경로 수정
 
 ## 24-01-11
 ### feature/util
