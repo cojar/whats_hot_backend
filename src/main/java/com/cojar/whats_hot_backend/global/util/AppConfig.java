@@ -194,6 +194,9 @@ public class AppConfig {
         File spot = new File(getDomainFilePath(FileDomain.SPOT));
         File review = new File(getDomainFilePath(FileDomain.REVIEW));
 
+        System.out.println(member.getAbsolutePath());
+        System.out.println(spot.getAbsolutePath());
+        System.out.println(review.getAbsolutePath());
         System.out.println(member.listFiles()[0].getName());
         System.out.println(spot.listFiles()[0].getName());
         System.out.println(review.listFiles()[0].getName());
@@ -212,6 +215,6 @@ public class AppConfig {
     }
 
     public static String getDomainFilePath(FileDomain fileDomain) {
-        return getBaseFilePath() + File.separator + fileDomain;
+        return getBaseFilePath() + File.separator + fileDomain.getDomain();
     }
 }
