@@ -1,5 +1,13 @@
 # What's Hot Dev-Log
 
+## 24-01-16
+### feature/util
+- [x] review 가데이터 수정
+s
+## 24-01-13
+### feature/util
+- [x] member 가데이터 수정
+
 ## 24-01-12
 ### feature/patch-api-reviews-id
 - [x] S-03-04 TC 작성
