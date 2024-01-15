@@ -175,4 +175,8 @@ public class FileService {
                     target.delete();
                 });
     }
+
+    public List<_File> getFilesByDomain(FileDomain fileDomain) {
+        return this.fileRepository.findAllByDomain(fileDomain);
+    }
 }

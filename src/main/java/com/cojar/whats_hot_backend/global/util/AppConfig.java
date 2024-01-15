@@ -1,5 +1,6 @@
 package com.cojar.whats_hot_backend.global.util;
 
+import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -20,6 +21,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.security.SecureRandom;
@@ -184,5 +186,18 @@ public class AppConfig {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static boolean fileExists() {
+
+        File member = new File(getDomainFilePath(FileDomain.MEMBER));
+        File spot = new File(getDomainFilePath(FileDomain.SPOT));
+        File review = new File(getDomainFilePath(FileDomain.REVIEW));
+
+        return member.listFiles() != null || spot.listFiles() != null || review.listFiles() != null;
+    }
+
+    public static String getDomainFilePath(FileDomain fileDomain) {
+        return getBaseFilePath() + File.separator + fileDomain;
     }
 }

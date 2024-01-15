@@ -6,6 +6,7 @@
 - [x] comment 가데이터 작성
 - [x] review 가데이터 갯수 수정 및 reply 가데이터 작성
 - [x] review 가데이터 hashtag 수정
+- [x] 가데이터로 인한 더미 파일들 삭제 로직 추가
 
 ## 24-01-15
 ### feature/get-api-reviews
