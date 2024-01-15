@@ -195,6 +195,9 @@ public class AppConfig {
         File review = new File(getDomainFilePath(FileDomain.REVIEW));
 
         if (!member.exists() || !member.isDirectory() || !spot.exists() || !spot.isDirectory() || !review.exists() || !review.isDirectory()) return false;
+        System.out.println(member.listFiles()[0].getName());
+        System.out.println(spot.listFiles()[0].getName());
+        System.out.println(review.listFiles()[0].getName());
         return member.listFiles() != null || spot.listFiles() != null || review.listFiles() != null;
     }
 
