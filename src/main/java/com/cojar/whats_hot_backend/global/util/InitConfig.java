@@ -55,7 +55,7 @@ public class InitConfig {
 
                 for (FileDomain fileDomain : FileDomain.values()) {
 
-                    log.info(fileDomain.getDomain() + " 파일 삭제 진행");
+                    log.info("%s 파일 삭제 진행".formatted(fileDomain.getDomain()));
 
                     File folder = new File(AppConfig.getDomainFilePath(fileDomain));
                     File[] _files = folder.listFiles();
@@ -64,11 +64,15 @@ public class InitConfig {
                             .map(file -> file.getUuid() + "." + file.getExt())
                             .collect(Collectors.toList());
 
+                    int count = 0;
                     for (File _file : _files) {
                         if (!fileNames.contains(_file.getName())) {
                             _file.delete();
+                            count++;
                         }
                     }
+
+                    log.info("%s 파일 중 %s 개의 더미 파일 삭제 완료".formatted(fileDomain.getDomain(), count));
                 }
 
                 log.info("더미 파일 삭제 완료");
