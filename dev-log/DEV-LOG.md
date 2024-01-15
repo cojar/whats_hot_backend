@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 24-01-15
+### feature/get-api-reviews
+- [x] S-03-02 TC 작성
+
 ## 24-01-12
 ### feature/patch-api-reviews-id
 - [x] S-03-04 TC 작성

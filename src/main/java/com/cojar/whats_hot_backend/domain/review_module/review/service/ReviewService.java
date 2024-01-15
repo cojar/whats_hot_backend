@@ -5,14 +5,14 @@ import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
-import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewCreateDto;
+import com.cojar.whats_hot_backend.domain.review_module.review.controller.ReviewController;
+import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewGetDto;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.ReviewStatus;
 import com.cojar.whats_hot_backend.domain.review_module.review.repository.ReviewRepository;
 import com.cojar.whats_hot_backend.domain.review_module.review.request.ReviewRequest;
 import com.cojar.whats_hot_backend.domain.review_module.review_hashtag.service.ReviewHashtagService;
 import com.cojar.whats_hot_backend.domain.review_module.review_image.service.ReviewImageService;
-import com.cojar.whats_hot_backend.domain.spot_module.spot.controller.SpotController;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.repository.SpotRepository;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -125,6 +127,29 @@ public class ReviewService {
         }
     }
 
+    public Page<DataModel> getReviewPages(int page, int size, String sort, Long spotId, boolean image) {
+
+        List<Sort.Order> sorts = new ArrayList<>();
+        if (sort.equals("old")) {
+            sorts.add(Sort.Order.asc("create_date"));
+        } else if (sort.equals("new")) {
+            sorts.add(Sort.Order.desc("create_date"));
+        } else {
+            sorts.add(Sort.Order.desc("liked"));
+            sorts.add(Sort.Order.asc("create_date"));
+        }
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sorts));
+
+        return this.reviewRepository.findAllBySpotAndImages(spotId, image, pageable)
+                .map(review -> {
+                    DataModel dataModel = DataModel.of(
+                            ReviewGetDto.of(review),
+                            linkTo(ReviewController.class).slash(review.getId())
+                    );
+                    return dataModel;
+                });
+    }
+
     public Review getReviewById(Long id) {
 
         this.getReviewByIdValidate(id);
@@ -148,20 +173,6 @@ public class ReviewService {
                     )
             );
         }
-    }
-
-    public Page<DataModel> getReviewList(int page, int size) {
-
-        Pageable pageable = PageRequest.of(page - 1, size);
-
-        return this.reviewRepository.findAll(pageable)
-                .map(review -> {
-                    DataModel dataModel = DataModel.of(
-                            ReviewCreateDto.of(review),
-                            linkTo(SpotController.class).slash(review.getId())
-                    );
-                    return dataModel;
-                });
     }
 
     @Transactional

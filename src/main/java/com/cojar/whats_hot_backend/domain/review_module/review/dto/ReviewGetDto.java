@@ -20,6 +20,8 @@ public class ReviewGetDto {
 
     private final LocalDateTime modifyDate;
 
+    private final Long spot;
+
     private final String author;
 
     private final LocalDateTime visitDate;
@@ -46,6 +48,7 @@ public class ReviewGetDto {
         this.id = review.getId();
         this.createDate = review.getCreateDate();
         this.modifyDate = review.getModifyDate();
+        this.spot = review.getSpot().getId();
         this.author = review.getAuthor().getUsername();
         this.visitDate = review.getVisitDate();
         this.title = review.getTitle();
