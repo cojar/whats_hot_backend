@@ -167,6 +167,20 @@ public class ReviewService {
                     )
             );
         }
+
+        Spot spot = this.spotService.getSpotById(spotId);
+
+        if (this.reviewRepository.countBySpot(spot) == 0) {
+
+            errors.reject("not exist", new Object[]{spotId}, "review that has spot does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_02_02,
+                            errors
+                    )
+            );
+        }
     }
 
     public Review getReviewById(Long id) {
