@@ -194,6 +194,7 @@ public class AppConfig {
         File spot = new File(getDomainFilePath(FileDomain.SPOT));
         File review = new File(getDomainFilePath(FileDomain.REVIEW));
 
+        if (!member.exists() || !member.isDirectory() || !spot.exists() || !spot.isDirectory() || !review.exists() || !review.isDirectory()) return false;
         return member.listFiles() != null || spot.listFiles() != null || review.listFiles() != null;
     }
 
