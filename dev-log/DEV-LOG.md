@@ -8,7 +8,7 @@
 - [x] F-03-02-03 TC 작성
 - [x] F-03-02-04 TC 작성
 - [x] F-03-02-05 TC 작성
-- [x] F-03-03-01 TC 작성, 기존 fail code 1자리씩 증가
+- [x] F-03-02-01 TC 작성, 기존 fail code 1자리씩 증가
 
 ## 24-01-12
 ### feature/patch-api-reviews-id
