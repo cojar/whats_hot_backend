@@ -1,5 +1,15 @@
 # What's Hot Dev-Log
 
+## 24-01-15
+### feature/get-api-reviews
+- [x] S-03-02 TC 작성
+- [x] F-03-02-01 TC 작성
+- [x] F-03-02-02 TC 작성
+- [x] F-03-02-03 TC 작성
+- [x] F-03-02-04 TC 작성
+- [x] F-03-02-05 TC 작성
+- [x] F-03-02-01 TC 작성, 기존 fail code 1자리씩 증가
+
 ## 24-01-12
 ### feature/patch-api-reviews-id
 - [x] S-03-04 TC 작성

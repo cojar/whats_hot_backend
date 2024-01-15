@@ -19,8 +19,10 @@ import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
@@ -36,6 +38,7 @@ import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+@Slf4j
 @Tag(name = "Review", description = "리뷰 서비스 API")
 @RequestMapping(value = "/api/reviews", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaTypes.HAL_JSON_VALUE)
 @RequiredArgsConstructor
@@ -69,18 +72,21 @@ public class ReviewController {
 
     @ReviewApiResponse.List
     @GetMapping(consumes = MediaType.ALL_VALUE)
-    public ResponseEntity getReviewList(@RequestParam(value = "page", defaultValue = "1") int page,
-                                        @RequestParam(value = "size", defaultValue = "2") int size) {
+    public ResponseEntity getReviews(@RequestParam(value = "page", defaultValue = "1") int page,
+                                     @RequestParam(value = "size", defaultValue = "20") int size,
+                                     @RequestParam(value = "sort", defaultValue = "like") String sort,
+                                     @RequestParam(value = "spotId", defaultValue = "-1") Long spotId,
+                                     @RequestParam(value = "image", defaultValue = "false") boolean image,
+                                     HttpServletRequest request) {
 
-        Page<DataModel> reviewList = this.reviewService.getReviewList(page, size);
+        Page<DataModel> reviewList = this.reviewService.getReviewPages(page, size, sort, spotId, image);
 
         ResData resData = ResData.of(
                 ResCode.S_03_02,
                 PagedDataModel.of(reviewList),
-                linkTo(this.getClass()).slash("?page=%s&size=%s".formatted(page, size))
+                linkTo(this.getClass()).slash("?%s".formatted(request.getQueryString()))
         );
 
-        // TODO: paged links with query; custom method
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/getReviewList").withRel("profile"));
         return ResponseEntity.ok()
                 .body(resData);

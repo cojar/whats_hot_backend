@@ -8982,65 +8982,6 @@ public class InitConfig {
                             AppConfig.toUser(user2)
                     );
 
-            Review
-                    review203
-                    =
-                    this.reviewService.create(
-                            ReviewRequest.CreateReview.builder()
-                                    .spotId(spot102.getId())
-                                    .year(2024)
-                                    .month(1)
-                                    .day(1)
-                                    .title("테스트203")
-                                    .content("test203")
-                                    .score(3.0)
-                                    .hashtags(
-                                            List.of(
-                                                    "해시태그203",
-                                                    "해시태그204"
-                                            )
-                                    )
-                                    .build(),
-                            List.of(new MockMultipartFile(
-                                    "images",
-                                    "test.png",
-                                    AppConfig.getMediaType("test.png"),
-                                    this.resourceLoader.getResource("classpath:/static/image/%s".formatted("test.png")).getInputStream()
-                            )),
-                            AppConfig.getMockErrors(),
-                            AppConfig.toUser(user1)
-                    );
-
-            Review
-                    review204
-                    =
-                    this.reviewService.create(
-                            ReviewRequest.CreateReview.builder()
-                                    .spotId(spot102.getId())
-                                    .year(2024)
-                                    .month(1)
-                                    .day(1)
-                                    .title("테스트204")
-                                    .content("test204")
-                                    .score(3.5)
-                                    .hashtags(
-                                            List.of(
-                                                    "해시태그204",
-                                                    "해시태그205"
-                                            )
-                                    )
-                                    .build(),
-                            List.of(new MockMultipartFile(
-                                    "images",
-                                    "test.png",
-                                    AppConfig.getMediaType("test.png"),
-                                    this.resourceLoader.getResource("classpath:/static/image/%s".formatted("test.png")).getInputStream()
-                            )),
-                            AppConfig.getMockErrors(),
-                            AppConfig.toUser(user2)
-                    );
-
-
             // comment init data
             Comment comment1 = this.commentService.create(
                     CommentRequest.CreateComment.builder()
