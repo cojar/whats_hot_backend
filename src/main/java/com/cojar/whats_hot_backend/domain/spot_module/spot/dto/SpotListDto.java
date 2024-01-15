@@ -41,7 +41,7 @@ public class SpotListDto {
         this.imageUri = spot.getImages().stream()
                 .map(image -> image.getImage().toUri(AppConfig.getBaseFileURL()))
                 .collect(Collectors.toList());
-        this.reviews = spot.getReviews().size();
+        this.reviews = spot.getReviewCount();
     }
 
     public static SpotListDto of(Spot spot) {

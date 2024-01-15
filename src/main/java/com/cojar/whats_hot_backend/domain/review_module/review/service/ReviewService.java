@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +99,8 @@ public class ReviewService {
         List<_File> files = this.fileService.createAll(images, FileDomain.REVIEW);
         this.reviewImageService.createAll(files, review);
 
-        this.spotService.updateReview(spot, review);
+        this.spotService.updateAverageScore(spot, review, true);
+        this.spotService.updateReviewCount(spot, true);
 
         return this.refresh(review);
     }
@@ -121,6 +123,34 @@ public class ReviewService {
             throw new ApiResponseException(
                     ResData.of(
                             ResCode.F_03_01_02,
+                            errors
+                    )
+            );
+        }
+
+        try {
+
+            LocalDateTime.of(request.getYear(), request.getMonth(), request.getDay(), 0, 0, 0);
+
+        } catch (DateTimeException e) {
+
+            errors.reject("invalid date", new Object[]{request.getYear(), request.getMonth(), request.getDay()}, "date has invalid value");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_01_03,
+                            errors
+                    )
+            );
+        }
+
+        if (request.getScore() % 0.5 != 0 || request.getScore() < 0 || request.getScore() > 5) {
+
+            errors.rejectValue("score", "not allowed", "score must have value from 0.0 to 5.0 with 0.5 interval");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_01_04,
                             errors
                     )
             );
@@ -283,7 +313,7 @@ public class ReviewService {
         List<_File> files = this.fileService.createAll(images, FileDomain.REVIEW);
         this.reviewImageService.updateAll(files, review);
 
-        this.spotService.updateReview(review.getSpot(), review);
+        this.spotService.updateAverageScore(review.getSpot(), review, true);
 
         return this.refresh(review);
     }
@@ -320,6 +350,18 @@ public class ReviewService {
                     )
             );
         }
+
+        if (request.getScore() != null && (request.getScore() % 0.5 != 0 || request.getScore() < 0 || request.getScore() > 5)) {
+
+            errors.rejectValue("score", "not allowed", "score must have value from 0.0 to 5.0 with 0.5 interval");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_04_04,
+                            errors
+                    )
+            );
+        }
     }
 
     @Transactional
@@ -333,6 +375,11 @@ public class ReviewService {
                 .map(image -> image.getImage())
                 .collect(Collectors.toList());
         this.fileService.deleteFile(files);
+
+        Spot spot = this.spotService.getSpotById(review.getSpot().getId());
+
+        this.spotService.updateAverageScore(spot, review, false);
+        this.spotService.updateReviewCount(spot, false);
 
         this.reviewRepository.delete(review);
     }
