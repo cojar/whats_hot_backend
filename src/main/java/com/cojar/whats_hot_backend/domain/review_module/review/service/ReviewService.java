@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -122,6 +123,20 @@ public class ReviewService {
             throw new ApiResponseException(
                     ResData.of(
                             ResCode.F_03_01_02,
+                            errors
+                    )
+            );
+        }
+
+        try {
+            LocalDateTime.of(request.getYear(), request.getMonth(), request.getDay(), 0, 0, 0);
+        } catch (DateTimeException e) {
+
+            errors.reject("invalid date", new Object[]{request.getYear(), request.getMonth(), request.getDay()}, "date has invalid value");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_01_03,
                             errors
                     )
             );

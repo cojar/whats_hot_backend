@@ -572,6 +572,109 @@ class ReviewControllerTest extends BaseControllerTest {
     }
 
     @ParameterizedTest
+    @MethodSource("argsFor_createReview_BadRequest_InvalidDate")
+    @DisplayName("post:/api/reviews - bad request invalid date, F-03-01-03")
+    public void createReview_BadRequest_InvalidDate(int year, int month, int day) throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        List<Long> checkList = getCheckListNotCreated();
+
+        Long spotId = 1L;
+        String title = "리뷰 제목";
+        String content = "리뷰 내용";
+        Double score = 4.5;
+        String hashtag1 = "해시태그1", hashtag2 = "해시태그2";
+        ReviewRequest.CreateReview request = ReviewRequest.CreateReview.builder()
+                .spotId(spotId)
+                .year(year)
+                .month(month)
+                .day(day)
+                .title(title)
+                .content(content)
+                .score(score)
+                .hashtags(List.of(hashtag1, hashtag2))
+                .build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        String fileName = "test";
+        String ext = "png";
+        Resource resource = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(fileName, ext));
+        MockMultipartFile _file1 = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName, ext),
+                MediaType.IMAGE_PNG_VALUE,
+                resource.getInputStream()
+        );
+        MockMultipartFile _file2 = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName, ext),
+                MediaType.IMAGE_PNG_VALUE,
+                resource.getInputStream()
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.POST, "/api/reviews")
+                        .file(_request)
+                        .file(_file1)
+                        .file(_file2)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-01-03"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(year))
+                .andExpect(jsonPath("data[0].rejectedValue[1]").value(month))
+                .andExpect(jsonPath("data[0].rejectedValue[2]").value(day))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+
+        checkNotCreated(checkList);
+    }
+
+    private static Stream<Arguments> argsFor_createReview_BadRequest_InvalidDate() {
+        return Stream.of(
+                Arguments.of(2024, 0, 0),
+                Arguments.of(2024, 13, 0),
+                Arguments.of(2024, 0, 1),
+                Arguments.of(2024, 13, 1),
+                Arguments.of(2024, 1, 32),
+                Arguments.of(2023, 2, 29),
+                Arguments.of(2024, 2, 30),
+                Arguments.of(2024, 3, 32),
+                Arguments.of(2024, 4, 31),
+                Arguments.of(2024, 5, 32),
+                Arguments.of(2024, 6, 31),
+                Arguments.of(2024, 7, 32),
+                Arguments.of(2024, 8, 32),
+                Arguments.of(2024, 9, 31),
+                Arguments.of(2024, 10, 32),
+                Arguments.of(2024, 11, 31),
+                Arguments.of(2024, 12, 32)
+        );
+    }
+
+    @ParameterizedTest
     @MethodSource("argsFor_createReview_BadRequest_ScoreNotAllowed")
     @DisplayName("post:/api/reviews - bad request score not allowed, F-03-01-04")
     public void createReview_BadRequest_ScoreNotAllowed(Double score) throws Exception {
