@@ -38,6 +38,9 @@ public class Spot extends BaseEntity {
     @Builder.Default
     private Double averageScore = 0.0;
 
+    @Builder.Default
+    private Integer reviewCount = 0;
+
     @OneToMany(mappedBy = "spot", cascade = CascadeType.REMOVE)
     private List<SpotHashtag> hashtags;
 

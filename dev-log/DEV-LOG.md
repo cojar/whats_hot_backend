@@ -12,6 +12,9 @@
 ### dev
 - [x] 초기화 실행 조건 체크 완료
 
+### feature/review_module_review
+- [x] Spot 엔티티에 리뷰 개수 추가, 관련 Dto 수정
+
 ## 24-01-15
 ### feature/get-api-reviews
 - [x] S-03-02 TC 작성

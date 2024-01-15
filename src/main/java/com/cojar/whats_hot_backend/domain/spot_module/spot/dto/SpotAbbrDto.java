@@ -17,7 +17,7 @@ public class SpotAbbrDto {
     public SpotAbbrDto(Spot spot) {
         this.id = spot.getId();
         this.averageScore = "%.2f".formatted(spot.getAverageScore());
-        this.reviews = spot.getReviews().size();
+        this.reviews = spot.getReviewCount();
     }
 
     public static SpotAbbrDto of(Spot spot) {
