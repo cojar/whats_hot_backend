@@ -12,7 +12,7 @@
 ### dev
 - [x] 초기화 실행 조건 체크 완료
 
-### feature/review_module_review
+### feature/review_module-review
 - [x] Spot 엔티티에 리뷰 개수 추가, 관련 Dto 수정
 - [x] 리뷰 생성/삭제 로직에서 장소 리뷰 개수 변경되도록 수정
 - [x] 평점 0.5 단위가 되도록 변경, F-03-01-04, F-03-04-04 TC 작성
