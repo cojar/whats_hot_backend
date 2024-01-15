@@ -329,13 +329,21 @@ public class SpotService {
     }
 
     @Transactional
-    public void updateAverageScore(Spot spot, Review review) {
+    public void updateAverageScore(Spot spot, Review review, boolean isAdd) {
 
         List<Review> reviews = spot.getReviews();
-        if (!reviews.contains(review)) reviews.add(review);
-        Double averageScore = reviews.stream()
-                .map(r -> r.getScore())
-                .reduce(0D, Double::sum) / reviews.size();
+        Double averageScore;
+        if (isAdd) {
+            if (!reviews.contains(review)) reviews.add(review);
+            averageScore = reviews.stream()
+                    .map(r -> r.getScore())
+                    .reduce(0D, Double::sum) / reviews.size();
+        } else {
+            reviews.remove(review);
+            averageScore = reviews.stream()
+                    .map(r -> r.getScore())
+                    .reduce(0D, Double::sum) / reviews.size();
+        }
 
         spot = spot.toBuilder()
                 .averageScore(averageScore)
@@ -346,6 +354,7 @@ public class SpotService {
 
     @Transactional
     public void updateReviewCount(Spot spot, boolean isAdd) {
+
         spot = spot.toBuilder()
                 .reviewCount(spot.getReviewCount() + (isAdd ? 1 : -1))
                 .build();

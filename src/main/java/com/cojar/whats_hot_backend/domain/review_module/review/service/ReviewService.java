@@ -99,7 +99,7 @@ public class ReviewService {
         List<_File> files = this.fileService.createAll(images, FileDomain.REVIEW);
         this.reviewImageService.createAll(files, review);
 
-        this.spotService.updateAverageScore(spot, review);
+        this.spotService.updateAverageScore(spot, review, true);
         this.spotService.updateReviewCount(spot, true);
 
         return this.refresh(review);
@@ -129,7 +129,9 @@ public class ReviewService {
         }
 
         try {
+
             LocalDateTime.of(request.getYear(), request.getMonth(), request.getDay(), 0, 0, 0);
+
         } catch (DateTimeException e) {
 
             errors.reject("invalid date", new Object[]{request.getYear(), request.getMonth(), request.getDay()}, "date has invalid value");
@@ -311,7 +313,7 @@ public class ReviewService {
         List<_File> files = this.fileService.createAll(images, FileDomain.REVIEW);
         this.reviewImageService.updateAll(files, review);
 
-        this.spotService.updateAverageScore(review.getSpot(), review);
+        this.spotService.updateAverageScore(review.getSpot(), review, true);
 
         return this.refresh(review);
     }
@@ -376,7 +378,8 @@ public class ReviewService {
 
         Spot spot = this.spotService.getSpotById(review.getSpot().getId());
 
-        this.spotService.updateReviewCount(spot, true);
+        this.spotService.updateAverageScore(spot, review, false);
+        this.spotService.updateReviewCount(spot, false);
 
         this.reviewRepository.delete(review);
     }

@@ -78,10 +78,13 @@ class ReviewControllerTest extends BaseControllerTest {
         String accessToken = this.getAccessToken(username, password);
 
         Long spotId = 1L;
+        Spot spot = this.spotService.getSpotById(spotId);
+        Integer reviews = spot.getReviewCount();
         Integer year = 2023, month = 12, day = 25;
         String title = "리뷰 제목";
         String content = "리뷰 내용";
         Double score = 4.5;
+        Double averageScore = (spot.getAverageScore() * spot.getReviews().size() + score) / (spot.getReviewCount() +  1);
         String hashtag1 = "해시태그1", hashtag2 = "해시태그2";
         ReviewRequest.CreateReview request = ReviewRequest.CreateReview.builder()
                 .spotId(spotId)
@@ -139,8 +142,8 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data.createDate").exists())
                 .andExpect(jsonPath("data.modifyDate").exists())
                 .andExpect(jsonPath("data.spot.id").value(spotId))
-                .andExpect(jsonPath("data.spot.averageScore").exists())
-                .andExpect(jsonPath("data.spot.reviews").exists())
+                .andExpect(jsonPath("data.spot.averageScore").value(averageScore))
+                .andExpect(jsonPath("data.spot.reviews").value(reviews + 1))
                 .andExpect(jsonPath("data.author").value(username))
                 .andExpect(jsonPath("data.visitDate").value("%04d-%02d-%02dT00:00:00".formatted(year, month, day)))
                 .andExpect(jsonPath("data.title").value(title))
@@ -169,10 +172,13 @@ class ReviewControllerTest extends BaseControllerTest {
         String accessToken = this.getAccessToken(username, password);
 
         Long spotId = 1L;
+        Spot spot = this.spotService.getSpotById(spotId);
+        Integer reviews = spot.getReviewCount();
         Integer year = 2023, month = 12, day = 25;
         String title = "리뷰 제목";
         String content = "리뷰 내용";
         Double score = 4.5;
+        Double averageScore = (spot.getAverageScore() * spot.getReviews().size() + score) / (spot.getReviewCount() +  1);
         String hashtag1 = "해시태그1", hashtag2 = "해시태그2";
         boolean lock = true;
         ReviewRequest.CreateReview request = ReviewRequest.CreateReview.builder()
@@ -232,8 +238,8 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data.createDate").exists())
                 .andExpect(jsonPath("data.modifyDate").exists())
                 .andExpect(jsonPath("data.spot.id").value(spotId))
-                .andExpect(jsonPath("data.spot.averageScore").exists())
-                .andExpect(jsonPath("data.spot.reviews").exists())
+                .andExpect(jsonPath("data.spot.averageScore").value(averageScore))
+                .andExpect(jsonPath("data.spot.reviews").value(reviews + 1))
                 .andExpect(jsonPath("data.author").value(username))
                 .andExpect(jsonPath("data.visitDate").value("%04d-%02d-%02dT00:00:00".formatted(year, month, day)))
                 .andExpect(jsonPath("data.title").value(title))
@@ -262,10 +268,13 @@ class ReviewControllerTest extends BaseControllerTest {
         String accessToken = this.getAccessToken(username, password);
 
         Long spotId = 1L;
+        Spot spot = this.spotService.getSpotById(spotId);
+        Integer reviews = spot.getReviewCount();
         Integer year = 2023, month = 12, day = 25;
         String title = "리뷰 제목";
         String content = "리뷰 내용";
         Double score = 4.5;
+        Double averageScore = (spot.getAverageScore() * spot.getReviews().size() + score) / (spot.getReviewCount() +  1);
         ReviewRequest.CreateReview request = ReviewRequest.CreateReview.builder()
                 .spotId(spotId)
                 .year(year)
@@ -321,8 +330,8 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data.createDate").exists())
                 .andExpect(jsonPath("data.modifyDate").exists())
                 .andExpect(jsonPath("data.spot.id").value(spotId))
-                .andExpect(jsonPath("data.spot.averageScore").exists())
-                .andExpect(jsonPath("data.spot.reviews").exists())
+                .andExpect(jsonPath("data.spot.averageScore").value(averageScore))
+                .andExpect(jsonPath("data.spot.reviews").value(reviews + 1))
                 .andExpect(jsonPath("data.author").value(username))
                 .andExpect(jsonPath("data.visitDate").value("%04d-%02d-%02dT00:00:00".formatted(year, month, day)))
                 .andExpect(jsonPath("data.title").value(title))
@@ -350,10 +359,13 @@ class ReviewControllerTest extends BaseControllerTest {
         String accessToken = this.getAccessToken(username, password);
 
         Long spotId = 1L;
+        Spot spot = this.spotService.getSpotById(spotId);
+        Integer reviews = spot.getReviewCount();
         Integer year = 2023, month = 12, day = 25;
         String title = "리뷰 제목";
         String content = "리뷰 내용";
         Double score = 4.5;
+        Double averageScore = (spot.getAverageScore() * spot.getReviews().size() + score) / (spot.getReviewCount() +  1);
         String hashtag1 = "해시태그1", hashtag2 = "해시태그2";
         ReviewRequest.CreateReview request = ReviewRequest.CreateReview.builder()
                 .spotId(spotId)
@@ -393,8 +405,8 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data.createDate").exists())
                 .andExpect(jsonPath("data.modifyDate").exists())
                 .andExpect(jsonPath("data.spot.id").value(spotId))
-                .andExpect(jsonPath("data.spot.averageScore").exists())
-                .andExpect(jsonPath("data.spot.reviews").exists())
+                .andExpect(jsonPath("data.spot.averageScore").value(averageScore))
+                .andExpect(jsonPath("data.spot.reviews").value(reviews + 1))
                 .andExpect(jsonPath("data.author").value(username))
                 .andExpect(jsonPath("data.visitDate").value("%04d-%02d-%02dT00:00:00".formatted(year, month, day)))
                 .andExpect(jsonPath("data.title").value(title))
@@ -429,6 +441,7 @@ class ReviewControllerTest extends BaseControllerTest {
         String accessToken = this.getAccessToken(username, password);
 
         List<Long> checkList = getCheckListNotCreated();
+        Spot beforeSpot = spotId != null ? this.spotService.getSpotById(spotId) : null;
 
         ReviewRequest.CreateReview request = ReviewRequest.CreateReview.builder()
                 .spotId(spotId)
@@ -475,7 +488,7 @@ class ReviewControllerTest extends BaseControllerTest {
             resultActions.andExpect(jsonPath("data[0].rejectedValue").doesNotExist());
         else resultActions.andExpect(jsonPath("data[0].rejectedValue").value(""));
 
-        checkNotCreated(checkList);
+        checkNotCreated(checkList, beforeSpot, spotId);
     }
 
     private static Stream<Arguments> argsFor_createReview_BadRequest_NotBlank() {
@@ -503,6 +516,7 @@ class ReviewControllerTest extends BaseControllerTest {
         List<Long> checkList = getCheckListNotCreated();
 
         Long spotId = 1000000000L;
+        Spot beforeSpot = spotId != null ? this.spotService.getSpotById(spotId) : null;
         int year = 2023, month = 12, day = 25;
         String title = "리뷰 제목";
         String content = "리뷰 내용";
@@ -568,7 +582,7 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.index").exists())
         ;
 
-        checkNotCreated(checkList);
+        checkNotCreated(checkList, beforeSpot, spotId);
     }
 
     @ParameterizedTest
@@ -584,6 +598,7 @@ class ReviewControllerTest extends BaseControllerTest {
         List<Long> checkList = getCheckListNotCreated();
 
         Long spotId = 1L;
+        Spot beforeSpot = spotId != null ? this.spotService.getSpotById(spotId) : null;
         String title = "리뷰 제목";
         String content = "리뷰 내용";
         Double score = 4.5;
@@ -649,7 +664,7 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.index").exists())
         ;
 
-        checkNotCreated(checkList);
+        checkNotCreated(checkList, beforeSpot, spotId);
     }
 
     private static Stream<Arguments> argsFor_createReview_BadRequest_InvalidDate() {
@@ -687,6 +702,7 @@ class ReviewControllerTest extends BaseControllerTest {
         List<Long> checkList = getCheckListNotCreated();
 
         Long spotId = 1L;
+        Spot beforeSpot = spotId != null ? this.spotService.getSpotById(spotId) : null;
         int year = 2023, month = 12, day = 25;
         String title = "리뷰 제목";
         String content = "리뷰 내용";
@@ -751,7 +767,7 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.index").exists())
         ;
 
-        checkNotCreated(checkList);
+        checkNotCreated(checkList, beforeSpot, spotId);
     }
 
     private static Stream<Arguments> argsFor_createReview_BadRequest_ScoreNotAllowed() {
@@ -774,6 +790,7 @@ class ReviewControllerTest extends BaseControllerTest {
         List<Long> checkList = getCheckListNotCreated();
 
         Long spotId = 1L;
+        Spot beforeSpot = spotId != null ? this.spotService.getSpotById(spotId) : null;
         Integer year = 2023, month = 12, day = 25;
         String title = "리뷰 제목";
         String content = "리뷰 내용";
@@ -831,7 +848,7 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue").value(MediaType.TEXT_MARKDOWN_VALUE))
         ;
 
-        checkNotCreated(checkList);
+        checkNotCreated(checkList, beforeSpot, spotId);
     }
 
     @Test
@@ -846,6 +863,7 @@ class ReviewControllerTest extends BaseControllerTest {
         List<Long> checkList = getCheckListNotCreated();
 
         Long spotId = 1L;
+        Spot beforeSpot = spotId != null ? this.spotService.getSpotById(spotId) : null;
         Integer year = 2023, month = 12, day = 25;
         String title = "리뷰 제목";
         String content = "리뷰 내용";
@@ -903,7 +921,7 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue").value(MediaType.IMAGE_GIF_VALUE))
         ;
 
-        checkNotCreated(checkList);
+        checkNotCreated(checkList, beforeSpot, spotId);
     }
 
     @Test
@@ -918,6 +936,7 @@ class ReviewControllerTest extends BaseControllerTest {
         List<Long> checkList = getCheckListNotCreated();
 
         Long spotId = 1L;
+        Spot beforeSpot = spotId != null ? this.spotService.getSpotById(spotId) : null;
         Integer year = 2023, month = 12, day = 25;
         String title = "리뷰 제목";
         String content = "리뷰 내용";
@@ -991,7 +1010,7 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[1].rejectedValue").value(MediaType.IMAGE_GIF_VALUE))
         ;
 
-        checkNotCreated(checkList);
+        checkNotCreated(checkList, beforeSpot, spotId);
     }
 
     private List<Long> getCheckListNotCreated() {
@@ -1003,13 +1022,18 @@ class ReviewControllerTest extends BaseControllerTest {
         );
     }
 
-    private void checkNotCreated(List<Long> checkList) {
+    private void checkNotCreated(List<Long> checkList, Spot beforeSpot, Long spotId) {
         int i = 0;
         ResData resData = assertThrows(ApiResponseException.class, () -> this.reviewService.getReviewById(checkList.get(0))).getResData();
         assertThat(resData.getCode()).isEqualTo(ResCode.F_03_03_01.getCode());
         assertThat(this.reviewHashtagService.count()).isEqualTo(checkList.get(++i));
         assertThat(this.reviewImageService.count()).isEqualTo(checkList.get(++i));
         assertThat(this.fileService.count()).isEqualTo(checkList.get(++i));
+        Spot afterSpot = spotId != null ? this.spotService.getSpotById(spotId) : null;
+        if (beforeSpot != null && afterSpot != null) {
+            assertThat(beforeSpot.getAverageScore()).isEqualTo(afterSpot.getAverageScore());
+            assertThat(beforeSpot.getReviewCount()).isEqualTo(afterSpot.getReviewCount());
+        }
     }
 
     @ParameterizedTest
@@ -1501,7 +1525,7 @@ class ReviewControllerTest extends BaseControllerTest {
         Review review = this.reviewService.getReviewById(id);
         Spot spot = this.spotService.getSpotById(review.getSpot().getId());
         Double averageScore = score != null ?
-                (spot.getAverageScore() * spot.getReviews().size() - review.getScore() + score) / spot.getReviews().size() : spot.getAverageScore();
+                (spot.getAverageScore() * spot.getReviewCount() - review.getScore() + score) / spot.getReviewCount() : spot.getAverageScore();
         List<String> hashtags = hashtag != null ? List.of(hashtag) : null;
         ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder()
                 .title(title)
@@ -1652,7 +1676,6 @@ class ReviewControllerTest extends BaseControllerTest {
         List<ReviewHashtag> beforeHashtags = this.reviewHashtagService.getAllByReview(before);
         List<ReviewImage> beforeImages = this.reviewImageService.getAllByReview(before);
         Spot beforeSpot = this.spotService.getSpotById(before.getSpot().getId());
-        String hashTag = " ";
         ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder().build();
         MockMultipartFile _request = new MockMultipartFile(
                 "request",
@@ -2038,6 +2061,10 @@ class ReviewControllerTest extends BaseControllerTest {
         String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
+        Review review = this.reviewService.getReviewById(id);
+        Spot beforeSpot = this.spotService.getSpotById(review.getSpot().getId());
+        Integer reviewCount = beforeSpot.getReviewCount();
+        Double averageScore = (beforeSpot.getAverageScore() * beforeSpot.getReviewCount() - review.getScore()) / (beforeSpot.getReviewCount() - 1);
 
         // when
         ResultActions resultActions = this.mockMvc
@@ -2061,6 +2088,9 @@ class ReviewControllerTest extends BaseControllerTest {
 
         ResData resData = assertThrows(ApiResponseException.class, () -> this.reviewService.getReviewById(id)).getResData();
         assertThat(resData.getCode()).isEqualTo(ResCode.F_03_03_01.getCode());
+        Spot afterSpot = this.spotService.getSpotById(review.getSpot().getId());
+        assertThat(afterSpot.getAverageScore()).isEqualTo(averageScore);
+        assertThat(afterSpot.getReviewCount()).isEqualTo(reviewCount - 1);
     }
 
     @Test
@@ -2108,6 +2138,8 @@ class ReviewControllerTest extends BaseControllerTest {
         String accessToken = this.getAccessToken(username, password);
 
         Long id = 1L;
+        Review review = this.reviewService.getReviewById(id);
+        Spot beforeSpot = this.spotService.getSpotById(review.getSpot().getId());
 
         // when
         ResultActions resultActions = this.mockMvc
@@ -2133,6 +2165,9 @@ class ReviewControllerTest extends BaseControllerTest {
         ;
 
         assertDoesNotThrow(() -> this.reviewService.getReviewById(id));
+        Spot afterSpot = this.spotService.getSpotById(review.getSpot().getId());
+        assertThat(beforeSpot.getAverageScore()).isEqualTo(afterSpot.getAverageScore());
+        assertThat(beforeSpot.getReviewCount()).isEqualTo(afterSpot.getReviewCount());
     }
 
     @Transactional
