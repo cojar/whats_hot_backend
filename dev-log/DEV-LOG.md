@@ -5,6 +5,7 @@
 - [x] review 가데이터 수정
 - [x] comment 가데이터 작성
 - [x] review 가데이터 갯수 수정 및 reply 가데이터 작성
+- [x] review 가데이터 hashtag 수정
 
 ## 24-01-13
 ### feature/util

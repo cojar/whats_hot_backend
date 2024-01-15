@@ -3142,6 +3142,9 @@ public class InitConfig {
           String[] randomTitle = {"맛있습니다", "너무 좋아요~!", "추천합니다!", "다시 오고 싶어요!", "분위기 좋네요!"};
           String[] randomContent = {"추천해요~", "여러 번 와서 먹었는데, 또 오고 싶네요",
               "가족들과 다시 오고 싶네요!", "모든 메뉴가 다 맛있네요!", "몇 번이고 추천합니다!"};
+          String[] randomHashtag1 = {"혼밥", "혼밥 추천", "데이트 코스", "가족모임", "둘이서"};
+          String[] randomHashtag2 = {"혼밥", "혼밥 추천", "데이트 코스", "가족모임", "둘이서"};
+
 
           String formattedScore = String.format("%.1f", randomScore);
           double score = Double.parseDouble(formattedScore);
@@ -3149,6 +3152,8 @@ public class InitConfig {
           String selectedMember = randomMember.get(random.nextInt(randomMember.size()));
           String selectedTitle = randomTitle[random.nextInt(randomTitle.length)];
           String selectedContent = randomContent[random.nextInt(randomContent.length)];
+          String selectedHashtag1 = randomHashtag1[random.nextInt(randomHashtag1.length)];
+          String selectedHashtag2 = randomHashtag2[random.nextInt(randomHashtag2.length)];
 
           Review review = this.reviewService.create(
               ReviewRequest.CreateReview.builder()
@@ -3160,8 +3165,8 @@ public class InitConfig {
                   .content(selectedContent)
                   .score(score)
                   .hashtags(List.of(
-                          "해시태그" + 1,
-                          "해시태그" + 2
+                      selectedHashtag1,
+                      selectedHashtag2
                       )
                   )
                   .build(),
@@ -3185,6 +3190,8 @@ public class InitConfig {
                 String[] randomTitle1 = {"맛있습니다", "너무 좋아요~!", "추천합니다!", "다시 오고 싶어요!", "분위기 좋네요!"};
                 String[] randomContent1 = {"추천해요~", "여러 번 와서 먹었는데, 또 오고 싶네요",
                     "가족들과 다시 오고 싶네요!", "모든 메뉴가 다 맛있네요!", "몇 번이고 추천합니다!"};
+                String[] randomHashtag3 = {"혼밥", "혼밥 추천", "데이트 코스"};
+                String[] randomHashtag4 = {"둘이서", "가족모임", "모임 가능"};
 
                 String formattedScore1 = String.format("%.1f", randomScore1);
                 double score1 = Double.parseDouble(formattedScore1);
@@ -3192,6 +3199,8 @@ public class InitConfig {
                 String selectedMember1 = randomMember1.get(random.nextInt(randomMember1.size()));
                 String selectedTitle1 = randomTitle1[random.nextInt(randomTitle1.length)];
                 String selectedContent1 = randomContent1[random.nextInt(randomContent1.length)];
+                String selectedHashtag3 = randomHashtag3[random.nextInt(randomHashtag3.length)];
+                String selectedHashtag4 = randomHashtag4[random.nextInt(randomHashtag4.length)];
 
                 Review review1 = this.reviewService.create(
                     ReviewRequest.CreateReview.builder()
@@ -3203,8 +3212,8 @@ public class InitConfig {
                         .content(selectedContent1)
                         .score(score1)
                         .hashtags(List.of(
-                                "해시태그" + i,
-                                "해시태그" + i + 1
+                            selectedHashtag3,
+                            selectedHashtag4
                             )
                         )
                         .build(),
@@ -3234,6 +3243,8 @@ public class InitConfig {
                 String[] randomTitle2 = {"멋있어요!", "너무 좋아요~!", "추천합니다!", "다시 오고 싶어요!", "분위기 좋네요!"};
                 String[] randomContent2 = {"추천해요~", "너무 멋있네요~!",
                     "가족들과 다시 오고 싶네요!", "주변의 모든 것들이 다 예뻐요!", "몇 번이고 추천합니다!"};
+                String[] randomHashtag5 = {"가족 여행", "나홀로", "데이트 코스"};
+                String[] randomHashtag6 = {"휴가", "휴식", "둘이서"};
 
                 String formattedScore2 = String.format("%.1f", randomScore2);
                 double score2 = Double.parseDouble(formattedScore2);
@@ -3241,6 +3252,8 @@ public class InitConfig {
                 String selectedMember2 = randomMember2.get(random.nextInt(randomMember2.size()));
                 String selectedTitle2 = randomTitle2[random.nextInt(randomTitle2.length)];
                 String selectedContent2 = randomContent2[random.nextInt(randomContent2.length)];
+                String selectedHashtag5 = randomHashtag5[random.nextInt(randomHashtag5.length)];
+                String selectedHashtag6 = randomHashtag6[random.nextInt(randomHashtag6.length)];
 
                 Review review2 = this.reviewService.create(
                     ReviewRequest.CreateReview.builder()
@@ -3252,8 +3265,8 @@ public class InitConfig {
                         .content(selectedContent2)
                         .score(score2)
                         .hashtags(List.of(
-                                "해시태그" + i,
-                                "해시태그" + i + 1
+                            selectedHashtag5,
+                            selectedHashtag6
                             )
                         )
                         .build(),
@@ -3283,6 +3296,8 @@ public class InitConfig {
                 String[] randomTitle3 = {"멋있어요!", "너무 좋아요~!", "추천합니다!", "다시 오고 싶어요!", "분위기 좋네요!"};
                 String[] randomContent3 = {"추천해요~", "너무 멋있네요~!",
                     "분위기가 너무 좋아요!!", "주변 인프라가 좋아서 편해요!", "몇 번이고 추천합니다!"};
+                String[] randomHashtag7 = {"숙소", "여행 숙소", "데이트 코스"};
+                String[] randomHashtag8 = {"휴식", "나홀로", "둘이서"};
 
                 String formattedScore3 = String.format("%.1f", randomScore3);
                 double score3 = Double.parseDouble(formattedScore3);
@@ -3290,6 +3305,8 @@ public class InitConfig {
                 String selectedMember3 = randomMember3.get(random.nextInt(randomMember3.size()));
                 String selectedTitle3 = randomTitle3[random.nextInt(randomTitle3.length)];
                 String selectedContent3 = randomContent3[random.nextInt(randomContent3.length)];
+                String selectedHashtag7 = randomHashtag7[random.nextInt(randomHashtag7.length)];
+                String selectedHashtag8 = randomHashtag8[random.nextInt(randomHashtag8.length)];
 
                 Review review3 = this.reviewService.create(
                     ReviewRequest.CreateReview.builder()
@@ -3301,8 +3318,8 @@ public class InitConfig {
                         .content(selectedContent3)
                         .score(score3)
                         .hashtags(List.of(
-                                "해시태그" + i,
-                                "해시태그" + i + 1
+                            selectedHashtag7,
+                            selectedHashtag8
                             )
                         )
                         .build(),
