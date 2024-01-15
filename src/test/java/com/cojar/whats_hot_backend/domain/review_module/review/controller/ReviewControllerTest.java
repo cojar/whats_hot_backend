@@ -571,6 +571,94 @@ class ReviewControllerTest extends BaseControllerTest {
         checkNotCreated(checkList);
     }
 
+    @ParameterizedTest
+    @MethodSource("argsFor_createReview_BadRequest_ScoreNotAllowed")
+    @DisplayName("post:/api/reviews - bad request score not allowed, F-03-01-04")
+    public void createReview_BadRequest_ScoreNotAllowed(Double score) throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        List<Long> checkList = getCheckListNotCreated();
+
+        Long spotId = 1L;
+        int year = 2023, month = 12, day = 25;
+        String title = "리뷰 제목";
+        String content = "리뷰 내용";
+        String hashtag1 = "해시태그1", hashtag2 = "해시태그2";
+        ReviewRequest.CreateReview request = ReviewRequest.CreateReview.builder()
+                .spotId(spotId)
+                .year(year)
+                .month(month)
+                .day(day)
+                .title(title)
+                .content(content)
+                .score(score)
+                .hashtags(List.of(hashtag1, hashtag2))
+                .build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        String fileName = "test";
+        String ext = "png";
+        Resource resource = resourceLoader.getResource("classpath:/static/image/%s.%s".formatted(fileName, ext));
+        MockMultipartFile _file1 = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName, ext),
+                MediaType.IMAGE_PNG_VALUE,
+                resource.getInputStream()
+        );
+        MockMultipartFile _file2 = new MockMultipartFile(
+                "images",
+                "%s.%s".formatted(fileName, ext),
+                MediaType.IMAGE_PNG_VALUE,
+                resource.getInputStream()
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.POST, "/api/reviews")
+                        .file(_request)
+                        .file(_file1)
+                        .file(_file2)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-01-04"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(score))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+
+        checkNotCreated(checkList);
+    }
+
+    private static Stream<Arguments> argsFor_createReview_BadRequest_ScoreNotAllowed() {
+        return Stream.of(
+                Arguments.of(-0.5),
+                Arguments.of(4.2),
+                Arguments.of(5.5)
+        );
+    }
+
     @Test
     @DisplayName("post:/api/reviews - bad request content type, F-00-00-01")
     public void createReview_BadRequest_ContentType() throws Exception {
@@ -1550,6 +1638,68 @@ class ReviewControllerTest extends BaseControllerTest {
 
         Review after = this.reviewService.getReviewById(id);
         checkNotUpdated(before, beforeHashtags, beforeImages, beforeSpot, after);
+    }
+
+    @ParameterizedTest
+    @MethodSource("argsFor_updateReview_BadRequest_ScoreNotAllowed")
+    @DisplayName("patch:/api/reviews/{id} - bad request not blank, F-03-04-03")
+    public void updateReview_BadRequest_ScoreNotAllowed(Double score) throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1L;
+        Review before = this.reviewService.getReviewById(id);
+        List<ReviewHashtag> beforeHashtags = this.reviewHashtagService.getAllByReview(before);
+        List<ReviewImage> beforeImages = this.reviewImageService.getAllByReview(before);
+        Spot beforeSpot = this.spotService.getSpotById(before.getSpot().getId());
+        ReviewRequest.UpdateReview request = ReviewRequest.UpdateReview.builder()
+                .score(score)
+                .build();
+        MockMultipartFile _request = new MockMultipartFile(
+                "request",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                this.objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8)
+        );
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.PATCH, "/api/reviews/%s".formatted(id))
+                        .file(_request)
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-04-04"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_04_04.getMessage()))
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue").value(score))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+
+        Review after = this.reviewService.getReviewById(id);
+        checkNotUpdated(before, beforeHashtags, beforeImages, beforeSpot, after);
+    }
+
+    private static Stream<Arguments> argsFor_updateReview_BadRequest_ScoreNotAllowed() {
+        return Stream.of(
+                Arguments.of(-0.5),
+                Arguments.of(4.2),
+                Arguments.of(5.5)
+        );
     }
 
     @Test

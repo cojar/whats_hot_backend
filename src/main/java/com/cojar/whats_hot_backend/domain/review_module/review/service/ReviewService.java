@@ -126,6 +126,18 @@ public class ReviewService {
                     )
             );
         }
+
+        if (request.getScore() % 0.5 != 0 || request.getScore() < 0 || request.getScore() > 5) {
+
+            errors.rejectValue("score", "not allowed", "score must have value from 0.0 to 5.0 with 0.5 interval");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_01_04,
+                            errors
+                    )
+            );
+        }
     }
 
     public Page<DataModel> getReviewPages(int page, int size, String sort, Long spotId, boolean image) {
@@ -317,6 +329,18 @@ public class ReviewService {
             throw new ApiResponseException(
                     ResData.of(
                             ResCode.F_03_04_03,
+                            errors
+                    )
+            );
+        }
+
+        if (request.getScore() != null && (request.getScore() % 0.5 != 0 || request.getScore() < 0 || request.getScore() > 5)) {
+
+            errors.rejectValue("score", "not allowed", "score must have value from 0.0 to 5.0 with 0.5 interval");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_04_04,
                             errors
                     )
             );

@@ -91,6 +91,7 @@ public enum ResCode {
     // review service fail codes
     F_03_01_01(HttpStatus.BAD_REQUEST, "F-03-01-01", "요청 값이 올바르지 않습니다"),
     F_03_01_02(HttpStatus.BAD_REQUEST, "F-03-01-02", "해당 아이디를 가진 장소가 존재하지 않습니다"),
+    F_03_01_04(HttpStatus.BAD_REQUEST, "F-03-01-04", "평점은 0.0에서 5.0 사이, 0.5점 단위로 입력해주세요"),
 
     F_03_02_01(HttpStatus.BAD_REQUEST, "F-03-02-01", "장소 아이디를 입력해주세요"),
     F_03_02_02(HttpStatus.BAD_REQUEST, "F-03-02-02", "해당 아이디를 가진 장소가 존재하지 않습니다"),
@@ -104,6 +105,7 @@ public enum ResCode {
     F_03_04_01(HttpStatus.BAD_REQUEST, "F-03-04-01", "해당 아이디를 가진 리뷰가 존재하지 않습니다"),
     F_03_04_02(HttpStatus.BAD_REQUEST, "F-03-04-02", "해당 리뷰에 대한 수정 권한이 없습니다"),
     F_03_04_03(HttpStatus.BAD_REQUEST, "F-03-04-03", "요청 값이 올바르지 않습니다"),
+    F_03_04_04(HttpStatus.BAD_REQUEST, "F-03-04-04", "평점은 0.0에서 5.0 사이, 0.5점 단위로 입력해주세요"),
 
     F_03_05_01(HttpStatus.BAD_REQUEST, "F-03-05-01", "해당 아이디를 가진 리뷰가 존재하지 않습니다"),
     F_03_05_02(HttpStatus.BAD_REQUEST, "F-03-05-02", "해당 리뷰에 대한 삭제 권한이 없습니다"),
