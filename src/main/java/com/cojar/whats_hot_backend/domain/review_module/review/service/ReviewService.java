@@ -193,6 +193,18 @@ public class ReviewService {
                     )
             );
         }
+
+        if (Math.ceil((double) this.reviewRepository.countBySpotAndImages(spotId, image) / size) < page) {
+
+            errors.reject("not exist", new Object[]{page}, "page does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_02_04,
+                            errors
+                    )
+            );
+        }
     }
 
     public Review getReviewById(Long id) {

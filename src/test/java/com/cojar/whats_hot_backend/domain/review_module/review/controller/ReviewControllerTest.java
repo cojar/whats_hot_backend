@@ -1081,7 +1081,7 @@ class ReviewControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("get:/api/reviews - bad request not exist, F-03-02-03")
+    @DisplayName("get:/api/reviews - bad request size not allowed, F-03-02-03")
     public void getReviews_BadRequest_SizeNotAllowed() throws Exception {
 
         // given
@@ -1112,6 +1112,50 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue[0]").value(size.toString()))
                 .andExpect(jsonPath("_links.index").exists())
         ;
+    }
+
+    @ParameterizedTest
+    @MethodSource("argsFor_getReviews_BadRequest_PageNotExist")
+    @DisplayName("get:/api/reviews - bad request page not exist, F-03-02-04")
+    public void getReviews_BadRequest_PageNotExist(Integer size) throws Exception {
+
+        // given
+        Integer page = 100000;
+        Long spotId = 1L;
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("page", page.toString());
+        params.add("size", size.toString());
+        params.add("spotId", spotId.toString());
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/reviews?%s".formatted(AppConfig.getQueryString(params)))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-02-04"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_02_04.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(page.toString()))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    private static Stream<Arguments> argsFor_getReviews_BadRequest_PageNotExist() {
+        return Stream.of(
+                Arguments.of(20),
+                Arguments.of(50),
+                Arguments.of(100)
+        );
     }
 
     @Test

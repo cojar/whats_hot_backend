@@ -19,4 +19,12 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findAllBySpotAndImages(@Param("spot_id") Long spotId, @Param("image") boolean image, Pageable pageable);
 
     int countBySpot(Spot spot);
+
+    @Query(value = "select count(distinct r.id) "
+            + "from review r "
+            + "left outer join review_image ri on r.id = ri.review_id "
+            + "where (r.spot_id = :spot_id) "
+            + "and ((:image = true and ri.id is not null) or (:image = false))"
+            , nativeQuery = true)
+    int countBySpotAndImages(@Param("spot_id") Long spotId, @Param("image") boolean image);
 }
