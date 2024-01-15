@@ -329,7 +329,7 @@ public class SpotService {
     }
 
     @Transactional
-    public void updateReview(Spot spot, Review review) {
+    public void updateAverageScore(Spot spot, Review review) {
 
         List<Review> reviews = spot.getReviews();
         if (!reviews.contains(review)) reviews.add(review);
@@ -339,7 +339,15 @@ public class SpotService {
 
         spot = spot.toBuilder()
                 .averageScore(averageScore)
-                .reviews(reviews)
+                .build();
+
+        this.spotRepository.save(spot);
+    }
+
+    @Transactional
+    public void updateReviewCount(Spot spot, boolean isAdd) {
+        spot = spot.toBuilder()
+                .reviewCount(spot.getReviewCount() + (isAdd ? 1 : -1))
                 .build();
 
         this.spotRepository.save(spot);

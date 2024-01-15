@@ -3184,7 +3184,7 @@ public class InitConfig {
                 String formattedScore = String.format("%.1f", randomScore);
                 double score = Double.parseDouble(formattedScore);
 
-                String selectedMember = randomMember.get(random.nextInt(randomMember.size()));
+                String selectedMember = "user1";
                 String selectedTitle = randomTitle[random.nextInt(randomTitle.length)];
                 String selectedContent = randomContent[random.nextInt(randomContent.length)];
                 String selectedHashtag1 = randomHashtag1[random.nextInt(randomHashtag1.length)];
@@ -3205,7 +3205,13 @@ public class InitConfig {
                                         )
                                 )
                                 .build(),
-                        List.of(),
+                        i == 0 ? List.of(new MockMultipartFile(
+                                "images",
+                                "test.png",
+                                AppConfig.getMediaType("test.png"),
+                                this.resourceLoader.getResource("classpath:/static/image/%s".formatted("test.png")).getInputStream()
+                        )) : List.of()
+                        ,
                         AppConfig.getMockErrors(),
                         AppConfig.toUser(memberInit.get(selectedMember))
                 );
@@ -3342,6 +3348,8 @@ public class InitConfig {
                     String selectedContent3 = randomContent3[random.nextInt(randomContent3.length)];
                     String selectedHashtag7 = randomHashtag7[random.nextInt(randomHashtag7.length)];
                     String selectedHashtag8 = randomHashtag8[random.nextInt(randomHashtag8.length)];
+
+                    if (i == 102) continue;
 
                     Review review3 = this.reviewService.create(
                             ReviewRequest.CreateReview.builder()

@@ -98,7 +98,8 @@ public class ReviewService {
         List<_File> files = this.fileService.createAll(images, FileDomain.REVIEW);
         this.reviewImageService.createAll(files, review);
 
-        this.spotService.updateReview(spot, review);
+        this.spotService.updateAverageScore(spot, review);
+        this.spotService.updateReviewCount(spot, true);
 
         return this.refresh(review);
     }
@@ -283,7 +284,7 @@ public class ReviewService {
         List<_File> files = this.fileService.createAll(images, FileDomain.REVIEW);
         this.reviewImageService.updateAll(files, review);
 
-        this.spotService.updateReview(review.getSpot(), review);
+        this.spotService.updateAverageScore(review.getSpot(), review);
 
         return this.refresh(review);
     }
@@ -333,6 +334,10 @@ public class ReviewService {
                 .map(image -> image.getImage())
                 .collect(Collectors.toList());
         this.fileService.deleteFile(files);
+
+        Spot spot = this.spotService.getSpotById(review.getSpot().getId());
+
+        this.spotService.updateReviewCount(spot, true);
 
         this.reviewRepository.delete(review);
     }
