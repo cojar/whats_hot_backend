@@ -16,6 +16,8 @@ import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
+import com.cojar.whats_hot_backend.global.util.AppConfig;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,6 +31,8 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -815,6 +819,406 @@ class ReviewControllerTest extends BaseControllerTest {
         assertThat(this.reviewHashtagService.count()).isEqualTo(checkList.get(++i));
         assertThat(this.reviewImageService.count()).isEqualTo(checkList.get(++i));
         assertThat(this.fileService.count()).isEqualTo(checkList.get(++i));
+    }
+
+    @ParameterizedTest
+    @MethodSource("argsFor_getReviews_OK")
+    @DisplayName("get:/api/reviews - ok, S-03-02")
+    public void getReviews_OK(Integer page, Integer size, String sort, Boolean image) throws Exception {
+
+        // given
+        Long spotId = 1L;
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        if (page != null) params.add("page", page.toString());
+        if (size != null) params.add("size", size.toString());
+        if (!sort.isBlank()) params.add("sort", sort);
+        params.add("spotId", spotId.toString());
+        if (image != null) params.add("image", image.toString());
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/reviews?%s".formatted(AppConfig.getQueryString(params)))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("OK"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-03-02"))
+                .andExpect(jsonPath("message").value(ResCode.S_03_02.getMessage()))
+                .andExpect(jsonPath("data.list[0].id").exists())
+                .andExpect(jsonPath("data.list[0].createDate").exists())
+                .andExpect(jsonPath("data.list[0].visitDate").exists())
+                .andExpect(jsonPath("data.list[0].author").exists())
+                .andExpect(jsonPath("data.list[0].visitDate").exists())
+                .andExpect(jsonPath("data.list[0].title").exists())
+                .andExpect(jsonPath("data.list[0].content").exists())
+                .andExpect(jsonPath("data.list[0].score").exists())
+                .andExpect(jsonPath("data.list[0].status").exists())
+                .andExpect(jsonPath("data.list[0].validated").exists())
+                .andExpect(jsonPath("data.list[0].liked").exists())
+                .andExpect(jsonPath("data.list[0]._links.self").exists())
+                .andExpect(jsonPath("_links.self.href").value(AppConfig.getBaseURL() + ":8080/api/reviews?%s".formatted(AppConfig.getQueryString(params))))
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+
+        if (page == null || page == 1) {
+            resultActions
+                    .andExpect(jsonPath("data.page").value(1))
+            ;
+        } else {
+            resultActions
+                    .andExpect(jsonPath("data.page").value(page))
+            ;
+        }
+
+        if (size == null || size == 20) {
+            resultActions
+                    .andExpect(jsonPath("data.size").value(20))
+            ;
+        } else {
+            resultActions
+                    .andExpect(jsonPath("data.size").value(size))
+            ;
+        }
+
+        if (sort.equals("like") || sort.isBlank()) {
+            resultActions
+                    .andExpect(jsonPath("data.sort[0].property").value("liked"))
+                    .andExpect(jsonPath("data.sort[0].direction").value("desc"))
+                    .andExpect(jsonPath("data.sort[1].property").value("create_date"))
+                    .andExpect(jsonPath("data.sort[1].direction").value("asc"))
+            ;
+        } else if (sort.equals("new")) {
+            resultActions
+                    .andExpect(jsonPath("data.sort[0].property").value("create_date"))
+                    .andExpect(jsonPath("data.sort[0].direction").value("desc"))
+            ;
+        } else if (sort.equals("old")) {
+            resultActions
+                    .andExpect(jsonPath("data.sort[0].property").value("create_date"))
+                    .andExpect(jsonPath("data.sort[0].direction").value("asc"))
+            ;
+        }
+
+        if (image != null && image) {
+            int len = JsonPath.read(resultActions.andReturn().getResponse().getContentAsString(), "data.list.length()");
+            for (int i = 0; i < len; i++) {
+                resultActions
+                        .andExpect(jsonPath("data.list[0].imageUri").exists())
+                ;
+            }
+        }
+    }
+
+    private static Stream<Arguments> argsFor_getReviews_OK() {
+        return Stream.of(
+                Arguments.of(null, null, " ", null),
+                Arguments.of(null, null, "like", null),
+                Arguments.of(null, null, "old", null),
+                Arguments.of(null, null, "new", null),
+                Arguments.of(null, null, " ", false),
+                Arguments.of(null, null, "like", false),
+                Arguments.of(null, null, "old", false),
+                Arguments.of(null, null, "new", false),
+                Arguments.of(null, null, " ", true),
+                Arguments.of(null, null, "like", true),
+                Arguments.of(null, null, "old", true),
+                Arguments.of(null, null, "new", true),
+                Arguments.of(null, 20, " ", null),
+                Arguments.of(null, 20, "like", null),
+                Arguments.of(null, 20, "old", null),
+                Arguments.of(null, 20, "new", null),
+                Arguments.of(null, 20, " ", false),
+                Arguments.of(null, 20, "like", false),
+                Arguments.of(null, 20, "old", false),
+                Arguments.of(null, 20, "new", false),
+                Arguments.of(null, 20, " ", true),
+                Arguments.of(null, 20, "like", true),
+                Arguments.of(null, 20, "old", true),
+                Arguments.of(null, 20, "new", true),
+                Arguments.of(null, 50, " ", null),
+                Arguments.of(null, 50, "like", null),
+                Arguments.of(null, 50, "old", null),
+                Arguments.of(null, 50, "new", null),
+                Arguments.of(null, 50, " ", false),
+                Arguments.of(null, 50, "like", false),
+                Arguments.of(null, 50, "old", false),
+                Arguments.of(null, 50, "new", false),
+                Arguments.of(null, 50, " ", true),
+                Arguments.of(null, 50, "like", true),
+                Arguments.of(null, 50, "old", true),
+                Arguments.of(null, 50, "new", true),
+                Arguments.of(null, 100, " ", null),
+                Arguments.of(null, 100, "like", null),
+                Arguments.of(null, 100, "old", null),
+                Arguments.of(null, 100, "new", null),
+                Arguments.of(null, 100, " ", false),
+                Arguments.of(null, 100, "like", false),
+                Arguments.of(null, 100, "old", false),
+                Arguments.of(null, 100, "new", false),
+                Arguments.of(null, 100, " ", true),
+                Arguments.of(null, 100, "like", true),
+                Arguments.of(null, 100, "old", true),
+                Arguments.of(null, 100, "new", true),
+                Arguments.of(1, null, " ", null),
+                Arguments.of(1, null, "like", null),
+                Arguments.of(1, null, "old", null),
+                Arguments.of(1, null, "new", null),
+                Arguments.of(1, null, " ", false),
+                Arguments.of(1, null, "like", false),
+                Arguments.of(1, null, "old", false),
+                Arguments.of(1, null, "new", false),
+                Arguments.of(1, null, " ", true),
+                Arguments.of(1, null, "like", true),
+                Arguments.of(1, null, "old", true),
+                Arguments.of(1, null, "new", true),
+                Arguments.of(1, 20, " ", null),
+                Arguments.of(1, 20, "like", null),
+                Arguments.of(1, 20, "old", null),
+                Arguments.of(1, 20, "new", null),
+                Arguments.of(1, 20, " ", false),
+                Arguments.of(1, 20, "like", false),
+                Arguments.of(1, 20, "old", false),
+                Arguments.of(1, 20, "new", false),
+                Arguments.of(1, 20, " ", true),
+                Arguments.of(1, 20, "like", true),
+                Arguments.of(1, 20, "old", true),
+                Arguments.of(1, 20, "new", true),
+                Arguments.of(1, 50, " ", null),
+                Arguments.of(1, 50, "like", null),
+                Arguments.of(1, 50, "old", null),
+                Arguments.of(1, 50, "new", null),
+                Arguments.of(1, 50, " ", false),
+                Arguments.of(1, 50, "like", false),
+                Arguments.of(1, 50, "old", false),
+                Arguments.of(1, 50, "new", false),
+                Arguments.of(1, 50, " ", true),
+                Arguments.of(1, 50, "like", true),
+                Arguments.of(1, 50, "old", true),
+                Arguments.of(1, 50, "new", true),
+                Arguments.of(1, 100, " ", null),
+                Arguments.of(1, 100, "like", null),
+                Arguments.of(1, 100, "old", null),
+                Arguments.of(1, 100, "new", null),
+                Arguments.of(1, 100, " ", false),
+                Arguments.of(1, 100, "like", false),
+                Arguments.of(1, 100, "old", false),
+                Arguments.of(1, 100, "new", false),
+                Arguments.of(1, 100, " ", true),
+                Arguments.of(1, 100, "like", true),
+                Arguments.of(1, 100, "old", true),
+                Arguments.of(1, 100, "new", true)
+        );
+    }
+
+    @Test
+    @DisplayName("get:/api/reviews - bad request not null, F-03-02-01")
+    public void getReviews_BadRequest_NotNull() throws Exception {
+
+        // given
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/reviews")
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-02-01"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_02_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(-1))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    @Test
+    @DisplayName("get:/api/reviews - bad request spot not exist, F-03-02-02")
+    public void getReviews_BadRequest_SpotNotExist() throws Exception {
+
+        // given
+        Long spotId = 1000000L;
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("spotId", spotId.toString());
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/reviews?%s".formatted(AppConfig.getQueryString(params)))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-02-02"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_02_02.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(spotId.toString()))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    @Test
+    @DisplayName("get:/api/reviews - bad request not exist, F-03-02-03")
+    public void getReviews_BadRequest_NotExist() throws Exception {
+
+        // given
+        Long spotId = 102L;
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("spotId", spotId.toString());
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/reviews?%s".formatted(AppConfig.getQueryString(params)))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-02-03"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_02_03.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(spotId.toString()))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    @Test
+    @DisplayName("get:/api/reviews - bad request size not allowed, F-03-02-04")
+    public void getReviews_BadRequest_SizeNotAllowed() throws Exception {
+
+        // given
+        Integer size = 22;
+        Long spotId = 1L;
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("size", size.toString());
+        params.add("spotId", spotId.toString());
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/reviews?%s".formatted(AppConfig.getQueryString(params)))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-02-04"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_02_04.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(size.toString()))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    @ParameterizedTest
+    @MethodSource("argsFor_getReviews_BadRequest_PageNotExist")
+    @DisplayName("get:/api/reviews - bad request page not exist, F-03-02-05")
+    public void getReviews_BadRequest_PageNotExist(Integer size) throws Exception {
+
+        // given
+        Integer page = 100000;
+        Long spotId = 1L;
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("page", page.toString());
+        params.add("size", size.toString());
+        params.add("spotId", spotId.toString());
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/reviews?%s".formatted(AppConfig.getQueryString(params)))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-02-05"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_02_05.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(page.toString()))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    private static Stream<Arguments> argsFor_getReviews_BadRequest_PageNotExist() {
+        return Stream.of(
+                Arguments.of(20),
+                Arguments.of(50),
+                Arguments.of(100)
+        );
+    }
+
+    @Test
+    @DisplayName("get:/api/reviews - bad request sort not allowed, F-03-02-06")
+    public void getReviews_BadRequest_SortNotAllowed() throws Exception {
+
+        // given
+        Long spotId = 1L;
+        String sort = "qwerty";
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("spotId", spotId.toString());
+        params.add("sort", sort);
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/reviews?%s".formatted(AppConfig.getQueryString(params)))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-02-06"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_02_06.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(sort))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
     }
 
     @Test

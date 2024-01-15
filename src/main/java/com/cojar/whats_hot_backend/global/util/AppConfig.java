@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -24,6 +25,7 @@ import java.io.StringWriter;
 import java.security.SecureRandom;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Configuration
@@ -104,6 +106,12 @@ public class AppConfig {
         }
 
         return code;
+    }
+
+    public static String getQueryString(MultiValueMap<String, String> params) {
+        return params.entrySet().stream()
+                .map(entry -> entry.getKey() + "=" + String.join("&", entry.getValue()))
+                .collect(Collectors.joining("&"));
     }
 
     public static User toUser(Member member) {

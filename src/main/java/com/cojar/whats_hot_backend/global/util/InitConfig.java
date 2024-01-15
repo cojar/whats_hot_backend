@@ -3383,7 +3383,6 @@ public class InitConfig {
             );
 
           }
-
         };
     }
 }
