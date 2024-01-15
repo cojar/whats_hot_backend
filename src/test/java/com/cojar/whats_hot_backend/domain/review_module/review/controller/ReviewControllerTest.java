@@ -1017,17 +1017,14 @@ class ReviewControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("get:/api/reviews - bad request spot not exist, F-03-02-01")
-    public void getReviews_BadRequest_SpotNotExist() throws Exception {
+    @DisplayName("get:/api/reviews - bad request not null, F-03-02-01")
+    public void getReviews_BadRequest_NotNull() throws Exception {
 
         // given
-        Long spotId = 10000000L;
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("spotId", spotId.toString());
 
         // when
         ResultActions resultActions = this.mockMvc
-                .perform(get("/api/reviews?%s".formatted(AppConfig.getQueryString(params)))
+                .perform(get("/api/reviews")
                         .contentType(MediaType.ALL)
                         .accept(MediaTypes.HAL_JSON)
                 )
@@ -1043,17 +1040,17 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].objectName").exists())
                 .andExpect(jsonPath("data[0].code").exists())
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
-                .andExpect(jsonPath("data[0].rejectedValue[0]").value(spotId.toString()))
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(-1))
                 .andExpect(jsonPath("_links.index").exists())
         ;
     }
 
     @Test
-    @DisplayName("get:/api/reviews - bad request not exist, F-03-02-02")
-    public void getReviews_BadRequest_NotExist() throws Exception {
+    @DisplayName("get:/api/reviews - bad request spot not exist, F-03-02-02")
+    public void getReviews_BadRequest_SpotNotExist() throws Exception {
 
         // given
-        Long spotId = 102L;
+        Long spotId = 1000000L;
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("spotId", spotId.toString());
 
@@ -1081,7 +1078,39 @@ class ReviewControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("get:/api/reviews - bad request size not allowed, F-03-02-03")
+    @DisplayName("get:/api/reviews - bad request not exist, F-03-02-03")
+    public void getReviews_BadRequest_NotExist() throws Exception {
+
+        // given
+        Long spotId = 102L;
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("spotId", spotId.toString());
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/reviews?%s".formatted(AppConfig.getQueryString(params)))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-02-03"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_02_03.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(spotId.toString()))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    @Test
+    @DisplayName("get:/api/reviews - bad request size not allowed, F-03-02-04")
     public void getReviews_BadRequest_SizeNotAllowed() throws Exception {
 
         // given
@@ -1104,8 +1133,8 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("success").value("false"))
-                .andExpect(jsonPath("code").value("F-03-02-03"))
-                .andExpect(jsonPath("message").value(ResCode.F_03_02_03.getMessage()))
+                .andExpect(jsonPath("code").value("F-03-02-04"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_02_04.getMessage()))
                 .andExpect(jsonPath("data[0].objectName").exists())
                 .andExpect(jsonPath("data[0].code").exists())
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
@@ -1116,7 +1145,7 @@ class ReviewControllerTest extends BaseControllerTest {
 
     @ParameterizedTest
     @MethodSource("argsFor_getReviews_BadRequest_PageNotExist")
-    @DisplayName("get:/api/reviews - bad request page not exist, F-03-02-04")
+    @DisplayName("get:/api/reviews - bad request page not exist, F-03-02-05")
     public void getReviews_BadRequest_PageNotExist(Integer size) throws Exception {
 
         // given
@@ -1140,8 +1169,8 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("success").value("false"))
-                .andExpect(jsonPath("code").value("F-03-02-04"))
-                .andExpect(jsonPath("message").value(ResCode.F_03_02_04.getMessage()))
+                .andExpect(jsonPath("code").value("F-03-02-05"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_02_05.getMessage()))
                 .andExpect(jsonPath("data[0].objectName").exists())
                 .andExpect(jsonPath("data[0].code").exists())
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
@@ -1159,7 +1188,7 @@ class ReviewControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @DisplayName("get:/api/reviews - bad request sort not allowed, F-03-02-05")
+    @DisplayName("get:/api/reviews - bad request sort not allowed, F-03-02-06")
     public void getReviews_BadRequest_SortNotAllowed() throws Exception {
 
         // given
@@ -1182,8 +1211,8 @@ class ReviewControllerTest extends BaseControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("success").value("false"))
-                .andExpect(jsonPath("code").value("F-03-02-05"))
-                .andExpect(jsonPath("message").value(ResCode.F_03_02_05.getMessage()))
+                .andExpect(jsonPath("code").value("F-03-02-06"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_02_06.getMessage()))
                 .andExpect(jsonPath("data[0].objectName").exists())
                 .andExpect(jsonPath("data[0].code").exists())
                 .andExpect(jsonPath("data[0].defaultMessage").exists())

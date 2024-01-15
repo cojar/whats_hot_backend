@@ -156,13 +156,25 @@ public class ReviewService {
 
         Errors errors = AppConfig.getMockErrors("review");
 
+        if (spotId == -1) {
+
+            errors.reject("not null", new Object[]{spotId}, "spot id is must required");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_02_01,
+                            errors
+                    )
+            );
+        }
+
         if (!this.spotRepository.existsById(spotId)) {
 
             errors.reject("not exist", new Object[]{spotId}, "spot that has id does not exist");
 
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_03_02_01,
+                            ResCode.F_03_02_02,
                             errors
                     )
             );
@@ -176,7 +188,7 @@ public class ReviewService {
 
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_03_02_02,
+                            ResCode.F_03_02_03,
                             errors
                     )
             );
@@ -188,7 +200,7 @@ public class ReviewService {
 
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_03_02_03,
+                            ResCode.F_03_02_04,
                             errors
                     )
             );
@@ -200,7 +212,7 @@ public class ReviewService {
 
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_03_02_04,
+                            ResCode.F_03_02_05,
                             errors
                     )
             );
@@ -212,7 +224,7 @@ public class ReviewService {
 
             throw new ApiResponseException(
                     ResData.of(
-                            ResCode.F_03_02_05,
+                            ResCode.F_03_02_06,
                             errors
                     )
             );
