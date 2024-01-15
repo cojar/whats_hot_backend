@@ -181,6 +181,18 @@ public class ReviewService {
                     )
             );
         }
+
+        if (size != 20 && size != 50 && size != 100) {
+
+            errors.reject("not allowed", new Object[]{size}, "size does not allowed");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_02_03,
+                            errors
+                    )
+            );
+        }
     }
 
     public Review getReviewById(Long id) {
