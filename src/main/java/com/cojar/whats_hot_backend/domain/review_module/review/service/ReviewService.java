@@ -129,6 +129,8 @@ public class ReviewService {
 
     public Page<DataModel> getReviewPages(int page, int size, String sort, Long spotId, boolean image) {
 
+        this.getReviewRagesValidate(page, size, sort, spotId, image);
+
         List<Sort.Order> sorts = new ArrayList<>();
         if (sort.equals("old")) {
             sorts.add(Sort.Order.asc("create_date"));
@@ -148,6 +150,23 @@ public class ReviewService {
                     );
                     return dataModel;
                 });
+    }
+
+    private void getReviewRagesValidate(int page, int size, String sort, Long spotId, boolean image) {
+
+        Errors errors = AppConfig.getMockErrors("review");
+
+        if (!this.spotRepository.existsById(spotId)) {
+
+            errors.reject("not exist", new Object[]{spotId}, "spot that has id does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_02_01,
+                            errors
+                    )
+            );
+        }
     }
 
     public Review getReviewById(Long id) {

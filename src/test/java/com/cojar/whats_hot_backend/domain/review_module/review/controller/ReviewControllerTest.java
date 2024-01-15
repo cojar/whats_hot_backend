@@ -1017,6 +1017,38 @@ class ReviewControllerTest extends BaseControllerTest {
     }
 
     @Test
+    @DisplayName("get:/api/reviews - bad request spot not exist, F-03-02-01")
+    public void getReviews_BadRequest_SpotNotExist() throws Exception {
+
+        // given
+        Long spotId = 10000000L;
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("spotId", spotId.toString());
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/reviews?%s".formatted(AppConfig.getQueryString(params)))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-02-01"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_02_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(spotId.toString()))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    @Test
     @DisplayName("get:/api/reviews/{id} - ok, S-03-03")
     public void getReview_OK() throws Exception {
 
