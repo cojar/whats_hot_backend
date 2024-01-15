@@ -918,99 +918,99 @@ class ReviewControllerTest extends BaseControllerTest {
     private static Stream<Arguments> argsFor_getReviews_OK() {
         return Stream.of(
                 Arguments.of(null, null, " ", null),
-                Arguments.of(null, null, "liked", null),
+                Arguments.of(null, null, "like", null),
                 Arguments.of(null, null, "old", null),
                 Arguments.of(null, null, "new", null),
                 Arguments.of(null, null, " ", false),
-                Arguments.of(null, null, "liked", false),
+                Arguments.of(null, null, "like", false),
                 Arguments.of(null, null, "old", false),
                 Arguments.of(null, null, "new", false),
                 Arguments.of(null, null, " ", true),
-                Arguments.of(null, null, "liked", true),
+                Arguments.of(null, null, "like", true),
                 Arguments.of(null, null, "old", true),
                 Arguments.of(null, null, "new", true),
                 Arguments.of(null, 20, " ", null),
-                Arguments.of(null, 20, "liked", null),
+                Arguments.of(null, 20, "like", null),
                 Arguments.of(null, 20, "old", null),
                 Arguments.of(null, 20, "new", null),
                 Arguments.of(null, 20, " ", false),
-                Arguments.of(null, 20, "liked", false),
+                Arguments.of(null, 20, "like", false),
                 Arguments.of(null, 20, "old", false),
                 Arguments.of(null, 20, "new", false),
                 Arguments.of(null, 20, " ", true),
-                Arguments.of(null, 20, "liked", true),
+                Arguments.of(null, 20, "like", true),
                 Arguments.of(null, 20, "old", true),
                 Arguments.of(null, 20, "new", true),
                 Arguments.of(null, 50, " ", null),
-                Arguments.of(null, 50, "liked", null),
+                Arguments.of(null, 50, "like", null),
                 Arguments.of(null, 50, "old", null),
                 Arguments.of(null, 50, "new", null),
                 Arguments.of(null, 50, " ", false),
-                Arguments.of(null, 50, "liked", false),
+                Arguments.of(null, 50, "like", false),
                 Arguments.of(null, 50, "old", false),
                 Arguments.of(null, 50, "new", false),
                 Arguments.of(null, 50, " ", true),
-                Arguments.of(null, 50, "liked", true),
+                Arguments.of(null, 50, "like", true),
                 Arguments.of(null, 50, "old", true),
                 Arguments.of(null, 50, "new", true),
                 Arguments.of(null, 100, " ", null),
-                Arguments.of(null, 100, "liked", null),
+                Arguments.of(null, 100, "like", null),
                 Arguments.of(null, 100, "old", null),
                 Arguments.of(null, 100, "new", null),
                 Arguments.of(null, 100, " ", false),
-                Arguments.of(null, 100, "liked", false),
+                Arguments.of(null, 100, "like", false),
                 Arguments.of(null, 100, "old", false),
                 Arguments.of(null, 100, "new", false),
                 Arguments.of(null, 100, " ", true),
-                Arguments.of(null, 100, "liked", true),
+                Arguments.of(null, 100, "like", true),
                 Arguments.of(null, 100, "old", true),
                 Arguments.of(null, 100, "new", true),
                 Arguments.of(1, null, " ", null),
-                Arguments.of(1, null, "liked", null),
+                Arguments.of(1, null, "like", null),
                 Arguments.of(1, null, "old", null),
                 Arguments.of(1, null, "new", null),
                 Arguments.of(1, null, " ", false),
-                Arguments.of(1, null, "liked", false),
+                Arguments.of(1, null, "like", false),
                 Arguments.of(1, null, "old", false),
                 Arguments.of(1, null, "new", false),
                 Arguments.of(1, null, " ", true),
-                Arguments.of(1, null, "liked", true),
+                Arguments.of(1, null, "like", true),
                 Arguments.of(1, null, "old", true),
                 Arguments.of(1, null, "new", true),
                 Arguments.of(1, 20, " ", null),
-                Arguments.of(1, 20, "liked", null),
+                Arguments.of(1, 20, "like", null),
                 Arguments.of(1, 20, "old", null),
                 Arguments.of(1, 20, "new", null),
                 Arguments.of(1, 20, " ", false),
-                Arguments.of(1, 20, "liked", false),
+                Arguments.of(1, 20, "like", false),
                 Arguments.of(1, 20, "old", false),
                 Arguments.of(1, 20, "new", false),
                 Arguments.of(1, 20, " ", true),
-                Arguments.of(1, 20, "liked", true),
+                Arguments.of(1, 20, "like", true),
                 Arguments.of(1, 20, "old", true),
                 Arguments.of(1, 20, "new", true),
                 Arguments.of(1, 50, " ", null),
-                Arguments.of(1, 50, "liked", null),
+                Arguments.of(1, 50, "like", null),
                 Arguments.of(1, 50, "old", null),
                 Arguments.of(1, 50, "new", null),
                 Arguments.of(1, 50, " ", false),
-                Arguments.of(1, 50, "liked", false),
+                Arguments.of(1, 50, "like", false),
                 Arguments.of(1, 50, "old", false),
                 Arguments.of(1, 50, "new", false),
                 Arguments.of(1, 50, " ", true),
-                Arguments.of(1, 50, "liked", true),
+                Arguments.of(1, 50, "like", true),
                 Arguments.of(1, 50, "old", true),
                 Arguments.of(1, 50, "new", true),
                 Arguments.of(1, 100, " ", null),
-                Arguments.of(1, 100, "liked", null),
+                Arguments.of(1, 100, "like", null),
                 Arguments.of(1, 100, "old", null),
                 Arguments.of(1, 100, "new", null),
                 Arguments.of(1, 100, " ", false),
-                Arguments.of(1, 100, "liked", false),
+                Arguments.of(1, 100, "like", false),
                 Arguments.of(1, 100, "old", false),
                 Arguments.of(1, 100, "new", false),
                 Arguments.of(1, 100, " ", true),
-                Arguments.of(1, 100, "liked", true),
+                Arguments.of(1, 100, "like", true),
                 Arguments.of(1, 100, "old", true),
                 Arguments.of(1, 100, "new", true)
         );
@@ -1156,6 +1156,40 @@ class ReviewControllerTest extends BaseControllerTest {
                 Arguments.of(50),
                 Arguments.of(100)
         );
+    }
+
+    @Test
+    @DisplayName("get:/api/reviews - bad request sort not allowed, F-03-02-05")
+    public void getReviews_BadRequest_SortNotAllowed() throws Exception {
+
+        // given
+        Long spotId = 1L;
+        String sort = "qwerty";
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("spotId", spotId.toString());
+        params.add("sort", sort);
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/reviews?%s".formatted(AppConfig.getQueryString(params)))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-02-05"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_02_05.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(sort))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
     }
 
     @Test

@@ -205,6 +205,18 @@ public class ReviewService {
                     )
             );
         }
+
+        if (!sort.equals("new") && !sort.equals("old") && !sort.equals("like")) {
+
+            errors.reject("not allowed", new Object[]{sort}, "sort does not allowed");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_02_05,
+                            errors
+                    )
+            );
+        }
     }
 
     public Review getReviewById(Long id) {

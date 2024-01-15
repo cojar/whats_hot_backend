@@ -7,6 +7,7 @@
 - [x] F-03-02-02 TC 작성
 - [x] F-03-02-03 TC 작성
 - [x] F-03-02-04 TC 작성
+- [x] F-03-02-05 TC 작성
 
 ## 24-01-12
 ### feature/patch-api-reviews-id
