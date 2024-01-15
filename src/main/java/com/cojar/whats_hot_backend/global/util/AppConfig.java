@@ -194,10 +194,20 @@ public class AppConfig {
         File spot = new File(getDomainFilePath(FileDomain.SPOT));
         File review = new File(getDomainFilePath(FileDomain.REVIEW));
 
-        if (!member.exists() || !member.isDirectory() || !spot.exists() || !spot.isDirectory() || !review.exists() || !review.isDirectory()) return false;
         System.out.println(member.listFiles()[0].getName());
         System.out.println(spot.listFiles()[0].getName());
         System.out.println(review.listFiles()[0].getName());
+        System.out.println(!member.exists());
+        System.out.println(!member.isDirectory());
+        System.out.println(!spot.exists());
+        System.out.println(!spot.isDirectory());
+        System.out.println(!review.exists());
+        System.out.println(!review.isDirectory());
+
+        if (!member.exists() || !member.isDirectory() || !spot.exists() || !spot.isDirectory() || !review.exists() || !review.isDirectory()) {
+            System.out.println("삭제 미실행");
+            return false;
+        }
         return member.listFiles() != null || spot.listFiles() != null || review.listFiles() != null;
     }
 
