@@ -24,6 +24,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Configuration
@@ -3131,7 +3132,9 @@ public class InitConfig {
 
             Random random = new Random();
 
-            String[] randomMember = {"user1", "user2"};
+          List<String> randomMember = memberInit.keySet().stream()
+              .filter(memberId -> !memberId.equals("admin"))
+              .collect(Collectors.toList());
 
             double randomScore = 4.0 + (1.0) * random.nextDouble();
             String[] randomTitle = {"맛있습니다", "너무 좋아요~!", "추천합니다!", "다시 오고 싶어요!", "분위기 좋네요!" };
@@ -3141,7 +3144,7 @@ public class InitConfig {
             String formattedScore = String.format("%.1f", randomScore);
             double score = Double.parseDouble(formattedScore);
 
-            String selectedMember = randomMember[random.nextInt(randomMember.length)];
+            String selectedMember = randomMember.get(random.nextInt(randomMember.size()));
             String selectedTitle = randomTitle[random.nextInt(randomTitle.length)];
             String selectedContent = randomContent[random.nextInt(randomContent.length)];
 
@@ -3169,7 +3172,9 @@ public class InitConfig {
 
             for (Long i = 2L; i <= 48; i++) {
 
-              String[] randomMember1 = {"user1", "user2"};
+              List<String> randomMember1 = memberInit.keySet().stream()
+                  .filter(memberId -> !memberId.equals("admin"))
+                  .collect(Collectors.toList());
 
               double randomScore1 = 4.0 + (1.0) * random.nextDouble();
               String[] randomTitle1 = {"맛있습니다", "너무 좋아요~!", "추천합니다!", "다시 오고 싶어요!", "분위기 좋네요!" };
@@ -3179,7 +3184,7 @@ public class InitConfig {
               String formattedScore1 = String.format("%.1f", randomScore1);
               double score1 = Double.parseDouble(formattedScore1);
 
-              String selectedMember1 = randomMember1[random.nextInt(randomMember1.length)];
+              String selectedMember1 = randomMember1.get(random.nextInt(randomMember1.size()));
               String selectedTitle1 = randomTitle[random.nextInt(randomTitle1.length)];
               String selectedContent1 = randomContent[random.nextInt(randomContent1.length)];
 
@@ -3214,7 +3219,9 @@ public class InitConfig {
 
             for (Long i = 49L; i <= 81; i++) {
 
-              String[] randomMember2 = {"user1", "user2"};
+              List<String> randomMember2 = memberInit.keySet().stream()
+                  .filter(memberId -> !memberId.equals("admin"))
+                  .collect(Collectors.toList());
 
               double randomScore2 = 4.0 + (1.0) * random.nextDouble();
               String[] randomTitle2 = {"멋있어요!", "너무 좋아요~!", "추천합니다!", "다시 오고 싶어요!", "분위기 좋네요!" };
@@ -3224,7 +3231,7 @@ public class InitConfig {
               String formattedScore2 = String.format("%.1f", randomScore2);
               double score2 = Double.parseDouble(formattedScore2);
 
-              String selectedMember2 = randomMember2[random.nextInt(randomMember2.length)];
+              String selectedMember2 = randomMember2.get(random.nextInt(randomMember2.size()));
               String selectedTitle2 = randomTitle2[random.nextInt(randomTitle2.length)];
               String selectedContent2 = randomContent2[random.nextInt(randomContent2.length)];
 
@@ -3259,7 +3266,9 @@ public class InitConfig {
 
             for (Long i = 82L; i <= 102; i++) {
 
-              String[] randomMember3 = {"user1", "user2"};
+              List<String> randomMember3 = memberInit.keySet().stream()
+                  .filter(memberId -> !memberId.equals("admin"))
+                  .collect(Collectors.toList());
 
               double randomScore3 = 4.0 + (1.0) * random.nextDouble();
               String[] randomTitle3 = {"멋있어요!", "너무 좋아요~!", "추천합니다!", "다시 오고 싶어요!", "분위기 좋네요!" };
@@ -3269,7 +3278,7 @@ public class InitConfig {
               String formattedScore3 = String.format("%.1f", randomScore3);
               double score3 = Double.parseDouble(formattedScore3);
 
-              String selectedMember3 = randomMember3[random.nextInt(randomMember3.length)];
+              String selectedMember3 = randomMember3.get(random.nextInt(randomMember3.size()));
               String selectedTitle3 = randomTitle3[random.nextInt(randomTitle3.length)];
               String selectedContent3 = randomContent3[random.nextInt(randomContent3.length)];
 
@@ -3300,10 +3309,31 @@ public class InitConfig {
 
             }
 
-
-//
-//
 //            // comment init data
+
+          for(Long i = 1L; i <= 102; i++) {
+
+            String[] randomContent4 = {"감사합니다!", "위치가 정확히 어떻게 되나요?",
+                                       "가격이 어떻게 되나요?", "가족과 함께 가봐도 좋을까요?", "저도 추천합니다!"};
+
+            List<String> randomMember4 = memberInit.keySet().stream()
+                .filter(memberId -> !memberId.equals("admin"))
+                .collect(Collectors.toList());
+
+            String selectedMember4 = randomMember4.get(random.nextInt(randomMember4.size()));
+            String selectedContent4 = randomContent4[random.nextInt(randomContent4.length)];
+
+            Comment comment = this.commentService.create(
+                CommentRequest.CreateComment.builder()
+                    .content(selectedContent4)
+                    .reviewId(i)
+                    .build(),
+                AppConfig.getMockErrors(),
+                AppConfig.toUser(memberInit.get(selectedMember4))
+            );
+
+          }
+
 //            Comment comment1 = this.commentService.create(
 //                    CommentRequest.CreateComment.builder()
 //                            .content("댓글내용1")

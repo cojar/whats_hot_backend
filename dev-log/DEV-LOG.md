@@ -3,7 +3,8 @@
 ## 24-01-16
 ### feature/util
 - [x] review 가데이터 수정
-s
+- [x] comment 가데이터 수정 
+
 ## 24-01-13
 ### feature/util
 - [x] member 가데이터 수정
