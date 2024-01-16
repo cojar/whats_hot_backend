@@ -1,5 +1,13 @@
 # What's Hot Dev-Log
 
+## 24-01-17
+### feature/get-api-reviews-me
+- [x] S-03-07 TC 작성
+- [x] F-03-07-01 TC 작성
+- [x] F-03-07-02 TC 작성
+- [x] F-03-07-03 TC 작성
+- [x] F-03-07-04 TC 작성
+
 ## 24-01-16
 ### feature/util
 - [x] review 가데이터 수정

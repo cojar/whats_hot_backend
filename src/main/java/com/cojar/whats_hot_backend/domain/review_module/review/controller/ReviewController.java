@@ -87,7 +87,7 @@ public class ReviewController {
                 linkTo(this.getClass()).slash("?%s".formatted(request.getQueryString()))
         );
 
-        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/getReviewList").withRel("profile"));
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/getReviews").withRel("profile"));
         return ResponseEntity.ok()
                 .body(resData);
     }
@@ -161,6 +161,28 @@ public class ReviewController {
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/likeReview").withRel("profile"));
 
+        return ResponseEntity.ok()
+                .body(resData);
+    }
+
+    @ReviewApiResponse.MyList
+    @GetMapping(value = "/me", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity getMyReviews(@RequestParam(value = "page", defaultValue = "1") int page,
+                                       @RequestParam(value = "size", defaultValue = "20") int size,
+                                       @RequestParam(value = "sort", defaultValue = "new") String sort,
+                                       @AuthenticationPrincipal User user,
+                                       HttpServletRequest request) {
+
+        Member member = this.memberService.getUserByUsername(user.getUsername());
+        Page<DataModel> reviewList = this.reviewService.getMyReviewPages(page, size, sort, member);
+
+        ResData resData = ResData.of(
+                ResCode.S_03_07,
+                PagedDataModel.of(reviewList),
+                linkTo(this.getClass()).slash(request.getQueryString() != null ? "/me?%s".formatted(request.getQueryString()) : "/me")
+        );
+
+        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/getMyReviews").withRel("profile"));
         return ResponseEntity.ok()
                 .body(resData);
     }

@@ -34,6 +34,7 @@ public enum ResCode {
     S_03_04(HttpStatus.OK, "S-03-04", "리뷰 수정이 완료되었습니다"),
     S_03_05(HttpStatus.OK, "S-03-05", "리뷰 삭제가 완료되었습니다"),
     S_03_06(HttpStatus.OK, "S-03-06", "리뷰 좋아요 상태가 변경되었습니다"),
+    S_03_07(HttpStatus.OK, "S-03-07", "해당 회원이 작성한 리뷰 목록을 반환합니다"),
 
     // comment controller success codes
     S_04_01(HttpStatus.CREATED, "S-04-01", "댓글 등록이 완료되었습니다"),
@@ -113,6 +114,11 @@ public enum ResCode {
 
     F_03_06_01(HttpStatus.BAD_REQUEST, "F-03-06-01", "해당 아이디를 가진 리뷰가 존재하지 않습니다"),
     F_03_06_02(HttpStatus.BAD_REQUEST, "F-03-06-02", "본인이 작성한 리뷰에는 좋아요를 누를 수 없습니다"),
+
+    F_03_07_01(HttpStatus.BAD_REQUEST, "F-03-07-01", "해당 회원이 작성한 리뷰가 없습니다"),
+    F_03_07_02(HttpStatus.BAD_REQUEST, "F-03-07-02", "허용되지 않는 페이지 당 댓글 개수입니다"),
+    F_03_07_03(HttpStatus.BAD_REQUEST, "F-03-07-03", "존재하지 않는 페이지입니다"),
+    F_03_07_04(HttpStatus.BAD_REQUEST, "F-03-07-04", "허용되지 않는 정렬 옵션입니다"),
 
     // comment service fail codes
     F_04_01_01(HttpStatus.BAD_REQUEST, "F-04-01-01", "요청 값이 올바르지 않습니다"),

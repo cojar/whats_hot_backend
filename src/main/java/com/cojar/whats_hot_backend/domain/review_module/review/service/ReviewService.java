@@ -466,4 +466,82 @@ public class ReviewService {
             );
         }
     }
+
+    public Page<DataModel> getMyReviewPages(int page, int size, String sort, Member author) {
+
+        this.getMyReviewPagesValidate(page, size, sort, author);
+
+        List<Sort.Order> sorts = new ArrayList<>();
+        if (sort.equals("liked")) {
+            sorts.add(Sort.Order.desc("liked"));
+            sorts.add(Sort.Order.asc("createDate"));
+        } else if (sort.equals("old")) {
+            sorts.add(Sort.Order.asc("createDate"));
+        } else {
+            sorts.add(Sort.Order.desc("createDate"));
+        }
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sorts));
+
+        return this.reviewRepository.findAllByAuthor(author, pageable)
+                .map(review -> {
+                    DataModel dataModel = DataModel.of(
+                            ReviewGetDto.of(review),
+                            linkTo(ReviewController.class).slash(review.getId())
+                    );
+                    return dataModel;
+                });
+    }
+
+    private void getMyReviewPagesValidate(int page, int size, String sort, Member author) {
+
+        Errors errors = AppConfig.getMockErrors("review");
+
+        if (this.reviewRepository.countByAuthor(author) == 0) {
+
+            errors.reject("not exist", new Object[]{author.getUsername()}, "review that has author does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_07_01,
+                            errors
+                    )
+            );
+        }
+
+        if (size != 20 && size != 50 && size != 100) {
+
+            errors.reject("not allowed", new Object[]{size}, "size does not allowed");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_07_02,
+                            errors
+                    )
+            );
+        }
+
+        if (Math.ceil((double) this.reviewRepository.countByAuthor(author) / size) < page) {
+
+            errors.reject("not exist", new Object[]{page}, "page does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_07_03,
+                            errors
+                    )
+            );
+        }
+
+        if (!sort.equals("new") && !sort.equals("old") && !sort.equals("like")) {
+
+            errors.reject("not allowed", new Object[]{sort}, "sort does not allowed");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_07_04,
+                            errors
+                    )
+            );
+        }
+    }
 }

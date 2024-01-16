@@ -69,7 +69,7 @@ public class AppConfig {
     }
 
     public static String getIndexURL() {
-        return getBaseURL() + "/swagger-ui/index.html";
+        return getBaseURL() + "/api/swagger-ui/index.html";
     }
 
     public static String getBaseFileURL() {

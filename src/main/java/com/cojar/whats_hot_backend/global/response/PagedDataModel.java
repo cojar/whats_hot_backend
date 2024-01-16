@@ -31,7 +31,7 @@ public class PagedDataModel {
         this.size = spotList.getPageable().getPageSize();
         this.sort = spotList.getSort().stream()
                 .map(s -> Map.of(
-                        "property", s.getProperty(),
+                        "property", s.getProperty().equals("create_date") ? "createDate" : s.getProperty(),
                         "direction", s.getDirection().toString().toLowerCase()
                 ))
                 .collect(Collectors.toList());
