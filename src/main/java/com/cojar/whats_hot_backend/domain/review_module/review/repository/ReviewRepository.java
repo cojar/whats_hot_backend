@@ -1,5 +1,6 @@
 package com.cojar.whats_hot_backend.domain.review_module.review.repository;
 
+import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import org.springframework.data.domain.Page;
@@ -27,4 +28,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             + "and ((:image = true and ri.id is not null) or (:image = false))"
             , nativeQuery = true)
     int countBySpotAndImages(@Param("spot_id") Long spotId, @Param("image") boolean image);
+
+    Page<Review> findAllByAuthor(Member author, Pageable pageable);
 }

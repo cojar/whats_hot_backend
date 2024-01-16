@@ -34,6 +34,7 @@ public enum ResCode {
     S_03_04(HttpStatus.OK, "S-03-04", "리뷰 수정이 완료되었습니다"),
     S_03_05(HttpStatus.OK, "S-03-05", "리뷰 삭제가 완료되었습니다"),
     S_03_06(HttpStatus.OK, "S-03-06", "리뷰 좋아요 상태가 변경되었습니다"),
+    S_03_07(HttpStatus.OK, "S-03-07", "해당 회원이 작성한 댓글 목록을 반환합니다"),
 
     // comment controller success codes
     S_04_01(HttpStatus.CREATED, "S-04-01", "댓글 등록이 완료되었습니다"),

@@ -466,4 +466,27 @@ public class ReviewService {
             );
         }
     }
+
+    public Page<DataModel> getMyReviewPages(int page, int size, String sort, Member author) {
+
+        List<Sort.Order> sorts = new ArrayList<>();
+        if (sort.equals("liked")) {
+            sorts.add(Sort.Order.desc("liked"));
+            sorts.add(Sort.Order.asc("createDate"));
+        } else if (sort.equals("old")) {
+            sorts.add(Sort.Order.asc("createDate"));
+        } else {
+            sorts.add(Sort.Order.desc("createDate"));
+        }
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sorts));
+
+        return this.reviewRepository.findAllByAuthor(author, pageable)
+                .map(review -> {
+                    DataModel dataModel = DataModel.of(
+                            ReviewGetDto.of(review),
+                            linkTo(ReviewController.class).slash(review.getId())
+                    );
+                    return dataModel;
+                });
+    }
 }

@@ -2324,4 +2324,130 @@ class ReviewControllerTest extends BaseControllerTest {
     private void checkNotLiked(Review before, Review after) {
         assertThat(before.getLiked()).isEqualTo(after.getLiked());
     }
+
+    @ParameterizedTest
+    @MethodSource("argsFor_getMyReviews_OK")
+    @DisplayName("get:/api/reviews/me - ok, S-03-07")
+    public void getMyReviews_OK(Integer page, Integer size, String sort) throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        if (page != null) params.add("page", page.toString());
+        if (size != null) params.add("size", size.toString());
+        if (!sort.isBlank()) params.add("sort", sort);
+
+        String query = AppConfig.getBaseURL() + ":8080/api/reviews/me" + (AppConfig.getQueryString(params).isBlank() ? "" : "?%s".formatted(AppConfig.getQueryString(params)));
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/reviews/me?%s".formatted(AppConfig.getQueryString(params)))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("OK"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-03-07"))
+                .andExpect(jsonPath("message").value(ResCode.S_03_07.getMessage()))
+                .andExpect(jsonPath("data.list[0].id").exists())
+                .andExpect(jsonPath("data.list[0].createDate").exists())
+                .andExpect(jsonPath("data.list[0].visitDate").exists())
+                .andExpect(jsonPath("data.list[0].author").exists())
+                .andExpect(jsonPath("data.list[0].visitDate").exists())
+                .andExpect(jsonPath("data.list[0].title").exists())
+                .andExpect(jsonPath("data.list[0].content").exists())
+                .andExpect(jsonPath("data.list[0].score").exists())
+                .andExpect(jsonPath("data.list[0].status").exists())
+                .andExpect(jsonPath("data.list[0].validated").exists())
+                .andExpect(jsonPath("data.list[0].liked").exists())
+                .andExpect(jsonPath("data.list[0]._links.self").exists())
+                .andExpect(jsonPath("_links.self.href").value(query))
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+
+        if (page == null || page == 1) {
+            resultActions
+                    .andExpect(jsonPath("data.page").value(1))
+            ;
+        } else {
+            resultActions
+                    .andExpect(jsonPath("data.page").value(page))
+            ;
+        }
+
+        if (size == null || size == 20) {
+            resultActions
+                    .andExpect(jsonPath("data.size").value(20))
+            ;
+        } else {
+            resultActions
+                    .andExpect(jsonPath("data.size").value(size))
+            ;
+        }
+
+        if (sort.equals("new") || sort.isBlank()) {
+            resultActions
+                    .andExpect(jsonPath("data.sort[0].property").value("createDate"))
+                    .andExpect(jsonPath("data.sort[0].direction").value("desc"))
+            ;
+        } else if (sort.equals("liked")) {
+            resultActions
+                    .andExpect(jsonPath("data.sort[0].property").value("liked"))
+                    .andExpect(jsonPath("data.sort[0].direction").value("desc"))
+                    .andExpect(jsonPath("data.sort[1].property").value("createDate"))
+                    .andExpect(jsonPath("data.sort[1].direction").value("asc"))
+            ;
+        } else if (sort.equals("old")) {
+            resultActions
+                    .andExpect(jsonPath("data.sort[0].property").value("createDate"))
+                    .andExpect(jsonPath("data.sort[0].direction").value("asc"))
+            ;
+        }
+    }
+
+    private static Stream<Arguments> argsFor_getMyReviews_OK() {
+        return Stream.of(
+                Arguments.of(null, null, " "),
+                Arguments.of(null, null, "like"),
+                Arguments.of(null, null, "old"),
+                Arguments.of(null, null, "new"),
+                Arguments.of(null, 20, " "),
+                Arguments.of(null, 20, "like"),
+                Arguments.of(null, 20, "old"),
+                Arguments.of(null, 20, "new"),
+                Arguments.of(null, 50, " "),
+                Arguments.of(null, 50, "like"),
+                Arguments.of(null, 50, "old"),
+                Arguments.of(null, 50, "new"),
+                Arguments.of(null, 100, " "),
+                Arguments.of(null, 100, "like"),
+                Arguments.of(null, 100, "old"),
+                Arguments.of(null, 100, "new"),
+                Arguments.of(1, null, " "),
+                Arguments.of(1, null, "like"),
+                Arguments.of(1, null, "old"),
+                Arguments.of(1, null, "new"),
+                Arguments.of(1, 20, " "),
+                Arguments.of(1, 20, "like"),
+                Arguments.of(1, 20, "old"),
+                Arguments.of(1, 20, "new"),
+                Arguments.of(1, 50, " "),
+                Arguments.of(1, 50, "like"),
+                Arguments.of(1, 50, "old"),
+                Arguments.of(1, 50, "new"),
+                Arguments.of(1, 100, " "),
+                Arguments.of(1, 100, "like"),
+                Arguments.of(1, 100, "old"),
+                Arguments.of(1, 100, "new")
+        );
+    }
 }
