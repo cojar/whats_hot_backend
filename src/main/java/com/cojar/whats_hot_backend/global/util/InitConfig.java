@@ -139,6 +139,23 @@ public class InitConfig {
                     AppConfig.getMockErrors()
             ));
 
+            this.memberService.signup(
+                    MemberRequest.Signup.builder()
+                            .username("user3")
+                            .password("1234")
+                            .passwordConfirm("1234")
+                            .email("user3@test.com")
+                            .build(),
+                    new MockMultipartFile(
+                            "profileImage",
+                            "test.png",
+                            AppConfig.getMediaType("test.png"),
+                            this.resourceLoader.getResource("classpath:/static/image/%s".formatted("test.png")).getInputStream()
+                    ),
+                    true,
+                    AppConfig.getMockErrors()
+            );
+
 
             // category init data
 

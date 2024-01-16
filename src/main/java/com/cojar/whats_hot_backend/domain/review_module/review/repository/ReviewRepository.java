@@ -30,4 +30,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     int countBySpotAndImages(@Param("spot_id") Long spotId, @Param("image") boolean image);
 
     Page<Review> findAllByAuthor(Member author, Pageable pageable);
+
+    int countByAuthor(Member author);
 }

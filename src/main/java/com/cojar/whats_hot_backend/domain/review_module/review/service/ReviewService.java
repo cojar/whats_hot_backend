@@ -469,6 +469,8 @@ public class ReviewService {
 
     public Page<DataModel> getMyReviewPages(int page, int size, String sort, Member author) {
 
+        this.getMyReviewPagesValidate(page, size, sort, author);
+
         List<Sort.Order> sorts = new ArrayList<>();
         if (sort.equals("liked")) {
             sorts.add(Sort.Order.desc("liked"));
@@ -488,5 +490,22 @@ public class ReviewService {
                     );
                     return dataModel;
                 });
+    }
+
+    private void getMyReviewPagesValidate(int page, int size, String sort, Member author) {
+
+        Errors errors = AppConfig.getMockErrors("review");
+
+        if (this.reviewRepository.countByAuthor(author) == 0) {
+
+            errors.reject("not exist", new Object[]{author.getUsername()}, "review that has author does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_03_07_01,
+                            errors
+                    )
+            );
+        }
     }
 }

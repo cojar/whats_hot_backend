@@ -415,7 +415,7 @@ public @interface ReviewApiResponse {
                                                 "status": "OK",
                                                 "success": true,
                                                 "code": "S-03-07",
-                                                "message": "해당 회원이 작성한 댓글 목록을 반환합니다",
+                                                "message": "해당 회원이 작성한 리뷰 목록을 반환합니다",
                                                 "data": {
                                                     "list": [
                                                         {

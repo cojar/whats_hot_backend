@@ -2450,4 +2450,37 @@ class ReviewControllerTest extends BaseControllerTest {
                 Arguments.of(1, 100, "new")
         );
     }
+
+    @Test
+    @DisplayName("get:/api/reviews/me - bad request not exist, F-03-07-01")
+    public void getMyReviews_BadRequest_NotExist() throws Exception {
+
+        // given
+        String username = "user3";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/reviews/me")
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-07-01"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_07_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(username))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
 }
