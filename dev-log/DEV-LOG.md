@@ -9,6 +9,9 @@
 - [x] 가데이터로 인한 더미 파일들 삭제 로직 추가
 - [x] 삭제 로직 가동 안전성 보완
 
+### feature/spring_doc
+- [x] swagger-ui 주소 변경, index module 제거
+
 ### dev
 - [x] 초기화 실행 조건 체크 완료
 

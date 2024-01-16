@@ -1,7 +1,6 @@
 package com.cojar.whats_hot_backend.domain.member_module.member.controller;
 
 import com.cojar.whats_hot_backend.domain.base_module.mail.service.MailService;
-import com.cojar.whats_hot_backend.domain.index_module.index.controller.IndexController;
 import com.cojar.whats_hot_backend.domain.member_module.member.api_response.MemberApiResponse;
 import com.cojar.whats_hot_backend.domain.member_module.member.dto.MemberDto;
 import com.cojar.whats_hot_backend.domain.member_module.member.dto.MemberTokenDto;
@@ -63,7 +62,7 @@ public class MemberController {
         ResData resData = ResData.of(
                 ResCode.S_01_02,
                 MemberTokenDto.of(accessToken),
-                linkTo(IndexController.class).slash("/api/index")
+                linkTo(AppConfig.getBaseURL()).slash("/api/index")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/login").withRel("profile"));
         return ResponseEntity.ok()
@@ -78,7 +77,7 @@ public class MemberController {
 
         ResData resData = ResData.of(
                 ResCode.S_01_03,
-                linkTo(IndexController.class).slash("/api/index")
+                linkTo(AppConfig.getBaseURL()).slash("/api/index")
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/logout").withRel("profile"));
         return ResponseEntity.ok()
