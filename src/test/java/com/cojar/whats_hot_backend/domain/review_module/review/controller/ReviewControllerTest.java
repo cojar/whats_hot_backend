@@ -2523,7 +2523,7 @@ class ReviewControllerTest extends BaseControllerTest {
 
     @ParameterizedTest
     @MethodSource("argsFor_getMyReviews_BadRequest_PageNotExist")
-    @DisplayName("get:/api/reviews - bad request page not exist, F-03-07-03")
+    @DisplayName("get:/api/reviews/me - bad request page not exist, F-03-07-03")
     public void getMyReviews_BadRequest_PageNotExist(Integer size) throws Exception {
 
         // given
@@ -2566,5 +2566,42 @@ class ReviewControllerTest extends BaseControllerTest {
                 Arguments.of(50),
                 Arguments.of(100)
         );
+    }
+
+    @Test
+    @DisplayName("get:/api/reviews/me - bad request sort not allowed, F-03-07-04")
+    public void getMyReviews_BadRequest_SortNotAllowed() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        String sort = "qwerty";
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("sort", sort);
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/reviews/me?%s".formatted(AppConfig.getQueryString(params)))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-03-07-04"))
+                .andExpect(jsonPath("message").value(ResCode.F_03_07_04.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(sort))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
     }
 }

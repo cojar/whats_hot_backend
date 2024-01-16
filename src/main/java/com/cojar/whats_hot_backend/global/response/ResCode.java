@@ -118,6 +118,7 @@ public enum ResCode {
     F_03_07_01(HttpStatus.BAD_REQUEST, "F-03-07-01", "해당 회원이 작성한 리뷰가 없습니다"),
     F_03_07_02(HttpStatus.BAD_REQUEST, "F-03-07-02", "허용되지 않는 페이지 당 댓글 개수입니다"),
     F_03_07_03(HttpStatus.BAD_REQUEST, "F-03-07-03", "존재하지 않는 페이지입니다"),
+    F_03_07_04(HttpStatus.BAD_REQUEST, "F-03-07-04", "허용되지 않는 정렬 옵션입니다"),
 
     // comment service fail codes
     F_04_01_01(HttpStatus.BAD_REQUEST, "F-04-01-01", "요청 값이 올바르지 않습니다"),
