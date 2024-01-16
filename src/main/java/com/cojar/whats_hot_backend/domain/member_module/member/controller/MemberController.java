@@ -61,9 +61,9 @@ public class MemberController {
 
         ResData resData = ResData.of(
                 ResCode.S_01_02,
-                MemberTokenDto.of(accessToken),
-                linkTo(AppConfig.getBaseURL()).slash("/api/index")
+                MemberTokenDto.of(accessToken)
         );
+        resData.add(Link.of(AppConfig.getIndexURL()).withSelfRel());
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/login").withRel("profile"));
         return ResponseEntity.ok()
                 .body(resData);
@@ -76,9 +76,9 @@ public class MemberController {
         this.memberService.logout(user);
 
         ResData resData = ResData.of(
-                ResCode.S_01_03,
-                linkTo(AppConfig.getBaseURL()).slash("/api/index")
+                ResCode.S_01_03
         );
+        resData.add(Link.of(AppConfig.getIndexURL()).withSelfRel());
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Member/logout").withRel("profile"));
         return ResponseEntity.ok()
                 .body(resData);
