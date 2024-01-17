@@ -88,6 +88,7 @@ public class ReviewController {
         );
 
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/getReviews").withRel("profile"));
+
         return ResponseEntity.ok()
                 .body(resData);
     }

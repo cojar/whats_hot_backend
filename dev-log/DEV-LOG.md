@@ -11,6 +11,9 @@
 ### fix/security
 - [x] /api/reviews/me, /api/comments/me 인증 체크 문제 해결
 
+### feature/errors-exception_handler
+- [x] 입력 에러, 내부 에러 핸들링 추가
+
 ## 24-01-16
 ### feature/util
 - [x] review 가데이터 수정
