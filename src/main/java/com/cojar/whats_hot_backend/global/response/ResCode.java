@@ -148,7 +148,8 @@ public enum ResCode {
 
     // security fail codes
     F_99_99_01(HttpStatus.UNAUTHORIZED, "F-99-99-01", "로그인이 필요한 요청입니다"),
-    F_99_99_02(HttpStatus.FORBIDDEN, "F-99-99-02", "접근 권한이 없습니다");
+    F_99_99_02(HttpStatus.FORBIDDEN, "F-99-99-02", "접근 권한이 없습니다"),
+    F_99_99_03(HttpStatus.FORBIDDEN, "F-99-99-03", "로그아웃된 사용자입니다");
 
     private HttpStatus status;
     private String code;
