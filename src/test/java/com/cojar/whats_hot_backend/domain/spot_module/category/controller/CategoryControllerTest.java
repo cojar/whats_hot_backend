@@ -8,6 +8,7 @@ import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.service.SpotHashtagService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.service.SpotImageService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
+import com.cojar.whats_hot_backend.global.util.AppConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -17,9 +18,12 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.stream.Stream;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -44,6 +48,20 @@ class CategoryControllerTest extends BaseControllerTest {
 
     @Autowired
     private FileService fileService;
+
+    private static Stream<Arguments> argsFor_createCategory_Created() {
+        return Stream.of(
+                Arguments.of("항공권", 1, null),
+                Arguments.of("퓨전요리", 2, 1L),
+                Arguments.of("카라반", 3, 245L)
+        );
+    }
+
+    private static Stream<Arguments> argsFor_createCategory_BadRequest_NotBlank() {
+        return Stream.of(
+                Arguments.of("", 1, null)    // 이름값이 빈 문자열일 때
+        );
+    }
 
     @Transactional
     @ParameterizedTest
@@ -88,14 +106,6 @@ class CategoryControllerTest extends BaseControllerTest {
         if (parentId != null) resultActions.andExpect(jsonPath("data.parentId").value(parentId));
     }
 
-    private static Stream<Arguments> argsFor_createCategory_Created() {
-        return Stream.of(
-                Arguments.of("항공권", 1, null),
-                Arguments.of("퓨전요리", 2, 1L),
-                Arguments.of("카라반", 3, 245L)
-        );
-    }
-
     @Transactional
     @ParameterizedTest
     @MethodSource("argsFor_createCategory_BadRequest_NotBlank")
@@ -135,10 +145,53 @@ class CategoryControllerTest extends BaseControllerTest {
         if (parentId != null) resultActions.andExpect(jsonPath("data.parentId").value(parentId));
     }
 
-    private static Stream<Arguments> argsFor_createCategory_BadRequest_NotBlank() {
-        return Stream.of(
-                Arguments.of("", 1, null)    // 이름값이 빈 문자열일 때
-        );
+    @ParameterizedTest
+    @MethodSource("argsFor_getCategories_OK")
+    @DisplayName("get:/api/categories - ok, S-05-02")
+    public void getCategories_OK(Long parentId) throws Exception {
+
+        // given
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        if (parentId != -1) params.add("parentId", parentId.toString());
+
+        String query = AppConfig.getBaseURL() + ":8080/api/categories" + (AppConfig.getQueryString(params).isBlank() ? "" : "?%s".formatted(AppConfig.getQueryString(params)));
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/categories?%s".formatted(AppConfig.getQueryString(params)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("OK"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-05-02"))
+                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("data.list[0].id").exists())
+                .andExpect(jsonPath("data.list[0].name").exists())
+                .andExpect(jsonPath("data.list[0]._links.self").exists())
+                .andExpect(jsonPath("_links.self.href").value(query))
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
     }
 
+    private static Stream<Arguments> argsFor_getCategories_OK() {
+        return Stream.of(
+                Arguments.of(-1L),
+                Arguments.of(1L),
+                Arguments.of(2L),
+                Arguments.of(3L),
+                Arguments.of(4L),
+                Arguments.of(5L),
+                Arguments.of(6L),
+                Arguments.of(7L),
+                Arguments.of(8L),
+                Arguments.of(25L),
+                Arguments.of(37L)
+        );
+    }
 }

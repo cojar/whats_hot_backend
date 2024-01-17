@@ -16,7 +16,6 @@ import java.lang.annotation.Target;
 
 public @interface SpotApiResponse {
 
-
     @Target({ElementType.METHOD})
     @Retention(RetentionPolicy.RUNTIME)
     @Operation(

@@ -46,6 +46,7 @@ public enum ResCode {
 
     // category controller success codes
     S_05_01(HttpStatus.CREATED, "S-05-01", "카테고리 등록이 완료되었습니다"),
+    S_05_02(HttpStatus.OK, "S-05-02", "요청하신 장소 카테고리 목록을 반환합니다"),
 
     // file service fail codes
     F_00_00_01(HttpStatus.BAD_REQUEST, "F-00-00-01", "이미지 형식만 업로드할 수 있습니다"),

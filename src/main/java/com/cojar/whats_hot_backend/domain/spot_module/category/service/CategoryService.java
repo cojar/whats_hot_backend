@@ -1,13 +1,19 @@
 package com.cojar.whats_hot_backend.domain.spot_module.category.service;
 
+import com.cojar.whats_hot_backend.domain.spot_module.category.controller.CategoryController;
+import com.cojar.whats_hot_backend.domain.spot_module.category.dto.CategoryListDto;
 import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.category.repository.CategoryRepository;
+import com.cojar.whats_hot_backend.global.response.DataModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -54,5 +60,28 @@ public class CategoryService {
         }
 
         return categories;
+    }
+
+    public List<DataModel> getCategoriesByParent(Long parentId) {
+
+        if (parentId == -1) return this.categoryRepository.findAllByDepth(1).stream()
+                .map(category -> {
+                    DataModel dataModel = DataModel.of(
+                            CategoryListDto.of(category),
+                            linkTo(CategoryController.class).slash(category.getId())
+                    );
+                    return dataModel;
+                })
+                .collect(Collectors.toList());
+
+        return this.getCategoryById(parentId).getChildren().stream()
+                .map(category -> {
+                    DataModel dataModel = DataModel.of(
+                            CategoryListDto.of(category),
+                            linkTo(CategoryController.class).slash(category.getId())
+                    );
+                    return dataModel;
+                })
+                .collect(Collectors.toList());
     }
 }
