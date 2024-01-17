@@ -147,6 +147,8 @@ public enum ResCode {
     // category controller fail codes
     F_05_01_01(HttpStatus.BAD_REQUEST, "F-05-01-01", "요청 값이 올바르지 않습니다"),
 
+    F_05_02_01(HttpStatus.BAD_REQUEST, "F-05-02-01", "해당 아이디를 가진 장소 카테고리가 존재하지 않습니다"),
+
     // security fail codes
     F_99_99_01(HttpStatus.UNAUTHORIZED, "F-99-99-01", "로그인이 필요한 요청입니다"),
     F_99_99_02(HttpStatus.FORBIDDEN, "F-99-99-02", "접근 권한이 없습니다"),

@@ -8,8 +8,10 @@ import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_hashtag.service.SpotHashtagService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.service.SpotImageService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
+import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -170,7 +172,7 @@ class CategoryControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value("OK"))
                 .andExpect(jsonPath("success").value("true"))
                 .andExpect(jsonPath("code").value("S-05-02"))
-                .andExpect(jsonPath("message").exists())
+                .andExpect(jsonPath("message").value(ResCode.S_05_02.getMessage()))
                 .andExpect(jsonPath("data.list[0].id").exists())
                 .andExpect(jsonPath("data.list[0].name").exists())
                 .andExpect(jsonPath("data.list[0]._links.self").exists())
@@ -193,5 +195,37 @@ class CategoryControllerTest extends BaseControllerTest {
                 Arguments.of(25L),
                 Arguments.of(37L)
         );
+    }
+
+    @Test
+    @DisplayName("get:/api/categories - bad request not exist, F-05-02-01")
+    public void getCategories_BadRequest_NotExist() throws Exception {
+
+        // given
+        Long parentId = 100000L;
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        if (parentId != -1) params.add("parentId", parentId.toString());
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/categories?%s".formatted(AppConfig.getQueryString(params)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-05-02-01"))
+                .andExpect(jsonPath("message").value(ResCode.F_05_02_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(parentId))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
     }
 }

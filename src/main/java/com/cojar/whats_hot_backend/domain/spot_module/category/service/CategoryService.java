@@ -4,10 +4,15 @@ import com.cojar.whats_hot_backend.domain.spot_module.category.controller.Catego
 import com.cojar.whats_hot_backend.domain.spot_module.category.dto.CategoryListDto;
 import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.category.repository.CategoryRepository;
+import com.cojar.whats_hot_backend.global.errors.exception.ApiResponseException;
 import com.cojar.whats_hot_backend.global.response.DataModel;
+import com.cojar.whats_hot_backend.global.response.ResCode;
+import com.cojar.whats_hot_backend.global.response.ResData;
+import com.cojar.whats_hot_backend.global.util.AppConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Errors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +69,8 @@ public class CategoryService {
 
     public List<DataModel> getCategoriesByParent(Long parentId) {
 
+        this.getCategoriesByParentValidate(parentId);
+
         if (parentId == -1) return this.categoryRepository.findAllByDepth(1).stream()
                 .map(category -> {
                     DataModel dataModel = DataModel.of(
@@ -83,5 +90,22 @@ public class CategoryService {
                     return dataModel;
                 })
                 .collect(Collectors.toList());
+    }
+
+    private void getCategoriesByParentValidate(Long parentId) {
+
+        Errors errors = AppConfig.getMockErrors("categories");
+
+        if (parentId != -1 && !this.categoryRepository.existsById(parentId)) {
+
+            errors.reject("not exist", new Object[]{parentId}, "category that has id does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_05_02_01,
+                            errors
+                    )
+            );
+        }
     }
 }
