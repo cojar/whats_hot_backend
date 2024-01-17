@@ -17,6 +17,9 @@
 - [x] F-05-02-02 TC 작성
 - [x] ApiResponse 수정
 
+### feature/errors-exception_handler
+- [x] 입력 에러, 내부 에러 핸들링 추가
+
 ## 24-01-16
 ### feature/util
 - [x] review 가데이터 수정
