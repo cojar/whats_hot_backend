@@ -228,4 +228,75 @@ class CategoryControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.index").exists())
         ;
     }
+
+    @ParameterizedTest
+    @MethodSource("argsFor_getCategories_BadRequest_InvalidDepth")
+    @DisplayName("get:/api/categories - bad request invalid depth, F-05-02-02")
+    public void getCategories_BadRequest_InvalidDepth(Long parentId) throws Exception {
+
+        // given
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        if (parentId != -1) params.add("parentId", parentId.toString());
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/categories?%s".formatted(AppConfig.getQueryString(params)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-05-02-02"))
+                .andExpect(jsonPath("message").value(ResCode.F_05_02_02.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(parentId))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    private static Stream<Arguments> argsFor_getCategories_BadRequest_InvalidDepth() {
+        return Stream.of(
+                Arguments.of(9L),
+                Arguments.of(10L),
+                Arguments.of(11L),
+                Arguments.of(12L),
+                Arguments.of(13L),
+                Arguments.of(14L),
+                Arguments.of(15L),
+                Arguments.of(16L),
+                Arguments.of(17L),
+                Arguments.of(18L),
+                Arguments.of(19L),
+                Arguments.of(20L),
+                Arguments.of(21L),
+                Arguments.of(22L),
+                Arguments.of(23L),
+                Arguments.of(24L),
+                Arguments.of(26L),
+                Arguments.of(27L),
+                Arguments.of(28L),
+                Arguments.of(29L),
+                Arguments.of(30L),
+                Arguments.of(31L),
+                Arguments.of(32L),
+                Arguments.of(33L),
+                Arguments.of(34L),
+                Arguments.of(35L),
+                Arguments.of(36L),
+                Arguments.of(38L),
+                Arguments.of(39L),
+                Arguments.of(40L),
+                Arguments.of(41L),
+                Arguments.of(42L),
+                Arguments.of(43L),
+                Arguments.of(44L)
+        );
+    }
 }

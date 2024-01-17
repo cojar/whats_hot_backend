@@ -59,7 +59,7 @@ public class CategoryService {
 
         List<Category> categories = new ArrayList<>();
 
-        while(category != null) {
+        while (category != null) {
             categories.add(category);
             category = category.getParent();
         }
@@ -103,6 +103,23 @@ public class CategoryService {
             throw new ApiResponseException(
                     ResData.of(
                             ResCode.F_05_02_01,
+                            errors
+                    )
+            );
+        }
+
+        Category parent = this.categoryRepository.getReferenceById(parentId);
+
+        if (parent != null &&
+                ((parent.getRootName().equals("맛집") && parent.getDepth() == 3)
+                        || (parent.getRootName().equals("여행지") && parent.getDepth() == 2)
+                        || (parent.getRootName().equals("숙박") && parent.getDepth() == 2))) {
+
+            errors.reject("invalid depth", new Object[]{parentId}, "category that has id is lowest");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_05_02_02,
                             errors
                     )
             );
