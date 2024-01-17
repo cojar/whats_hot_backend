@@ -11,6 +11,12 @@
 ### fix/security
 - [x] /api/reviews/me, /api/comments/me 인증 체크 문제 해결
 
+### feature/get-api-categories
+- [x] S-05-02 TC 작성
+- [x] F-05-02-01 TC 작성
+- [x] F-05-02-02 TC 작성
+- [x] ApiResponse 수정
+
 ## 24-01-16
 ### feature/util
 - [x] review 가데이터 수정

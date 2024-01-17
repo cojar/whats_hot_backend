@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/reviews/*").permitAll() // get:/api/reviews/* 아무나 접속 가능
                         .requestMatchers(HttpMethod.GET, "/api/comments/me").authenticated() // get:/api/comments/me 인증된 사용자만 접속 가능
                         .requestMatchers(HttpMethod.GET, "/api/comments/*").permitAll() // get:/api/comments/* 아무나 접속 가능
+                        .requestMatchers(HttpMethod.GET, "/api/categories").permitAll() // get:/api/categories 아무나 접속 가능
                         .anyRequest().authenticated() // 그 외는 인증된 사용자만 접속 가능
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
