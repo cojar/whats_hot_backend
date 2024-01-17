@@ -46,6 +46,7 @@ public enum ResCode {
 
     // category controller success codes
     S_05_01(HttpStatus.CREATED, "S-05-01", "카테고리 등록이 완료되었습니다"),
+    S_05_02(HttpStatus.OK, "S-05-02", "요청하신 장소 카테고리 목록을 반환합니다"),
 
     // file service fail codes
     F_00_00_01(HttpStatus.BAD_REQUEST, "F-00-00-01", "이미지 형식만 업로드할 수 있습니다"),
@@ -145,6 +146,9 @@ public enum ResCode {
 
     // category controller fail codes
     F_05_01_01(HttpStatus.BAD_REQUEST, "F-05-01-01", "요청 값이 올바르지 않습니다"),
+
+    F_05_02_01(HttpStatus.BAD_REQUEST, "F-05-02-01", "해당 아이디를 가진 장소 카테고리가 존재하지 않습니다"),
+    F_05_02_02(HttpStatus.BAD_REQUEST, "F-05-02-02", "최하위 카테고리입니다"),
 
     // security fail codes
     F_99_99_01(HttpStatus.UNAUTHORIZED, "F-99-99-01", "로그인이 필요한 요청입니다"),
