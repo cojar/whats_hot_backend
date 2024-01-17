@@ -8,6 +8,9 @@
 - [x] F-03-07-03 TC 작성
 - [x] F-03-07-04 TC 작성
 
+### fix/security
+- [x] /api/reviews/me, /api/comments/me 인증 체크 문제 해결
+
 ## 24-01-16
 ### feature/util
 - [x] review 가데이터 수정
