@@ -108,7 +108,7 @@ public class CategoryService {
             );
         }
 
-        Category parent = this.categoryRepository.getReferenceById(parentId);
+        Category parent = this.getCategoryById(parentId);
 
         if (parent != null &&
                 ((parent.getRootName().equals("맛집") && parent.getDepth() == 3)

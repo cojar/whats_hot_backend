@@ -30,69 +30,45 @@ public @interface CategoryApiResponse {
                                             {
                                                 "status": "OK",
                                                 "success": true,
-                                                "code": "S-02-02",
-                                                "message": "요청하신 장소 목록을 반환합니다",
+                                                "code": "S-05-02",
+                                                "message": "요청하신 장소 카테고리 목록을 반환합니다",
                                                 "data": {
                                                     "list": [
                                                         {
                                                             "id": 1,
-                                                            "category": "맛집 > 2차 > 3차",
-                                                            "address": "대전 서구 대덕대로 179",
-                                                            "contact": "010-1234-5678",
-                                                            "averageScore": 0,
-                                                            "hashtags": [
-                                                                {
-                                                                    "name": "해시태그1"
-                                                                },
-                                                                {
-                                                                    "name": "해시태그2"
-                                                                }
-                                                            ],
-                                                            "reviews": 0,
+                                                            "name": "맛집",
                                                             "_links": {
                                                                 "self": {
-                                                                    "href": "http://localhost:8080/api/spots/1"
+                                                                    "href": "http://localhost:8080/api/categories/1"
                                                                 }
                                                             }
                                                         },
                                                         {
-                                                            "id": 2,
-                                                            "category": "맛집 > 2차 > 3차",
-                                                            "address": "대전 서구 대덕대로 179",
-                                                            "contact": "010-1234-5678",
-                                                            "averageScore": 0,
-                                                            "hashtags": [
-                                                                {
-                                                                    "name": "해시태그1"
-                                                                },
-                                                                {
-                                                                    "name": "해시태그2"
-                                                                }
-                                                            ],
-                                                            "reviews": 0,
+                                                            "id": 25,
+                                                            "name": "여행지",
                                                             "_links": {
                                                                 "self": {
-                                                                    "href": "http://localhost:8080/api/spots/2"
+                                                                    "href": "http://localhost:8080/api/categories/25"
                                                                 }
                                                             }
-                                                        }   
-                                                    ],
-                                                    "page": 1,
-                                                    "size": 2,
-                                                    "firstPage": 1,
-                                                    "nextPage": 2,
-                                                    "lastPage": 3,
-                                                    "first": true,
-                                                    "last": false,
-                                                    "totalPages": 3,
-                                                    "totalElements": 6
+                                                        },
+                                                        {
+                                                            "id": 37,
+                                                            "name": "숙박",
+                                                            "_links": {
+                                                                "self": {
+                                                                    "href": "http://localhost:8080/api/categories/37"
+                                                                }
+                                                            }
+                                                        }
+                                                    ]
                                                 },
                                                 "_links": {
                                                     "self": {
-                                                        "href": "http://localhost:8080/api/spots?page=1&size=2"
+                                                        "href": "http://localhost:8080/api/categories?parentId=-1"
                                                     },
                                                     "profile": {
-                                                        "href": "http://localhost:8080/swagger-ui/index.html#/Spot/list"
+                                                        "href": "http://localhost:8080/api/swagger-ui/index.html#Category/getCategories"
                                                     }
                                                 }
                                             }

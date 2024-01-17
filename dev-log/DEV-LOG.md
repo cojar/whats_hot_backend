@@ -15,6 +15,7 @@
 - [x] S-05-02 TC 작성
 - [x] F-05-02-01 TC 작성
 - [x] F-05-02-02 TC 작성
+- [x] ApiResponse 수정
 
 ## 24-01-16
 ### feature/util
