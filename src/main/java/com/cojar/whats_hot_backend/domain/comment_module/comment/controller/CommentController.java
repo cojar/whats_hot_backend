@@ -44,11 +44,12 @@ public class CommentController {
     public ResponseEntity createComment(@Valid @RequestBody CommentRequest.CreateComment request, Errors errors,
                                         @AuthenticationPrincipal User user) {
 
+        Member member = this.memberService.getUserByUsername(user.getUsername());
         Comment comment = this.commentService.create(request, errors, user);
 
         ResData resData = ResData.of(
                 ResCode.S_04_01,
-                CommentDto.of(comment),
+                CommentDto.of(comment, member),
                 linkTo(this.getClass()).slash(comment.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/createComment").withRel("profile"));
@@ -59,13 +60,15 @@ public class CommentController {
 
     @CommentApiResponse.Detail
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity getComment(@PathVariable(value = "id") Long id) {
+    public ResponseEntity getComment(@PathVariable(value = "id") Long id,
+                                     @AuthenticationPrincipal User user) {
 
+        Member member = user != null ? this.memberService.getUserByUsername(user.getUsername()) : null;
         Comment comment = this.commentService.getCommentById(id);
 
         ResData resData = ResData.of(
                 ResCode.S_04_02,
-                CommentDto.of(comment),
+                CommentDto.of(comment, member),
                 linkTo(this.getClass()).slash(comment.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/getComment").withRel("profile"));
@@ -100,11 +103,12 @@ public class CommentController {
                                         @PathVariable(value = "id") Long id,
                                         @AuthenticationPrincipal User user) {
 
+        Member member = this.memberService.getUserByUsername(user.getUsername());
         Comment comment = this.commentService.update(request, errors, id, user);
 
         ResData resData = ResData.of(
                 ResCode.S_04_04,
-                CommentDto.of(comment),
+                CommentDto.of(comment, member),
                 linkTo(this.getClass()).slash(comment.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Comment/updateComment").withRel("profile"));

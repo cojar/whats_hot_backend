@@ -58,11 +58,12 @@ public class ReviewController {
                                        @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                        @AuthenticationPrincipal User user) {
 
+        Member member = this.memberService.getUserByUsername(user.getUsername());
         Review review = this.reviewService.create(request, images, errors, user);
 
         ResData resData = ResData.of(
                 ResCode.S_03_01,
-                ReviewCreateDto.of(review),
+                ReviewCreateDto.of(review, member),
                 linkTo(ReviewController.class).slash(review.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/createReview").withRel("profile"));
@@ -121,11 +122,12 @@ public class ReviewController {
                                        @PathVariable(value = "id") Long id,
                                        @AuthenticationPrincipal User user) {
 
+        Member member = this.memberService.getUserByUsername(user.getUsername());
         Review review = this.reviewService.update(request, images, errors, id, user);
 
         ResData resData = ResData.of(
                 ResCode.S_03_04,
-                ReviewCreateDto.of(review),
+                ReviewCreateDto.of(review, member),
                 linkTo(this.getClass()).slash(review.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/updateReview").withRel("profile"));
