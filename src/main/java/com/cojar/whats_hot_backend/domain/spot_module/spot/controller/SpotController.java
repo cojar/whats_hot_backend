@@ -47,7 +47,7 @@ public class SpotController {
                                      @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                      @AuthenticationPrincipal User user) {
 
-        Member member = user != null ? this.memberService.getUserByUsername(user.getUsername()) : null;
+        Member member = this.memberService.getUserByUsername(user.getUsername());
         Spot spot = this.spotService.create(request, images, errors);
 
         ResData resData = ResData.of(
@@ -68,7 +68,6 @@ public class SpotController {
                                @RequestParam(value = "kw", defaultValue = "") String kw) {
 
         Page<DataModel> spotList = this.spotService.getSpotList(page, size, kw);
-
 
         ResData resData = ResData.of(
                 ResCode.S_02_02,
@@ -110,7 +109,7 @@ public class SpotController {
                                      @PathVariable(value = "id") Long id,
                                      @AuthenticationPrincipal User user) {
 
-        Member member = user != null ? this.memberService.getUserByUsername(user.getUsername()) : null;
+        Member member = this.memberService.getUserByUsername(user.getUsername());
         Spot spot = this.spotService.update(id, request, images, errors);
 
         ResData resData = ResData.of(

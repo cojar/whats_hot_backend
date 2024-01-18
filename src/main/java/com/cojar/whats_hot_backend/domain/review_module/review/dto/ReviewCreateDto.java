@@ -1,6 +1,7 @@
 package com.cojar.whats_hot_backend.domain.review_module.review.dto;
 
 import com.cojar.whats_hot_backend.domain.comment_module.comment.dto.CommentDto;
+import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotAbbrDto;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
@@ -45,7 +46,7 @@ public class ReviewCreateDto {
 
     private final List<CommentDto> comments;
 
-    public ReviewCreateDto(Review review) {
+    public ReviewCreateDto(Review review, Member member) {
         this.id = review.getId();
         this.createDate = review.getCreateDate();
         this.modifyDate = review.getModifyDate();
@@ -65,7 +66,7 @@ public class ReviewCreateDto {
         this.validated = review.isValidated();
         this.liked = review.getLiked();
         this.comments = review.getComments().stream()
-                .map(CommentDto::of)
+                .map(comment -> CommentDto.of(comment, member))
                 .collect(Collectors.toList());
     }
 
@@ -84,7 +85,7 @@ public class ReviewCreateDto {
         else return this.comments;
     }
 
-    public static ReviewCreateDto of(Review review) {
-        return new ReviewCreateDto(review);
+    public static ReviewCreateDto of(Review review, Member member) {
+        return new ReviewCreateDto(review, member);
     }
 }

@@ -68,7 +68,7 @@ public class ReviewGetDto {
         this.liked = review.getLiked();
         this.like = member != null && review.getLikedMember().contains(member);
         this.comments = review.getComments().stream()
-                .map(CommentDto::of)
+                .map(comment -> CommentDto.of(comment, member))
                 .collect(Collectors.toList());
     }
 

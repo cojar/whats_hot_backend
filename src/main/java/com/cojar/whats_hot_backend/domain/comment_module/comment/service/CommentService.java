@@ -159,7 +159,7 @@ public class CommentService {
         return this.commentRepository.findAllByAuthor(author, pageable)
                 .map(comment -> {
                     DataModel dataModel = DataModel.of(
-                            CommentDto.of(comment),
+                            CommentDto.of(comment, author),
                             linkTo(CommentController.class).slash(comment.getId())
                     );
                     return dataModel;
