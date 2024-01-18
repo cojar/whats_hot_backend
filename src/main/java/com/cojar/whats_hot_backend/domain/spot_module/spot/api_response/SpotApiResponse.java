@@ -183,6 +183,7 @@ public @interface SpotApiResponse {
     @Operation(
             summary = "장소 단건 조회",
             description = "성공 시 요청한 장소 정보를 반환한다",
+            security = @SecurityRequirement(name = "bearerAuth"),
             responses = {
                     @ApiResponse(
                             responseCode = "200",
