@@ -1,6 +1,7 @@
 package com.cojar.whats_hot_backend.domain.review_module.review.dto;
 
 import com.cojar.whats_hot_backend.domain.comment_module.comment.dto.CommentDto;
+import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -42,9 +43,11 @@ public class ReviewGetDto {
 
     private final Long liked;
 
+    private final boolean like;
+
     private final List<CommentDto> comments;
 
-    public ReviewGetDto(Review review) {
+    public ReviewGetDto(Review review, Member member) {
         this.id = review.getId();
         this.createDate = review.getCreateDate();
         this.modifyDate = review.getModifyDate();
@@ -63,6 +66,7 @@ public class ReviewGetDto {
         this.status = review.getStatus().getType();
         this.validated = review.isValidated();
         this.liked = review.getLiked();
+        this.like = member != null && review.getLikedMember().contains(member);
         this.comments = review.getComments().stream()
                 .map(CommentDto::of)
                 .collect(Collectors.toList());
@@ -83,7 +87,7 @@ public class ReviewGetDto {
         else return this.comments;
     }
 
-    public static ReviewGetDto of(Review review) {
-        return new ReviewGetDto(review);
+    public static ReviewGetDto of(Review review, Member member) {
+        return new ReviewGetDto(review, member);
     }
 }

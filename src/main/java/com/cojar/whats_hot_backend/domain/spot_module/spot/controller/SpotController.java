@@ -1,5 +1,7 @@
 package com.cojar.whats_hot_backend.domain.spot_module.spot.controller;
 
+import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
+import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.api_response.SpotApiResponse;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
@@ -19,6 +21,8 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,17 +39,20 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 public class SpotController {
 
     private final SpotService spotService;
+    private final MemberService memberService;
 
     @SpotApiResponse.Create
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity createSpot(@Valid @RequestPart(value = "request") SpotRequest.CreateSpot request, Errors errors,
-                                     @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+                                     @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                                     @AuthenticationPrincipal User user) {
 
+        Member member = user != null ? this.memberService.getUserByUsername(user.getUsername()) : null;
         Spot spot = this.spotService.create(request, images, errors);
 
         ResData resData = ResData.of(
                 ResCode.S_02_01,
-                SpotDto.of(spot),
+                SpotDto.of(spot, member),
                 linkTo(this.getClass()).slash(spot.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Spot/create").withRel("profile"));
@@ -77,15 +84,17 @@ public class SpotController {
 
     @SpotApiResponse.Detail
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity detail(@PathVariable(value = "id") Long id) {
+    public ResponseEntity detail(@PathVariable(value = "id") Long id,
+                                 @AuthenticationPrincipal User user) {
 
         this.spotService.getSpotValidate(id);
 
+        Member member = user != null ? this.memberService.getUserByUsername(user.getUsername()) : null;
         Spot spot = this.spotService.getSpotById(id);
 
         ResData resData = ResData.of(
                 ResCode.S_02_03,
-                SpotDto.of(spot),
+                SpotDto.of(spot, member),
                 linkTo(this.getClass()).slash(spot.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Spot/detail").withRel("profile"));
@@ -98,13 +107,15 @@ public class SpotController {
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity updateSpot(@Valid @RequestPart(value = "request", required = false) SpotRequest.UpdateSpot request, Errors errors,
                                      @RequestPart(value = "images", required = false) List<MultipartFile> images,
-                                     @PathVariable(value = "id") Long id) {
+                                     @PathVariable(value = "id") Long id,
+                                     @AuthenticationPrincipal User user) {
 
+        Member member = user != null ? this.memberService.getUserByUsername(user.getUsername()) : null;
         Spot spot = this.spotService.update(id, request, images, errors);
 
         ResData resData = ResData.of(
                 ResCode.S_02_04,
-                SpotDto.of(spot),
+                SpotDto.of(spot, member),
                 linkTo(this.getClass()).slash(spot.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Spot/update").withRel("profile"));

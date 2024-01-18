@@ -73,6 +73,7 @@ public @interface ReviewApiResponse {
     @Operation(
             summary = "리뷰 목록 조회",
             description = "성공 시 요청한 리뷰 목록을 반환한다",
+            security = @SecurityRequirement(name = "bearerAuth"),
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -182,6 +183,7 @@ public @interface ReviewApiResponse {
     @Operation(
             summary = "리뷰 단건 조회",
             description = "성공 시 요청한 리뷰 정보를 반환한다",
+            security = @SecurityRequirement(name = "bearerAuth"),
             responses = {
                     @ApiResponse(
                             responseCode = "200",

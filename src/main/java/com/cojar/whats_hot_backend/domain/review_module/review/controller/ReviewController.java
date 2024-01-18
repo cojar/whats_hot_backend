@@ -77,9 +77,11 @@ public class ReviewController {
                                      @RequestParam(value = "sort", defaultValue = "like") String sort,
                                      @RequestParam(value = "spotId", defaultValue = "-1") Long spotId,
                                      @RequestParam(value = "image", defaultValue = "false") boolean image,
+                                     @AuthenticationPrincipal User user,
                                      HttpServletRequest request) {
 
-        Page<DataModel> reviewList = this.reviewService.getReviewPages(page, size, sort, spotId, image);
+        Member member = user != null ? this.memberService.getUserByUsername(user.getUsername()) : null;
+        Page<DataModel> reviewList = this.reviewService.getReviewPages(page, size, sort, spotId, image, member);
 
         ResData resData = ResData.of(
                 ResCode.S_03_02,
@@ -95,13 +97,15 @@ public class ReviewController {
 
     @ReviewApiResponse.Detail
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity getReview(@PathVariable(value = "id") Long id) {
+    public ResponseEntity getReview(@PathVariable(value = "id") Long id,
+                                    @AuthenticationPrincipal User user) {
 
+        Member member = user != null ? this.memberService.getUserByUsername(user.getUsername()) : null;
         Review review = this.reviewService.getReviewById(id);
 
         ResData resData = ResData.of(
                 ResCode.S_03_03,
-                ReviewGetDto.of(review),
+                ReviewGetDto.of(review, member),
                 linkTo(this.getClass()).slash(review.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Review/getReview").withRel("profile"));
