@@ -1,5 +1,6 @@
 package com.cojar.whats_hot_backend.domain.spot_module.spot.dto;
 
+import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewGetDto;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.dto.MenuItemDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
@@ -39,7 +40,7 @@ public class SpotDto {
 
     private final List<ReviewGetDto> reviews;
 
-    public SpotDto(Spot spot) {
+    public SpotDto(Spot spot, Member member) {
         this.id = spot.getId();
         this.createDate = spot.getCreateDate();
         this.modifyDate = spot.getModifyDate();
@@ -58,7 +59,7 @@ public class SpotDto {
                 .map(image -> image.getImage().toUri(AppConfig.getBaseFileURL()))
                 .collect(Collectors.toList());
         this.reviews = spot.getReviews().stream()
-                .map(ReviewGetDto::of)
+                .map(review -> ReviewGetDto.of(review, member))
                 .collect(Collectors.toList());
     }
 
@@ -82,7 +83,7 @@ public class SpotDto {
         else return this.reviews;
     }
 
-    public static SpotDto of(Spot spot) {
-        return new SpotDto(spot);
+    public static SpotDto of(Spot spot, Member member) {
+        return new SpotDto(spot, member);
     }
 }

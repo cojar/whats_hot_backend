@@ -1,5 +1,10 @@
 # What's Hot Dev-Log
 
+## 24-01-18
+### feature/review_module-review
+- [x] 로그인 시 본인이 좋아요 한 리뷰 조회가 가능하도록 변경
+- [x] api_response 수정
+
 ## 24-01-17
 ### feature/get-api-reviews-me
 - [x] S-03-07 TC 작성

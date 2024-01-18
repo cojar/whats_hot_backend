@@ -157,7 +157,7 @@ public class ReviewService {
         }
     }
 
-    public Page<DataModel> getReviewPages(int page, int size, String sort, Long spotId, boolean image) {
+    public Page<DataModel> getReviewPages(int page, int size, String sort, Long spotId, boolean image, Member member) {
 
         this.getReviewRagesValidate(page, size, sort, spotId, image);
 
@@ -175,7 +175,7 @@ public class ReviewService {
         return this.reviewRepository.findAllBySpotAndImages(spotId, image, pageable)
                 .map(review -> {
                     DataModel dataModel = DataModel.of(
-                            ReviewGetDto.of(review),
+                            ReviewGetDto.of(review, member),
                             linkTo(ReviewController.class).slash(review.getId())
                     );
                     return dataModel;
@@ -485,7 +485,7 @@ public class ReviewService {
         return this.reviewRepository.findAllByAuthor(author, pageable)
                 .map(review -> {
                     DataModel dataModel = DataModel.of(
-                            ReviewGetDto.of(review),
+                            ReviewGetDto.of(review, author),
                             linkTo(ReviewController.class).slash(review.getId())
                     );
                     return dataModel;
