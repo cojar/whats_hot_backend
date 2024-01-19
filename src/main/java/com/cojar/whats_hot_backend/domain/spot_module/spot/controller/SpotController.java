@@ -2,6 +2,7 @@ package com.cojar.whats_hot_backend.domain.spot_module.spot.controller;
 
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberService;
+import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.api_response.SpotApiResponse;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
@@ -40,6 +41,7 @@ public class SpotController {
 
     private final SpotService spotService;
     private final MemberService memberService;
+    private final ReviewService reviewService;
 
     @SpotApiResponse.Create
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -49,10 +51,11 @@ public class SpotController {
 
         Member member = this.memberService.getUserByUsername(user.getUsername());
         Spot spot = this.spotService.create(request, images, errors);
+        Page<DataModel> reviewPages = this.reviewService.getReviewPagesWithoutValidate(1, 20, "like", spot.getId(), false, member);
 
         ResData resData = ResData.of(
                 ResCode.S_02_01,
-                SpotDto.of(spot, member),
+                SpotDto.of(spot, member, PagedDataModel.of(reviewPages)),
                 linkTo(this.getClass()).slash(spot.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Spot/create").withRel("profile"));
@@ -90,10 +93,11 @@ public class SpotController {
 
         Member member = user != null ? this.memberService.getUserByUsername(user.getUsername()) : null;
         Spot spot = this.spotService.getSpotById(id);
+        Page<DataModel> reviewPages = this.reviewService.getReviewPagesWithoutValidate(1, 20, "like", spot.getId(), false, member);
 
         ResData resData = ResData.of(
                 ResCode.S_02_03,
-                SpotDto.of(spot, member),
+                SpotDto.of(spot, member, PagedDataModel.of(reviewPages)),
                 linkTo(this.getClass()).slash(spot.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Spot/detail").withRel("profile"));
@@ -111,10 +115,11 @@ public class SpotController {
 
         Member member = this.memberService.getUserByUsername(user.getUsername());
         Spot spot = this.spotService.update(id, request, images, errors);
+        Page<DataModel> reviewPages = this.reviewService.getReviewPagesWithoutValidate(1, 20, "like", spot.getId(), false, member);
 
         ResData resData = ResData.of(
                 ResCode.S_02_04,
-                SpotDto.of(spot, member),
+                SpotDto.of(spot, member, PagedDataModel.of(reviewPages)),
                 linkTo(this.getClass()).slash(spot.getId())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Spot/update").withRel("profile"));

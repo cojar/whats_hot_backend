@@ -544,4 +544,27 @@ public class ReviewService {
             );
         }
     }
+
+    public Page<DataModel> getReviewPagesWithoutValidate(int page, int size, String sort, Long spotId, boolean image, Member member) {
+
+        List<Sort.Order> sorts = new ArrayList<>();
+        if (sort.equals("old")) {
+            sorts.add(Sort.Order.asc("create_date"));
+        } else if (sort.equals("new")) {
+            sorts.add(Sort.Order.desc("create_date"));
+        } else {
+            sorts.add(Sort.Order.desc("liked"));
+            sorts.add(Sort.Order.asc("create_date"));
+        }
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sorts));
+
+        return this.reviewRepository.findAllBySpotAndImages(spotId, image, pageable)
+                .map(review -> {
+                    DataModel dataModel = DataModel.of(
+                            ReviewGetDto.of(review, member),
+                            linkTo(ReviewController.class).slash(review.getId())
+                    );
+                    return dataModel;
+                });
+    }
 }
