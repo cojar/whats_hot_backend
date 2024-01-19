@@ -1,9 +1,9 @@
 package com.cojar.whats_hot_backend.domain.spot_module.spot.dto;
 
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
-import com.cojar.whats_hot_backend.domain.review_module.review.dto.ReviewGetDto;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.dto.MenuItemDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
+import com.cojar.whats_hot_backend.global.response.PagedDataModel;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
@@ -38,9 +38,9 @@ public class SpotDto {
 
     private final List<String> imageUri;
 
-    private final List<ReviewGetDto> reviews;
+    private final PagedDataModel reviews;
 
-    public SpotDto(Spot spot, Member member) {
+    public SpotDto(Spot spot, Member member, PagedDataModel reviewPages) {
         this.id = spot.getId();
         this.createDate = spot.getCreateDate();
         this.modifyDate = spot.getModifyDate();
@@ -58,9 +58,7 @@ public class SpotDto {
         this.imageUri = spot.getImages().stream()
                 .map(image -> image.getImage().toUri(AppConfig.getBaseFileURL()))
                 .collect(Collectors.toList());
-        this.reviews = spot.getReviews().stream()
-                .map(review -> ReviewGetDto.of(review, member))
-                .collect(Collectors.toList());
+        this.reviews = reviewPages;
     }
 
     public List<String> getHashtags() {
@@ -78,12 +76,12 @@ public class SpotDto {
         else return this.imageUri;
     }
 
-    public List<ReviewGetDto> getReviews() {
-        if (this.reviews.isEmpty()) return null;
+    public PagedDataModel getReviews() {
+        if (this.reviews.getTotalElements() == 0) return null;
         else return this.reviews;
     }
 
-    public static SpotDto of(Spot spot, Member member) {
-        return new SpotDto(spot, member);
+    public static SpotDto of(Spot spot, Member member, PagedDataModel reviewPages) {
+        return new SpotDto(spot, member, reviewPages);
     }
 }

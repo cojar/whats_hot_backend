@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 24-01-19
+### feature/get-api-spots-id
+- [x] 장소 단건 조회 시 리뷰 페이징 정보가 담겨 출력되도록 변경
+
 ## 24-01-18
 ### feature/review_module-review
 - [x] 로그인 시 본인이 좋아요 한 리뷰 조회가 가능하도록 변경
