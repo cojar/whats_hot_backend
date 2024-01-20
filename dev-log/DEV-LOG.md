@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 24-01-20
+### fix/get-api-spots-id
+- [x] 리뷰 페이징 조회 오류 해결 시도
+
 ## 24-01-19
 ### feature/get-api-spots-id
 - [x] 장소 단건 조회 시 리뷰 페이징 정보가 담겨 출력되도록 변경
