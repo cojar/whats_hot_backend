@@ -156,6 +156,7 @@ public enum ResCode {
     F_99_99_03(HttpStatus.FORBIDDEN, "F-99-99-03", "로그아웃된 사용자입니다"),
     F_99_99_04(HttpStatus.BAD_REQUEST, "F-99-99-04", "입력 양식이 올바르지 않습니다"),
     F_99_99_05(HttpStatus.BAD_REQUEST, "F-99-99-05", "필수 입력 요소가 존재하지 않습니다"),
+    F_99_99_06(HttpStatus.BAD_REQUEST, "F-99-99-06", "입력 타입이 올바르지 않습니다"),
     F_99_99_99(HttpStatus.INTERNAL_SERVER_ERROR, "F-99-99-99", "알 수 없는 에러가 발생했습니다");
 
     private HttpStatus status;

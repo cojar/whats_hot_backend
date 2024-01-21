@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 24-01-21
+### feature/errors-exception_hanlder
+- [x] 파라미터 타입 miss match 에러 핸들러 추가
+
 ## 24-01-20
 ### fix/get-api-spots-id
 - [x] 리뷰 페이징 조회 오류 해결 시도
