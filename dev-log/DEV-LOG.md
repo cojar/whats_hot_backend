@@ -3,6 +3,7 @@
 ## 24-01-22
 ### feature/get-api-reviews
 - [x] 페이지네이션 개수 5, 10, 20으로 조정
+- [x] ResCode 메시지를 보다 구체적으로 수정
 
 ## 24-01-21
 ### feature/errors-exception_hanlder
