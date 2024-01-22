@@ -5,6 +5,9 @@
 - [x] 페이지네이션 개수 5, 10, 20으로 조정
 - [x] ResCode 메시지를 보다 구체적으로 수정
 
+### fix/post-api-comments
+- [x] 엔티티 생성 시 likedMember == null로 인한 문제 해결
+
 ## 24-01-21
 ### feature/errors-exception_hanlder
 - [x] 파라미터 타입 miss match 에러 핸들러 추가

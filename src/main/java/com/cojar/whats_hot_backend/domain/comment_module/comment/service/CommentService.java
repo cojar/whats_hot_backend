@@ -14,6 +14,7 @@ import com.cojar.whats_hot_backend.global.response.DataModel;
 import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -43,8 +44,17 @@ public class CommentService {
     private final ReviewService reviewService;
     private final MemberService memberService;
 
+    private final EntityManager entityManager;
+
     public long count() {
         return this.commentRepository.count();
+    }
+
+    private Comment refresh(Comment comment) {
+        entityManager.flush();
+        comment = this.getCommentById(comment.getId());
+        entityManager.refresh(comment);
+        return comment;
     }
 
     @Transactional
@@ -61,7 +71,7 @@ public class CommentService {
 
         this.commentRepository.save(comment);
 
-        return comment;
+        return this.refresh(comment);
     }
 
     private void createValidate(CommentRequest.CreateComment request, Errors errors) {
