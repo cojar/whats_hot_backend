@@ -99,9 +99,9 @@ public enum ResCode {
     F_03_02_01(HttpStatus.BAD_REQUEST, "F-03-02-01", "장소 아이디를 입력해주세요"),
     F_03_02_02(HttpStatus.BAD_REQUEST, "F-03-02-02", "해당 아이디를 가진 장소가 존재하지 않습니다"),
     F_03_02_03(HttpStatus.BAD_REQUEST, "F-03-02-03", "해당 장소에 달린 리뷰가 없습니다"),
-    F_03_02_04(HttpStatus.BAD_REQUEST, "F-03-02-04", "허용되지 않는 페이지 당 댓글 개수입니다"),
+    F_03_02_04(HttpStatus.BAD_REQUEST, "F-03-02-04", "허용되지 않는 페이지 당 리뷰 개수입니다 (5, 10, 20만 가능)"),
     F_03_02_05(HttpStatus.BAD_REQUEST, "F-03-02-05", "존재하지 않는 페이지입니다"),
-    F_03_02_06(HttpStatus.BAD_REQUEST, "F-03-02-06", "허용되지 않는 정렬 옵션입니다"),
+    F_03_02_06(HttpStatus.BAD_REQUEST, "F-03-02-06", "허용되지 않는 정렬 옵션입니다 (like, old, new만 가능)"),
 
     F_03_03_01(HttpStatus.BAD_REQUEST, "F-03-03-01", "해당 아이디를 가진 리뷰가 존재하지 않습니다"),
 
@@ -117,9 +117,9 @@ public enum ResCode {
     F_03_06_02(HttpStatus.BAD_REQUEST, "F-03-06-02", "본인이 작성한 리뷰에는 좋아요를 누를 수 없습니다"),
 
     F_03_07_01(HttpStatus.BAD_REQUEST, "F-03-07-01", "해당 회원이 작성한 리뷰가 없습니다"),
-    F_03_07_02(HttpStatus.BAD_REQUEST, "F-03-07-02", "허용되지 않는 페이지 당 댓글 개수입니다"),
+    F_03_07_02(HttpStatus.BAD_REQUEST, "F-03-07-02", "허용되지 않는 페이지 당 리뷰 개수입니다 (5, 10, 20만 가능)"),
     F_03_07_03(HttpStatus.BAD_REQUEST, "F-03-07-03", "존재하지 않는 페이지입니다"),
-    F_03_07_04(HttpStatus.BAD_REQUEST, "F-03-07-04", "허용되지 않는 정렬 옵션입니다"),
+    F_03_07_04(HttpStatus.BAD_REQUEST, "F-03-07-04", "허용되지 않는 정렬 옵션입니다 (like, old, new만 가능)"),
 
     // comment service fail codes
     F_04_01_01(HttpStatus.BAD_REQUEST, "F-04-01-01", "요청 값이 올바르지 않습니다"),

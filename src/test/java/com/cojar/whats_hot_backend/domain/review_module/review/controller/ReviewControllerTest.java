@@ -1091,9 +1091,9 @@ class ReviewControllerTest extends BaseControllerTest {
             ;
         }
 
-        if (size == null || size == 20) {
+        if (size == null || size == 5) {
             resultActions
-                    .andExpect(jsonPath("data.size").value(20))
+                    .andExpect(jsonPath("data.size").value(5))
             ;
         } else {
             resultActions
@@ -1105,17 +1105,17 @@ class ReviewControllerTest extends BaseControllerTest {
             resultActions
                     .andExpect(jsonPath("data.sort[0].property").value("liked"))
                     .andExpect(jsonPath("data.sort[0].direction").value("desc"))
-                    .andExpect(jsonPath("data.sort[1].property").value("create_date"))
+                    .andExpect(jsonPath("data.sort[1].property").value("createDate"))
                     .andExpect(jsonPath("data.sort[1].direction").value("asc"))
             ;
         } else if (sort.equals("new")) {
             resultActions
-                    .andExpect(jsonPath("data.sort[0].property").value("create_date"))
+                    .andExpect(jsonPath("data.sort[0].property").value("createDate"))
                     .andExpect(jsonPath("data.sort[0].direction").value("desc"))
             ;
         } else if (sort.equals("old")) {
             resultActions
-                    .andExpect(jsonPath("data.sort[0].property").value("create_date"))
+                    .andExpect(jsonPath("data.sort[0].property").value("createDate"))
                     .andExpect(jsonPath("data.sort[0].direction").value("asc"))
             ;
         }
@@ -1144,6 +1144,30 @@ class ReviewControllerTest extends BaseControllerTest {
                 Arguments.of(null, null, "like", true),
                 Arguments.of(null, null, "old", true),
                 Arguments.of(null, null, "new", true),
+                Arguments.of(null, 5, " ", null),
+                Arguments.of(null, 5, "like", null),
+                Arguments.of(null, 5, "old", null),
+                Arguments.of(null, 5, "new", null),
+                Arguments.of(null, 5, " ", false),
+                Arguments.of(null, 5, "like", false),
+                Arguments.of(null, 5, "old", false),
+                Arguments.of(null, 5, "new", false),
+                Arguments.of(null, 5, " ", true),
+                Arguments.of(null, 5, "like", true),
+                Arguments.of(null, 5, "old", true),
+                Arguments.of(null, 5, "new", true),
+                Arguments.of(null, 10, " ", null),
+                Arguments.of(null, 10, "like", null),
+                Arguments.of(null, 10, "old", null),
+                Arguments.of(null, 10, "new", null),
+                Arguments.of(null, 10, " ", false),
+                Arguments.of(null, 10, "like", false),
+                Arguments.of(null, 10, "old", false),
+                Arguments.of(null, 10, "new", false),
+                Arguments.of(null, 10, " ", true),
+                Arguments.of(null, 10, "like", true),
+                Arguments.of(null, 10, "old", true),
+                Arguments.of(null, 10, "new", true),
                 Arguments.of(null, 20, " ", null),
                 Arguments.of(null, 20, "like", null),
                 Arguments.of(null, 20, "old", null),
@@ -1156,30 +1180,6 @@ class ReviewControllerTest extends BaseControllerTest {
                 Arguments.of(null, 20, "like", true),
                 Arguments.of(null, 20, "old", true),
                 Arguments.of(null, 20, "new", true),
-                Arguments.of(null, 50, " ", null),
-                Arguments.of(null, 50, "like", null),
-                Arguments.of(null, 50, "old", null),
-                Arguments.of(null, 50, "new", null),
-                Arguments.of(null, 50, " ", false),
-                Arguments.of(null, 50, "like", false),
-                Arguments.of(null, 50, "old", false),
-                Arguments.of(null, 50, "new", false),
-                Arguments.of(null, 50, " ", true),
-                Arguments.of(null, 50, "like", true),
-                Arguments.of(null, 50, "old", true),
-                Arguments.of(null, 50, "new", true),
-                Arguments.of(null, 100, " ", null),
-                Arguments.of(null, 100, "like", null),
-                Arguments.of(null, 100, "old", null),
-                Arguments.of(null, 100, "new", null),
-                Arguments.of(null, 100, " ", false),
-                Arguments.of(null, 100, "like", false),
-                Arguments.of(null, 100, "old", false),
-                Arguments.of(null, 100, "new", false),
-                Arguments.of(null, 100, " ", true),
-                Arguments.of(null, 100, "like", true),
-                Arguments.of(null, 100, "old", true),
-                Arguments.of(null, 100, "new", true),
                 Arguments.of(1, null, " ", null),
                 Arguments.of(1, null, "like", null),
                 Arguments.of(1, null, "old", null),
@@ -1192,6 +1192,30 @@ class ReviewControllerTest extends BaseControllerTest {
                 Arguments.of(1, null, "like", true),
                 Arguments.of(1, null, "old", true),
                 Arguments.of(1, null, "new", true),
+                Arguments.of(1, 5, " ", null),
+                Arguments.of(1, 5, "like", null),
+                Arguments.of(1, 5, "old", null),
+                Arguments.of(1, 5, "new", null),
+                Arguments.of(1, 5, " ", false),
+                Arguments.of(1, 5, "like", false),
+                Arguments.of(1, 5, "old", false),
+                Arguments.of(1, 5, "new", false),
+                Arguments.of(1, 5, " ", true),
+                Arguments.of(1, 5, "like", true),
+                Arguments.of(1, 5, "old", true),
+                Arguments.of(1, 5, "new", true),
+                Arguments.of(1, 10, " ", null),
+                Arguments.of(1, 10, "like", null),
+                Arguments.of(1, 10, "old", null),
+                Arguments.of(1, 10, "new", null),
+                Arguments.of(1, 10, " ", false),
+                Arguments.of(1, 10, "like", false),
+                Arguments.of(1, 10, "old", false),
+                Arguments.of(1, 10, "new", false),
+                Arguments.of(1, 10, " ", true),
+                Arguments.of(1, 10, "like", true),
+                Arguments.of(1, 10, "old", true),
+                Arguments.of(1, 10, "new", true),
                 Arguments.of(1, 20, " ", null),
                 Arguments.of(1, 20, "like", null),
                 Arguments.of(1, 20, "old", null),
@@ -1203,31 +1227,7 @@ class ReviewControllerTest extends BaseControllerTest {
                 Arguments.of(1, 20, " ", true),
                 Arguments.of(1, 20, "like", true),
                 Arguments.of(1, 20, "old", true),
-                Arguments.of(1, 20, "new", true),
-                Arguments.of(1, 50, " ", null),
-                Arguments.of(1, 50, "like", null),
-                Arguments.of(1, 50, "old", null),
-                Arguments.of(1, 50, "new", null),
-                Arguments.of(1, 50, " ", false),
-                Arguments.of(1, 50, "like", false),
-                Arguments.of(1, 50, "old", false),
-                Arguments.of(1, 50, "new", false),
-                Arguments.of(1, 50, " ", true),
-                Arguments.of(1, 50, "like", true),
-                Arguments.of(1, 50, "old", true),
-                Arguments.of(1, 50, "new", true),
-                Arguments.of(1, 100, " ", null),
-                Arguments.of(1, 100, "like", null),
-                Arguments.of(1, 100, "old", null),
-                Arguments.of(1, 100, "new", null),
-                Arguments.of(1, 100, " ", false),
-                Arguments.of(1, 100, "like", false),
-                Arguments.of(1, 100, "old", false),
-                Arguments.of(1, 100, "new", false),
-                Arguments.of(1, 100, " ", true),
-                Arguments.of(1, 100, "like", true),
-                Arguments.of(1, 100, "old", true),
-                Arguments.of(1, 100, "new", true)
+                Arguments.of(1, 20, "new", true)
         );
     }
 
