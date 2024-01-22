@@ -224,7 +224,7 @@ public class ReviewService {
             );
         }
 
-        if (size != 20 && size != 50 && size != 100) {
+        if (size != 5 && size != 10 && size != 20) {
 
             errors.reject("not allowed", new Object[]{size}, "size does not allowed");
 
@@ -508,7 +508,7 @@ public class ReviewService {
             );
         }
 
-        if (size != 20 && size != 50 && size != 100) {
+        if (size != 5 && size != 10 && size != 20) {
 
             errors.reject("not allowed", new Object[]{size}, "size does not allowed");
 

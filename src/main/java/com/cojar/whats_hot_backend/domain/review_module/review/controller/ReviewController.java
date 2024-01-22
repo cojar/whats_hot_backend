@@ -74,7 +74,7 @@ public class ReviewController {
     @ReviewApiResponse.List
     @GetMapping(consumes = MediaType.ALL_VALUE)
     public ResponseEntity getReviews(@RequestParam(value = "page", defaultValue = "1") int page,
-                                     @RequestParam(value = "size", defaultValue = "20") int size,
+                                     @RequestParam(value = "size", defaultValue = "5") int size,
                                      @RequestParam(value = "sort", defaultValue = "like") String sort,
                                      @RequestParam(value = "spotId", defaultValue = "-1") Long spotId,
                                      @RequestParam(value = "image", defaultValue = "false") boolean image,
@@ -175,7 +175,7 @@ public class ReviewController {
     @ReviewApiResponse.MyList
     @GetMapping(value = "/me", consumes = MediaType.ALL_VALUE)
     public ResponseEntity getMyReviews(@RequestParam(value = "page", defaultValue = "1") int page,
-                                       @RequestParam(value = "size", defaultValue = "20") int size,
+                                       @RequestParam(value = "size", defaultValue = "5") int size,
                                        @RequestParam(value = "sort", defaultValue = "new") String sort,
                                        @AuthenticationPrincipal User user,
                                        HttpServletRequest request) {

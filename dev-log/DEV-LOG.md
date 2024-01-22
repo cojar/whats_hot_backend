@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 24-01-22
+### feature/get-api-reviews
+- [x] 페이지네이션 개수 5, 10, 20으로 조정
+
 ## 24-01-21
 ### feature/errors-exception_hanlder
 - [x] 파라미터 타입 miss match 에러 핸들러 추가
