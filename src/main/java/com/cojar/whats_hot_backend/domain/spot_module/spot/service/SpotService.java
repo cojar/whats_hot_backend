@@ -4,6 +4,7 @@ import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
 import com.cojar.whats_hot_backend.domain.base_module.hashtag.entity.Hashtag;
+import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
 import com.cojar.whats_hot_backend.domain.spot_module.category.repository.CategoryRepository;
@@ -157,7 +158,7 @@ public class SpotService {
                 .orElse(null);
     }
 
-    public Page<DataModel> getSpotList(int page, int size, String kw) {
+    public Page<DataModel> getSpotList(int page, int size, String kw, Member member) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
         Specification<Spot> spec = search(kw);
@@ -165,7 +166,7 @@ public class SpotService {
         return this.spotRepository.findAll(pageable)
                 .map(spot -> {
                     DataModel dataModel = DataModel.of(
-                            SpotListDto.of(spot),
+                            SpotListDto.of(spot, member),
                             linkTo(SpotController.class).slash(spot.getId())
                     );
                     return dataModel;
@@ -378,4 +379,47 @@ public class SpotService {
         return null;
     }
 
+    @Transactional
+    public Spot toggleStar(Long id, Member member) {
+
+        this.toggleStarValidate(id);
+
+        Spot spot = this.getSpotById(id);
+
+        if (spot.getStarredMember().contains(member)) {
+
+            spot = spot.toBuilder()
+                    .starred(spot.getStarred() - 1)
+                    .build();
+            spot.getStarredMember().remove(member);
+
+        } else {
+
+            spot = spot.toBuilder()
+                    .starred(spot.getStarred() + 1)
+                    .build();
+            spot.getStarredMember().add(member);
+        }
+
+        this.spotRepository.save(spot);
+
+        return spot;
+    }
+
+    private void toggleStarValidate(Long id) {
+
+        Errors errors = AppConfig.getMockErrors("spot");
+
+        if (!this.spotRepository.existsById(id)) {
+
+            errors.reject("not exist", new Object[]{id}, "spot that has id does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_06_01,
+                            errors
+                    )
+            );
+        }
+    }
 }

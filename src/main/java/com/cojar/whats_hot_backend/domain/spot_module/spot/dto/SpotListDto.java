@@ -1,5 +1,6 @@
 package com.cojar.whats_hot_backend.domain.spot_module.spot.dto;
 
+import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import lombok.Getter;
@@ -26,9 +27,13 @@ public class SpotListDto {
 
     private final List<String> imageUri;
 
+    private final Long starred;
+
+    private final boolean star;
+
     private final Integer reviews;
 
-    public SpotListDto (Spot spot) {
+    public SpotListDto (Spot spot, Member member) {
         this.id = spot.getId();
         this.category = spot.getCategories().get(0).getCategory().toLine();
         this.name = spot.getName();
@@ -41,10 +46,12 @@ public class SpotListDto {
         this.imageUri = spot.getImages().stream()
                 .map(image -> image.getImage().toUri(AppConfig.getBaseFileURL()))
                 .collect(Collectors.toList());
+        this.starred = spot.getStarred();
+        this.star = member != null && spot.getStarredMember().contains(member);
         this.reviews = spot.getReviewCount();
     }
 
-    public static SpotListDto of(Spot spot) {
-        return new SpotListDto(spot);
+    public static SpotListDto of(Spot spot, Member member) {
+        return new SpotListDto(spot, member);
     }
 }

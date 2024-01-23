@@ -5,6 +5,7 @@ import com.cojar.whats_hot_backend.domain.member_module.member.service.MemberSer
 import com.cojar.whats_hot_backend.domain.review_module.review.service.ReviewService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.api_response.SpotApiResponse;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotDto;
+import com.cojar.whats_hot_backend.domain.spot_module.spot.dto.SpotStarDto;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
@@ -68,9 +69,11 @@ public class SpotController {
     @GetMapping(consumes = MediaType.ALL_VALUE)
     public ResponseEntity list(@RequestParam(value = "page", defaultValue = "1") int page,
                                @RequestParam(value = "size", defaultValue = "20") int size,
-                               @RequestParam(value = "kw", defaultValue = "") String kw) {
+                               @RequestParam(value = "kw", defaultValue = "") String kw,
+                               @AuthenticationPrincipal User user) {
 
-        Page<DataModel> spotList = this.spotService.getSpotList(page, size, kw);
+        Member member = user != null ? this.memberService.getUserByUsername(user.getUsername()) : null;
+        Page<DataModel> spotList = this.spotService.getSpotList(page, size, kw, member);
 
         ResData resData = ResData.of(
                 ResCode.S_02_02,
@@ -139,7 +142,24 @@ public class SpotController {
                 linkTo(this.getClass())
         );
         resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Spot/delete").withRel("profile"));
+        return ResponseEntity.ok()
+                .body(resData);
+    }
 
+    @SpotApiResponse.Star
+    @PatchMapping(value = "/{id}/star", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity starSpot(@PathVariable(value = "id") Long id,
+                                   @AuthenticationPrincipal User user) {
+
+        Member member = this.memberService.getUserByUsername(user.getUsername());
+        Spot spot = this.spotService.toggleStar(id, member);
+
+        ResData resData = ResData.of(
+                ResCode.S_02_06,
+                SpotStarDto.of(spot, member),
+                linkTo(this.getClass()).slash(spot.getId())
+        );
+        resData.add(Link.of(AppConfig.getBaseURL() + "/api/swagger-ui/index.html#/Spot/starSpot").withRel("profile"));
         return ResponseEntity.ok()
                 .body(resData);
     }

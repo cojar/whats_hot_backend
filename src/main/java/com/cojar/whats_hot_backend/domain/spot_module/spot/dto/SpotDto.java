@@ -38,6 +38,10 @@ public class SpotDto {
 
     private final List<String> imageUri;
 
+    private final Long starred;
+
+    private final boolean star;
+
     private final PagedDataModel reviews;
 
     public SpotDto(Spot spot, Member member, PagedDataModel reviewPages) {
@@ -58,6 +62,8 @@ public class SpotDto {
         this.imageUri = spot.getImages().stream()
                 .map(image -> image.getImage().toUri(AppConfig.getBaseFileURL()))
                 .collect(Collectors.toList());
+        this.starred = spot.getStarred();
+        this.star = member != null && spot.getStarredMember().contains(member);
         this.reviews = reviewPages;
     }
 
