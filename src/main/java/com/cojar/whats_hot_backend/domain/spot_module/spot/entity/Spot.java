@@ -1,5 +1,6 @@
 package com.cojar.whats_hot_backend.domain.spot_module.spot.entity;
 
+import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.entity.MenuItem;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_category.entity.SpotCategory;
@@ -8,11 +9,13 @@ import com.cojar.whats_hot_backend.domain.spot_module.spot_image.entity.SpotImag
 import com.cojar.whats_hot_backend.global.jpa.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @SuperBuilder(toBuilder = true)
@@ -52,4 +55,10 @@ public class Spot extends BaseEntity {
 
     @OneToMany(mappedBy = "spot", cascade = CascadeType.REMOVE)
     private List<Review> reviews;
+
+    @Builder.Default
+    private Long starred = 0L;
+
+    @ManyToMany
+    private Set<Member> starredMember;
 }

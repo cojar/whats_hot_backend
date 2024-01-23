@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 24-01-23
+### feature/patch-api-spots-id-star
+- [x] Spot 엔티티 찜한 멤버 및 찜 수가 포함되도록 변경
+
 ## 24-01-22
 ### feature/get-api-reviews
 - [x] 페이지네이션 개수 5, 10, 20으로 조정
@@ -9,7 +13,7 @@
 - [x] 엔티티 생성 시 likedMember == null로 인한 문제 해결
 
 ## 24-01-21
-### feature/errors-exception_hanlder
+### feature/errors-exception_handler
 - [x] 파라미터 타입 miss match 에러 핸들러 추가
 
 ## 24-01-20
