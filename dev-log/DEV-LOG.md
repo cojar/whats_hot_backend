@@ -4,6 +4,7 @@
 ### feature/patch-api-spots-id-star
 - [x] Spot 엔티티 찜한 멤버 및 찜 수가 포함되도록 변경
 - [x] S-02-06 TC 작성
+- [x] F-02-06-01 TC 작성
 
 ## 24-01-22
 ### feature/get-api-reviews

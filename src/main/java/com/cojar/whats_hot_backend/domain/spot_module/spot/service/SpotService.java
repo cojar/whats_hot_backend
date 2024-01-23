@@ -382,6 +382,8 @@ public class SpotService {
     @Transactional
     public Spot toggleStar(Long id, Member member) {
 
+        this.toggleStarValidate(id);
+
         Spot spot = this.getSpotById(id);
 
         if (spot.getStarredMember().contains(member)) {
@@ -402,5 +404,22 @@ public class SpotService {
         this.spotRepository.save(spot);
 
         return spot;
+    }
+
+    private void toggleStarValidate(Long id) {
+
+        Errors errors = AppConfig.getMockErrors("spot");
+
+        if (!this.spotRepository.existsById(id)) {
+
+            errors.reject("not exist", new Object[]{id}, "spot that has id does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_06_01,
+                            errors
+                    )
+            );
+        }
     }
 }

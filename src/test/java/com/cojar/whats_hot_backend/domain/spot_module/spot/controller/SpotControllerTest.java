@@ -70,6 +70,51 @@ class SpotControllerTest extends BaseControllerTest {
     @Autowired
     private SpotRepository spotRepository;
 
+    private static Stream<Arguments> argsFor_createSpot_BadRequest_NotBlank() {
+        return Stream.of(
+                Arguments.of(null, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "20,900원"),
+                Arguments.of(9L, "", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "20,900원"),
+                Arguments.of(9L, "쿠우쿠우 대전둔산점", "", "042-489-6274", "뷔페", "평일점심", "20,900원"),
+                Arguments.of(9L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "", "뷔페", "평일점심", "20,900원"),
+                Arguments.of(9L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "", "평일점심", "20,900원"),
+                Arguments.of(9L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "", "20,900원"),
+                Arguments.of(9L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "")
+        );
+    }
+
+    private static Stream<Arguments> argsFor_createSpot_BadRequest_InvalidCategoryId() {
+        return Stream.of(
+                Arguments.of(1L),
+                Arguments.of(2L)
+        );
+    }
+
+    private static Stream<Arguments> argsFor_updateSpot_OK_PartialInput_Request() {
+        return Stream.of(
+                Arguments.of(null, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "20,900원"),
+                Arguments.of(10L, null, "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "20,900원"),
+                Arguments.of(10L, "쿠우쿠우 대전둔산점", null, "042-489-6274", "뷔페", "평일점심", "20,900원"),
+                Arguments.of(10L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", null, "뷔페", "평일점심", "20,900원"),
+                Arguments.of(10L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", null, "평일점심", "20,900원"),
+                Arguments.of(10L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", null, null)
+        );
+    }
+
+    private static Stream<Arguments> argsFor_updateSpot_BadRequest_NotBlank() {
+        return Stream.of(
+                Arguments.of("", "평일점심", "20,900원"),
+                Arguments.of("뷔페", "", "20,900원"),
+                Arguments.of("뷔페", "평일점심", "")
+        );
+    }
+
+    private static Stream<Arguments> argsFor_updateSpot_BadRequest_InvalidCategoryId() {
+        return Stream.of(
+                Arguments.of(1L),
+                Arguments.of(2L)
+        );
+    }
+
     @Transactional
     @Test
     @DisplayName("post:/api/spots - created, S-02-01")
@@ -246,18 +291,6 @@ class SpotControllerTest extends BaseControllerTest {
         checkNotCreated(checkList);
     }
 
-    private static Stream<Arguments> argsFor_createSpot_BadRequest_NotBlank() {
-        return Stream.of(
-                Arguments.of(null, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "20,900원"),
-                Arguments.of(9L, "", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "20,900원"),
-                Arguments.of(9L, "쿠우쿠우 대전둔산점", "", "042-489-6274", "뷔페", "평일점심", "20,900원"),
-                Arguments.of(9L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "", "뷔페", "평일점심", "20,900원"),
-                Arguments.of(9L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "", "평일점심", "20,900원"),
-                Arguments.of(9L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "", "20,900원"),
-                Arguments.of(9L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "")
-        );
-    }
-
     @Test
     @DisplayName("post:/api/spots - bad request category not exist, F-02-01-02")
     public void createSpot_BadRequest_CategoryNotExist() throws Exception {
@@ -410,13 +443,6 @@ class SpotControllerTest extends BaseControllerTest {
         ;
 
         checkNotCreated(checkList);
-    }
-
-    private static Stream<Arguments> argsFor_createSpot_BadRequest_InvalidCategoryId() {
-        return Stream.of(
-                Arguments.of(1L),
-                Arguments.of(2L)
-        );
     }
 
     @Test
@@ -947,17 +973,6 @@ class SpotControllerTest extends BaseControllerTest {
         ;
     }
 
-    private static Stream<Arguments> argsFor_updateSpot_OK_PartialInput_Request() {
-        return Stream.of(
-                Arguments.of(null, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "20,900원"),
-                Arguments.of(10L, null, "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", "평일점심", "20,900원"),
-                Arguments.of(10L, "쿠우쿠우 대전둔산점", null, "042-489-6274", "뷔페", "평일점심", "20,900원"),
-                Arguments.of(10L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", null, "뷔페", "평일점심", "20,900원"),
-                Arguments.of(10L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", null, "평일점심", "20,900원"),
-                Arguments.of(10L, "쿠우쿠우 대전둔산점", "대전 서구 대덕대로233번길 17 해운빌딩 4층", "042-489-6274", "뷔페", null, null)
-        );
-    }
-
     @Transactional
     @Test
     @DisplayName("patch:/api/spots/{id} - ok partial input images, S-02-04")
@@ -1201,14 +1216,6 @@ class SpotControllerTest extends BaseControllerTest {
         checkNotUpdated(before, beforeCategories, beforeHashtags, beforeItems, beforeImages, after);
     }
 
-    private static Stream<Arguments> argsFor_updateSpot_BadRequest_NotBlank() {
-        return Stream.of(
-                Arguments.of("", "평일점심", "20,900원"),
-                Arguments.of("뷔페", "", "20,900원"),
-                Arguments.of("뷔페", "평일점심", "")
-        );
-    }
-
     @Test
     @DisplayName("patch:/api/spots/{id} - bad request category not exist, F-02-04-03")
     public void updateSpot_BadRequest_CategoryNotExist() throws Exception {
@@ -1317,13 +1324,6 @@ class SpotControllerTest extends BaseControllerTest {
 
         Spot after = this.spotService.getSpotById(id);
         checkNotUpdated(before, beforeCategories, beforeHashtags, beforeItems, beforeImages, after);
-    }
-
-    private static Stream<Arguments> argsFor_updateSpot_BadRequest_InvalidCategoryId() {
-        return Stream.of(
-                Arguments.of(1L),
-                Arguments.of(2L)
-        );
     }
 
     @Test
@@ -1823,6 +1823,41 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data.star").value(false))
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
+        ;
+    }
+
+    @Test
+    @DisplayName("patch:/api/spots/{id}/star - bad request not exist, F-02-06-01")
+    public void starSpot_BadRequest_NotExist() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 10000000L;
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(patch("/api/spots/%s/star".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-02-06-01"))
+                .andExpect(jsonPath("message").value(ResCode.F_02_06_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(id))
+                .andExpect(jsonPath("_links.index").exists())
         ;
     }
 }

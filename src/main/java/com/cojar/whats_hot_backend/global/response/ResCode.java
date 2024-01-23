@@ -91,6 +91,8 @@ public enum ResCode {
 
     F_02_05_01(HttpStatus.BAD_REQUEST, "F-02-05-01", "해당 아이디를 가진 장소가 존재하지 않습니다"),
 
+    F_02_06_01(HttpStatus.BAD_REQUEST, "F-02-06-01", "해당 아이디를 가진 장소가 존재하지 않습니다"),
+
     // review service fail codes
     F_03_01_01(HttpStatus.BAD_REQUEST, "F-03-01-01", "요청 값이 올바르지 않습니다"),
     F_03_01_02(HttpStatus.BAD_REQUEST, "F-03-01-02", "해당 아이디를 가진 장소가 존재하지 않습니다"),
