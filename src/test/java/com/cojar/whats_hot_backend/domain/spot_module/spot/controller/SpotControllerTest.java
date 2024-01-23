@@ -7,6 +7,7 @@ import com.cojar.whats_hot_backend.domain.spot_module.menu_item.dto.MenuItemDto;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.entity.MenuItem;
 import com.cojar.whats_hot_backend.domain.spot_module.menu_item.service.MenuItemService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.entity.Spot;
+import com.cojar.whats_hot_backend.domain.spot_module.spot.repository.SpotRepository;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.request.SpotRequest;
 import com.cojar.whats_hot_backend.domain.spot_module.spot.service.SpotService;
 import com.cojar.whats_hot_backend.domain.spot_module.spot_category.entity.SpotCategory;
@@ -33,11 +34,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -65,6 +66,9 @@ class SpotControllerTest extends BaseControllerTest {
 
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private SpotRepository spotRepository;
 
     @Transactional
     @Test
@@ -1743,5 +1747,82 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
                 .andExpect(jsonPath("data[0].rejectedValue[0]").value(id.toString()))
                 .andExpect(jsonPath("_links.index").exists());
+    }
+
+    @Transactional
+    @Test
+    @DisplayName("patch:/api/spots/{id}/star - ok star, S-02-06")
+    public void starSpot_OK_Star() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1L;
+        Long starred = this.spotService.getSpotById(id).getStarred();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(patch("/api/spots/%s/star".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("OK"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-02-06"))
+                .andExpect(jsonPath("message").value(ResCode.S_02_06.getMessage()))
+                .andExpect(jsonPath("data.starred").value(starred + 1))
+                .andExpect(jsonPath("data.star").value(true))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+    }
+
+    @Transactional
+    @Test
+    @DisplayName("patch:/api/spots/{id}/star - ok undo star, S-02-06")
+    public void starSpot_OK_UndoStar() throws Exception {
+
+        // given
+        String username = "user1";
+        String password = "1234";
+        String accessToken = this.getAccessToken(username, password);
+
+        Long id = 1L;
+        Spot spot = this.spotService.getSpotById(1L).toBuilder()
+                .starred(1L)
+                .starredMember(Set.of(this.memberService.getUserByUsername(username)))
+                .build();
+        this.spotRepository.save(spot);
+        Long starred = spot.getStarred();
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(patch("/api/spots/%s/star".formatted(id))
+                        .header("Authorization", accessToken)
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("OK"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-02-06"))
+                .andExpect(jsonPath("message").value(ResCode.S_02_06.getMessage()))
+                .andExpect(jsonPath("data.starred").value(starred - 1))
+                .andExpect(jsonPath("data.star").value(false))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
     }
 }

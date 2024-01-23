@@ -26,6 +26,7 @@ public enum ResCode {
     S_02_03(HttpStatus.OK, "S-02-03", "요청하신 장소 정보를 반환합니다"),
     S_02_04(HttpStatus.OK, "S-02-04", "장소 수정이 완료되었습니다"),
     S_02_05(HttpStatus.OK, "S-02-05", "장소 삭제가 완료되었습니다"),
+    S_02_06(HttpStatus.OK, "S-02-06", "장소 찜하기 상태가 변경되었습니다"),
 
     // review controller success codes
     S_03_01(HttpStatus.CREATED, "S-03-01", "리뷰 등록이 완료되었습니다"),
