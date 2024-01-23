@@ -6,6 +6,7 @@
 - [x] S-02-06 TC 작성
 - [x] F-02-06-01 TC 작성
 - [x] api_response/SpotApiResponse.Star 작성
+- [x] SpotDto, SpotListDto에 찜하기 정보 포함되도록 변경
 
 ## 24-01-22
 ### feature/get-api-reviews

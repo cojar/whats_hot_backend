@@ -69,9 +69,11 @@ public class SpotController {
     @GetMapping(consumes = MediaType.ALL_VALUE)
     public ResponseEntity list(@RequestParam(value = "page", defaultValue = "1") int page,
                                @RequestParam(value = "size", defaultValue = "20") int size,
-                               @RequestParam(value = "kw", defaultValue = "") String kw) {
+                               @RequestParam(value = "kw", defaultValue = "") String kw,
+                               @AuthenticationPrincipal User user) {
 
-        Page<DataModel> spotList = this.spotService.getSpotList(page, size, kw);
+        Member member = user != null ? this.memberService.getUserByUsername(user.getUsername()) : null;
+        Page<DataModel> spotList = this.spotService.getSpotList(page, size, kw, member);
 
         ResData resData = ResData.of(
                 ResCode.S_02_02,

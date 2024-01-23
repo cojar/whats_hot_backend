@@ -158,7 +158,7 @@ public class SpotService {
                 .orElse(null);
     }
 
-    public Page<DataModel> getSpotList(int page, int size, String kw) {
+    public Page<DataModel> getSpotList(int page, int size, String kw, Member member) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
         Specification<Spot> spec = search(kw);
@@ -166,7 +166,7 @@ public class SpotService {
         return this.spotRepository.findAll(pageable)
                 .map(spot -> {
                     DataModel dataModel = DataModel.of(
-                            SpotListDto.of(spot),
+                            SpotListDto.of(spot, member),
                             linkTo(SpotController.class).slash(spot.getId())
                     );
                     return dataModel;
