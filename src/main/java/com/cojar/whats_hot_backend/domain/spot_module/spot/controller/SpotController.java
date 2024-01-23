@@ -144,6 +144,7 @@ public class SpotController {
                 .body(resData);
     }
 
+    @SpotApiResponse.Star
     @PatchMapping(value = "/{id}/star", consumes = MediaType.ALL_VALUE)
     public ResponseEntity starSpot(@PathVariable(value = "id") Long id,
                                    @AuthenticationPrincipal User user) {
@@ -156,7 +157,7 @@ public class SpotController {
                 SpotStarDto.of(spot, member),
                 linkTo(this.getClass()).slash(spot.getId())
         );
-        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Spot/starSpot").withRel("profile"));
+        resData.add(Link.of(AppConfig.getBaseURL() + "/api/swagger-ui/index.html#/Spot/starSpot").withRel("profile"));
         return ResponseEntity.ok()
                 .body(resData);
     }

@@ -357,4 +357,44 @@ public @interface SpotApiResponse {
     )
     public @interface Delete {
     }
+
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(
+            summary = "장소 찜하기",
+            description = "성공 시 해당 장소에 대한 요청 유저의 찜하기 상태를 변경한다",
+            security = @SecurityRequirement(name = "bearerAuth"),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "정상 응답",
+                            content = @Content(mediaType = MediaTypes.HAL_JSON_VALUE,
+                                    schema = @Schema(implementation = ResData.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "status": "OK",
+                                                "success": true,
+                                                "code": "S-02-06",
+                                                "message": "장소 찜하기 상태가 변경되었습니다",
+                                                "data": {
+                                                    "starred": 1,
+                                                    "star": true
+                                                },
+                                                "_links": {
+                                                    "self": {
+                                                        "href": "http://localhost:8080/api/spots/1"
+                                                    },
+                                                    "profile": {
+                                                        "href": "http://localhost:8080/api/swagger-ui/index.html#/Spot/starSpot"
+                                                    }
+                                                }
+                                            }
+                                            """
+                                    )
+                            )
+                    )
+            }
+    )
+    public @interface Star {
+    }
 }
