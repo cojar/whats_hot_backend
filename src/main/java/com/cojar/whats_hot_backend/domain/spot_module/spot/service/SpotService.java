@@ -3,7 +3,6 @@ package com.cojar.whats_hot_backend.domain.spot_module.spot.service;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity.FileDomain;
 import com.cojar.whats_hot_backend.domain.base_module.file.entity._File;
 import com.cojar.whats_hot_backend.domain.base_module.file.service.FileService;
-import com.cojar.whats_hot_backend.domain.base_module.hashtag.entity.Hashtag;
 import com.cojar.whats_hot_backend.domain.member_module.member.entity.Member;
 import com.cojar.whats_hot_backend.domain.review_module.review.entity.Review;
 import com.cojar.whats_hot_backend.domain.spot_module.category.entity.Category;
@@ -24,17 +23,17 @@ import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -153,17 +152,25 @@ public class SpotService {
         }
     }
 
-    public Spot getSpotById(Long id) {
-        return this.spotRepository.findById(id)
-                .orElse(null);
-    }
+    public Page<DataModel> getSpotPages(int page, int size, String region, Long categoryId, String sort, String kw, String target, Member member) {
 
-    public Page<DataModel> getSpotList(int page, int size, String kw, Member member) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        if (sort.equals("reviewCount")) {
+            sorts.add(Sort.Order.desc("review_count"));
+            sorts.add(Sort.Order.desc("average_score"));
+            sorts.add(Sort.Order.desc("starred"));
+        } else if (sort.equals("starred")) {
+            sorts.add(Sort.Order.desc("starred"));
+            sorts.add(Sort.Order.desc("average_score"));
+            sorts.add(Sort.Order.desc("review_count"));
+        } else {
+            sorts.add(Sort.Order.desc("average_score"));
+            sorts.add(Sort.Order.desc("review_count"));
+            sorts.add(Sort.Order.desc("starred"));
+        }
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sorts));
 
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Specification<Spot> spec = search(kw);
-
-        return this.spotRepository.findAll(pageable)
+        return this.spotRepository.findAllByRegionAndCategoryIdAndKwAndTarget(region, categoryId, kw, target, pageable)
                 .map(spot -> {
                     DataModel dataModel = DataModel.of(
                             SpotListDto.of(spot, member),
@@ -173,24 +180,10 @@ public class SpotService {
                 });
     }
 
-
-    private Specification<Spot> search(String kw) {
-        return new Specification<>() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public Predicate toPredicate(Root<Spot> s, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                query.distinct(true);  // 중복을 제거
-                Join<Spot, Hashtag> h = s.join("hashtags", JoinType.LEFT);
-                Join<Spot, Category> c = s.join("category", JoinType.LEFT);
-                return cb.or(cb.like(s.get("name"), "%" + kw + "%"), // 장소이름
-                        cb.like(h.get("name"), "%" + kw + "%"),      // 해쉬태그
-                        cb.like(c.get("name"), "%" + kw + "%"));   // 카테고리
-                // 내추럴 쿼리 ,
-            }
-        };
+    public Spot getSpotById(Long id) {
+        return this.spotRepository.findById(id)
+                .orElse(null);
     }
-
 
     @Transactional
     public Spot update(Long id, SpotRequest.UpdateSpot request, List<MultipartFile> images, Errors errors) {

@@ -18,6 +18,8 @@ import com.cojar.whats_hot_backend.domain.spot_module.spot_image.entity.SpotImag
 import com.cojar.whats_hot_backend.domain.spot_module.spot_image.service.SpotImageService;
 import com.cojar.whats_hot_backend.global.controller.BaseControllerTest;
 import com.cojar.whats_hot_backend.global.response.ResCode;
+import com.cojar.whats_hot_backend.global.util.AppConfig;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,6 +33,8 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -769,6 +773,198 @@ class SpotControllerTest extends BaseControllerTest {
         assertThat(this.menuItemService.count()).isEqualTo(checkList.get(i++));
         assertThat(this.spotImageService.count()).isEqualTo(checkList.get(i++));
         assertThat(this.fileService.count()).isEqualTo(checkList.get(i));
+    }
+
+    @ParameterizedTest
+    @MethodSource("argsFor_getSpots_OK")
+    @DisplayName("get:/api/spots - ok, S-02-02")
+    public void getSpots_OK(Integer page, Integer size, String region, Long categoryId, String sort, String kw, String target) throws Exception {
+
+        // given
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        if (page != null) params.add("page", page.toString());
+        if (size != null) params.add("size", size.toString());
+        if (!region.isBlank()) params.add("region", region);
+        if (categoryId != null) params.add("categoryId", categoryId.toString());
+        if (!sort.isBlank()) params.add("sort", sort);
+        if (!kw.isBlank()) params.add("kw", kw);
+        if (!target.isBlank()) params.add("target", target);
+
+        String query = AppConfig.getBaseURL() + ":8080/api/spots" + (AppConfig.getQueryString(params).isBlank() ? "" : "?%s".formatted(AppConfig.getQueryString(params)));
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/spots?%s".formatted(AppConfig.getQueryString(params)))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value("OK"))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value("S-02-02"))
+                .andExpect(jsonPath("message").value(ResCode.S_02_02.getMessage()))
+                .andExpect(jsonPath("_links.self.href").value(query))
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
+
+        int len = JsonPath.read(resultActions.andReturn().getResponse().getContentAsString(), "data.list.length()");
+
+        if (len > 0) {
+            resultActions
+                    .andExpect(jsonPath("data.list[0].id").exists())
+                    .andExpect(jsonPath("data.list[0].category").exists())
+                    .andExpect(jsonPath("data.list[0].name").exists())
+                    .andExpect(jsonPath("data.list[0].address").exists())
+                    .andExpect(jsonPath("data.list[0].contact").exists())
+                    .andExpect(jsonPath("data.list[0].averageScore").exists())
+                    .andExpect(jsonPath("data.list[0].starred").exists())
+                    .andExpect(jsonPath("data.list[0].star").exists())
+                    .andExpect(jsonPath("data.list[0].reviews").exists())
+                    .andExpect(jsonPath("data.list[0]._links.self").exists())
+            ;
+        }
+
+        if (page == null || page == 1) {
+            resultActions
+                    .andExpect(jsonPath("data.page").value(1))
+            ;
+        } else {
+            resultActions
+                    .andExpect(jsonPath("data.page").value(page))
+            ;
+        }
+
+        if (size == null || size == 5) {
+            resultActions
+                    .andExpect(jsonPath("data.size").value(5))
+            ;
+        } else {
+            resultActions
+                    .andExpect(jsonPath("data.size").value(size))
+            ;
+        }
+
+        if (sort.isBlank() || sort.equals("averageScore")) {
+            resultActions
+                    .andExpect(jsonPath("data.sort[0].property").value("averageScore"))
+                    .andExpect(jsonPath("data.sort[0].direction").value("desc"))
+                    .andExpect(jsonPath("data.sort[1].property").value("reviewCount"))
+                    .andExpect(jsonPath("data.sort[1].direction").value("desc"))
+                    .andExpect(jsonPath("data.sort[2].property").value("starred"))
+                    .andExpect(jsonPath("data.sort[2].direction").value("desc"))
+            ;
+        } else if (sort.equals("reviewCount")) {
+            resultActions
+                    .andExpect(jsonPath("data.sort[0].property").value("reviewCount"))
+                    .andExpect(jsonPath("data.sort[0].direction").value("desc"))
+                    .andExpect(jsonPath("data.sort[1].property").value("averageScore"))
+                    .andExpect(jsonPath("data.sort[1].direction").value("desc"))
+                    .andExpect(jsonPath("data.sort[2].property").value("starred"))
+                    .andExpect(jsonPath("data.sort[2].direction").value("desc"))
+            ;
+        } else if (sort.equals("starred")) {
+            resultActions
+                    .andExpect(jsonPath("data.sort[0].property").value("starred"))
+                    .andExpect(jsonPath("data.sort[0].direction").value("desc"))
+                    .andExpect(jsonPath("data.sort[1].property").value("averageScore"))
+                    .andExpect(jsonPath("data.sort[1].direction").value("desc"))
+                    .andExpect(jsonPath("data.sort[2].property").value("reviewCount"))
+                    .andExpect(jsonPath("data.sort[2].direction").value("desc"))
+            ;
+        }
+    }
+
+    @Test
+    @DisplayName("get:api/Spots/{id} - ok, S-02-03")
+    void getSpot_OK() throws Exception {
+
+        //given
+        Long id = 1L;
+
+        // When
+        ResultActions resultActions = this.mockMvc
+                .perform(multipart(HttpMethod.GET, "/api/spots/%s".formatted(id))
+                        .contentType(MediaType.ALL_VALUE)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // Then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(ResCode.S_02_03.getStatus().name()))
+                .andExpect(jsonPath("success").value("true"))
+                .andExpect(jsonPath("code").value(ResCode.S_02_03.getCode()))
+                .andExpect(jsonPath("message").value(ResCode.S_02_03.getMessage()))
+                .andExpect(jsonPath("data.id").value(1))
+                .andExpect(jsonPath("data.name").exists())
+                .andExpect(jsonPath("data.category").exists())
+                .andExpect(jsonPath("data.address").exists())
+                .andExpect(jsonPath("data.contact").exists())
+                .andExpect(jsonPath("data.averageScore").exists())
+                .andExpect(jsonPath("data.hashtags").exists())
+                .andExpect(jsonPath("data.reviews").exists());
+    }
+
+    @Test
+    @DisplayName("get:api/spots/{id} - bad request not exist, F-02-04-01")
+    void getSpot_BadRequest_NotExist() throws Exception {
+
+        // given
+        Long id = 1000000L;
+
+        // when
+        ResultActions resultActions = mockMvc
+                .perform(multipart(HttpMethod.GET, "/api/spots/%s".formatted(id))
+                        .contentType(MediaType.ALL_VALUE)
+                        .accept(MediaTypes.HAL_JSON)
+
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResCode.F_02_04_01.getStatus().name()))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value(ResCode.F_02_04_01.getCode()))
+                .andExpect(jsonPath("message").value(ResCode.F_02_04_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(id.toString()))
+                .andExpect(jsonPath("_links.index").exists());
+    }
+
+    private static Stream<Arguments> argsFor_getSpots_OK() {
+
+        Integer[] pages = {null, 1};
+        Integer[] sizes = {null, 5, 10, 20};
+        String[] regions = {" ", "강원", "경기", "경남", "경북", "광주",
+                "대구", "대전", "부산", "서울", "세종",
+                "울산", "인천", "전남", "전북", "제주",
+                "충남", "충북"};
+        Long[] categories = {null, 1L, 2L, 9L, 25L, 26L, 37L, 38L};
+        String[] sorts = {" ", "averageScore", "reviewCount", "starred"};
+        String[] kws = {" ", "대전", "혼밥", "족발"};
+        String[] targets = {" ", "all", "hashtag", "name"};
+
+        Stream.Builder<Arguments> argumentsBuilder = Stream.builder();
+
+        for (Integer page : pages)
+            for (Integer size : sizes)
+                for (String region : regions)
+                    for (Long category : categories)
+                        for (String sort : sorts)
+                            for (String kw : kws)
+                                for (String target : targets)
+                                    argumentsBuilder.add(Arguments.of(page, size, region, category, sort, kw, target));
+
+        return argumentsBuilder.build();
     }
 
     @Transactional
@@ -1684,69 +1880,6 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].rejectedValue[0]").value(id.toString()))
                 .andExpect(jsonPath("_links.index").exists())
         ;
-    }
-
-
-    @Test
-    @DisplayName("get:api/Spots/{id} - ok, S-02-03")
-    void getSpot_OK() throws Exception {
-
-        //given
-        Long id = 1L;
-
-        // When
-        ResultActions resultActions = this.mockMvc
-                .perform(multipart(HttpMethod.GET, "/api/spots/%s".formatted(id))
-                        .contentType(MediaType.ALL_VALUE)
-                        .accept(MediaTypes.HAL_JSON)
-                )
-                .andDo(print());
-
-        // Then
-        resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResCode.S_02_03.getStatus().name()))
-                .andExpect(jsonPath("success").value("true"))
-                .andExpect(jsonPath("code").value(ResCode.S_02_03.getCode()))
-                .andExpect(jsonPath("message").value(ResCode.S_02_03.getMessage()))
-                .andExpect(jsonPath("data.id").value(1))
-                .andExpect(jsonPath("data.name").exists())
-                .andExpect(jsonPath("data.category").exists())
-                .andExpect(jsonPath("data.address").exists())
-                .andExpect(jsonPath("data.contact").exists())
-                .andExpect(jsonPath("data.averageScore").exists())
-                .andExpect(jsonPath("data.hashtags").exists())
-                .andExpect(jsonPath("data.reviews").exists());
-    }
-
-    @Test
-    @DisplayName("get:api/spots/{id} - bad request not exist, F-02-04-01")
-    void getSpot_BadRequest_NotExist() throws Exception {
-
-        // given
-        Long id = 1000000L;
-
-        // when
-        ResultActions resultActions = mockMvc
-                .perform(multipart(HttpMethod.GET, "/api/spots/%s".formatted(id))
-                        .contentType(MediaType.ALL_VALUE)
-                        .accept(MediaTypes.HAL_JSON)
-
-                )
-                .andDo(print());
-
-        // then
-        resultActions
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResCode.F_02_04_01.getStatus().name()))
-                .andExpect(jsonPath("success").value("false"))
-                .andExpect(jsonPath("code").value(ResCode.F_02_04_01.getCode()))
-                .andExpect(jsonPath("message").value(ResCode.F_02_04_01.getMessage()))
-                .andExpect(jsonPath("data[0].objectName").exists())
-                .andExpect(jsonPath("data[0].code").exists())
-                .andExpect(jsonPath("data[0].defaultMessage").exists())
-                .andExpect(jsonPath("data[0].rejectedValue[0]").value(id.toString()))
-                .andExpect(jsonPath("_links.index").exists());
     }
 
     @Transactional

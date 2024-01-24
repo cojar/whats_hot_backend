@@ -15,6 +15,7 @@ import com.cojar.whats_hot_backend.global.response.ResCode;
 import com.cojar.whats_hot_backend.global.response.ResData;
 import com.cojar.whats_hot_backend.global.util.AppConfig;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,8 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -67,22 +70,25 @@ public class SpotController {
 
     @SpotApiResponse.List
     @GetMapping(consumes = MediaType.ALL_VALUE)
-    public ResponseEntity list(@RequestParam(value = "page", defaultValue = "1") int page,
-                               @RequestParam(value = "size", defaultValue = "20") int size,
-                               @RequestParam(value = "kw", defaultValue = "") String kw,
-                               @AuthenticationPrincipal User user) {
+    public ResponseEntity getSpots(@RequestParam(value = "page", defaultValue = "1") int page,
+                                   @RequestParam(value = "size", defaultValue = "5") int size,
+                                   @RequestParam(value = "region", defaultValue = "") String region,
+                                   @RequestParam(value = "categoryId", defaultValue = "-1") Long categoryId,
+                                   @RequestParam(value = "sort", defaultValue = "averageScore") String sort,
+                                   @RequestParam(value = "kw", defaultValue = "") String kw,
+                                   @RequestParam(value = "target", defaultValue = "all") String target,
+                                   @AuthenticationPrincipal User user,
+                                   HttpServletRequest request) throws UnsupportedEncodingException {
 
         Member member = user != null ? this.memberService.getUserByUsername(user.getUsername()) : null;
-        Page<DataModel> spotList = this.spotService.getSpotList(page, size, kw, member);
+        Page<DataModel> spotList = this.spotService.getSpotPages(page, size, region, categoryId, sort, kw, target, member);
 
         ResData resData = ResData.of(
                 ResCode.S_02_02,
                 PagedDataModel.of(spotList),
-                linkTo(this.getClass()).slash("?page=%s&size=%s&kw=%s".formatted(page, size, kw))
+                linkTo(this.getClass()).slash(request.getQueryString() != null ? "?%s".formatted(URLDecoder.decode(request.getQueryString(), "UTF-8")) : "")
         );
-
-        // TODO: paged links with query; custom method
-        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Spot/list").withRel("profile"));
+        resData.add(Link.of(AppConfig.getBaseURL() + "/api/swagger-ui/index.html#/Spot/list").withRel("profile"));
         return ResponseEntity.ok()
                 .body(resData);
     }

@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 24-01-24
+### feature/get-api-spots
+- [x] S-02-02 TC 작성
+
 ## 24-01-23
 ### feature/patch-api-spots-id-star
 - [x] Spot 엔티티 찜한 멤버 및 찜 수가 포함되도록 변경
