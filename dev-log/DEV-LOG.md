@@ -3,6 +3,7 @@
 ## 24-01-26
 ### feature/get-api-spots
 - [x] F-02-02-05 TC 작성
+- [x] F-02-02-06 TC 작성
 
 ## 24-01-25
 ### feature/get-api-spots

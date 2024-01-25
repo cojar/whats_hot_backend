@@ -246,6 +246,17 @@ public class SpotService {
             );
         }
 
+        if (page > 1 && Math.ceil((double) this.spotRepository.countByRegionAndCategoryIdAndKwAndTarget(region, categoryId, kw, target) / size) < page) {
+
+            errors.reject("not exist", new Object[]{page}, "page does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_02_06,
+                            errors
+                    )
+            );
+        }
     }
 
     public Spot getSpotById(Long id) {
