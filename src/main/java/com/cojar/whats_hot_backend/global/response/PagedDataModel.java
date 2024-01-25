@@ -1,5 +1,6 @@
 package com.cojar.whats_hot_backend.global.response;
 
+import com.cojar.whats_hot_backend.global.util.AppConfig;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
@@ -31,7 +32,7 @@ public class PagedDataModel {
         this.size = pagedList.getPageable().getPageSize();
         this.sort = pagedList.getSort().stream()
                 .map(s -> Map.of(
-                        "property", s.getProperty().equals("create_date") ? "createDate" : s.getProperty(),
+                        "property", AppConfig.toCamelCase(s.getProperty()),
                         "direction", s.getDirection().toString().toLowerCase()
                 ))
                 .collect(Collectors.toList());

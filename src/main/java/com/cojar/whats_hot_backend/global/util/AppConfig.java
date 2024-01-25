@@ -26,8 +26,10 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.security.SecureRandom;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @Configuration
@@ -120,6 +122,13 @@ public class AppConfig {
         return new User(member.getUsername(), member.getPassword(), member.getAuthorities());
     }
 
+    public static String toCamelCase(String property) {
+        String[] bits = property.split("_");
+        return IntStream.range(0, bits.length)
+                .mapToObj(i -> i != 0 ? bits[i].substring(0, 1).toUpperCase() + bits[i].substring(1) : bits[i])
+                .collect(Collectors.joining());
+    }
+
     public static Errors getMockErrors() {
         return new BeanPropertyBindingResult(null, "request");
     }
@@ -203,5 +212,15 @@ public class AppConfig {
 
     public static String getDomainFilePath(FileDomain fileDomain) {
         return getBaseFilePath() + File.separator + fileDomain.getDomain();
+    }
+
+    public static boolean isValidateRegion(String region) {
+
+        List<String> regions = List.of("", "강원", "경기", "경남", "경북", "광주",
+                "대구", "대전", "부산", "서울", "세종",
+                "울산", "인천", "전남", "전북", "제주",
+                "충남", "충북");
+
+        return regions.contains(region);
     }
 }

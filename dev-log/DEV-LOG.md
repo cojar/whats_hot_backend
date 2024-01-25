@@ -1,5 +1,22 @@
 # What's Hot Dev-Log
 
+## 24-01-26
+### feature/get-api-spots
+- [x] F-02-02-05 TC 작성
+- [x] F-02-02-06 TC 작성
+- [x] F-02-02-07 TC 작성
+
+## 24-01-25
+### feature/get-api-spots
+- [x] F-02-02-01 TC 작성
+- [x] F-02-02-02 TC 작성
+- [x] F-02-02-03 TC 작성
+- [x] F-02-02-04 TC 작성
+
+## 24-01-24
+### feature/get-api-spots
+- [x] S-02-02 TC 작성
+
 ## 24-01-23
 ### feature/patch-api-spots-id-star
 - [x] Spot 엔티티 찜한 멤버 및 찜 수가 포함되도록 변경

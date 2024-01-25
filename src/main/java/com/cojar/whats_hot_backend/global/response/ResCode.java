@@ -83,6 +83,14 @@ public enum ResCode {
     F_02_01_03(HttpStatus.BAD_REQUEST, "F-02-01-03", "소분류 카테고리 아이디를 입력해주세요"),
     F_02_01_04(HttpStatus.BAD_REQUEST, "F-02-01-04", "같은 이름과 주소를 가진 장소가 이미 존재합니다"),
 
+    F_02_02_01(HttpStatus.BAD_REQUEST, "F-02-02-01", "허용되지 않는 지역 분류입니다 (전국 광역시도 2자 약어만 가능)"),
+    F_02_02_02(HttpStatus.BAD_REQUEST, "F-02-02-02", "존재하지 않는 카테고리입니다"),
+    F_02_02_03(HttpStatus.BAD_REQUEST, "F-02-02-03", "허용되지 않는 검색 옵션입니다 (all, hashtag, name만 가능)"),
+    F_02_02_04(HttpStatus.BAD_REQUEST, "F-02-02-04", "허용되지 않는 페이지 당 장소 개수입니다 (5, 10, 20만 가능)"),
+    F_02_02_05(HttpStatus.BAD_REQUEST, "F-02-02-05", "허용되지 않는 페이지입니다"),
+    F_02_02_06(HttpStatus.BAD_REQUEST, "F-02-02-06", "존재하지 않는 페이지입니다"),
+    F_02_02_07(HttpStatus.BAD_REQUEST, "F-02-02-07", "허용되지 않는 정렬 옵션입니다 (score, review, star만 가능)"),
+
     F_02_04_01(HttpStatus.BAD_REQUEST, "F-02-04-01", "해당 아이디를 가진 장소가 존재하지 않습니다"),
     F_02_04_02(HttpStatus.BAD_REQUEST, "F-02-04-02", "요청 값이 올바르지 않습니다"),
     F_02_04_03(HttpStatus.BAD_REQUEST, "F-02-04-03", "존재하지 않는 카테고리입니다"),
