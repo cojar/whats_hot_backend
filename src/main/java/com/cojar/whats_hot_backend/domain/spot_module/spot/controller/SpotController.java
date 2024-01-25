@@ -74,7 +74,7 @@ public class SpotController {
                                    @RequestParam(value = "size", defaultValue = "5") int size,
                                    @RequestParam(value = "region", defaultValue = "") String region,
                                    @RequestParam(value = "categoryId", defaultValue = "-1") Long categoryId,
-                                   @RequestParam(value = "sort", defaultValue = "averageScore") String sort,
+                                   @RequestParam(value = "sort", defaultValue = "score") String sort,
                                    @RequestParam(value = "kw", defaultValue = "") String kw,
                                    @RequestParam(value = "target", defaultValue = "all") String target,
                                    @AuthenticationPrincipal User user,

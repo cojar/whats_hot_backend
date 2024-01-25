@@ -157,11 +157,11 @@ public class SpotService {
         this.getSpotPagesValidate(page, size, region, categoryId, sort, kw, target);
 
         List<Sort.Order> sorts = new ArrayList<>();
-        if (sort.equals("reviewCount")) {
+        if (sort.equals("review")) {
             sorts.add(Sort.Order.desc("review_count"));
             sorts.add(Sort.Order.desc("average_score"));
             sorts.add(Sort.Order.desc("starred"));
-        } else if (sort.equals("starred")) {
+        } else if (sort.equals("star")) {
             sorts.add(Sort.Order.desc("starred"));
             sorts.add(Sort.Order.desc("average_score"));
             sorts.add(Sort.Order.desc("review_count"));
@@ -253,6 +253,18 @@ public class SpotService {
             throw new ApiResponseException(
                     ResData.of(
                             ResCode.F_02_02_06,
+                            errors
+                    )
+            );
+        }
+
+        if (!sort.equals("score") && !sort.equals("review") && !sort.equals("star")) {
+
+            errors.reject("not allowed", new Object[]{sort}, "sort is not allowed");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_02_07,
                             errors
                     )
             );

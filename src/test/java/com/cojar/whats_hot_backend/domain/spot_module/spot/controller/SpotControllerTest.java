@@ -887,7 +887,7 @@ class SpotControllerTest extends BaseControllerTest {
                 "울산", "인천", "전남", "전북", "제주",
                 "충남", "충북"};
         Long[] categories = {null, 1L, 2L, 9L, 25L, 26L, 37L, 38L};
-        String[] sorts = {" ", "averageScore", "reviewCount", "starred"};
+        String[] sorts = {" ", "score", "review", "star"};
         String[] kws = {" ", "대전", "혼밥", "족발"};
         String[] targets = {" ", "all", "hashtag", "name"};
 
@@ -1110,6 +1110,39 @@ class SpotControllerTest extends BaseControllerTest {
                 Arguments.of(10),
                 Arguments.of(20)
         );
+    }
+
+    @Test
+    @DisplayName("get:/api/spots - bad request sort not allowed, F-02-02-07")
+    public void getSpots_BadRequest_SortNotAllowed() throws Exception {
+
+        // given
+        String sort = "anything";
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("sort", sort);
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/spots?%s".formatted(AppConfig.getQueryString(params)))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-02-02-07"))
+                .andExpect(jsonPath("message").value(ResCode.F_02_02_07.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(sort))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
     }
 
     @Test
