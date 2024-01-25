@@ -154,6 +154,8 @@ public class SpotService {
 
     public Page<DataModel> getSpotPages(int page, int size, String region, Long categoryId, String sort, String kw, String target, Member member) {
 
+        this.getSpotPagesValidate(page, size, region, categoryId, sort, kw, target);
+
         List<Sort.Order> sorts = new ArrayList<>();
         if (sort.equals("reviewCount")) {
             sorts.add(Sort.Order.desc("review_count"));
@@ -178,6 +180,24 @@ public class SpotService {
                     );
                     return dataModel;
                 });
+    }
+
+    private void getSpotPagesValidate(int page, int size, String region, Long categoryId, String sort, String kw, String target) {
+
+        Errors errors = AppConfig.getMockErrors("spot");
+
+        if (!AppConfig.isValidateRegion(region)) {
+
+            errors.reject("not valid", new Object[]{region}, "region is not valid");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_02_01,
+                            errors
+                    )
+            );
+        }
+
     }
 
     public Spot getSpotById(Long id) {

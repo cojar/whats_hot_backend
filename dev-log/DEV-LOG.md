@@ -3,6 +3,7 @@
 ## 24-01-24
 ### feature/get-api-spots
 - [x] S-02-02 TC 작성
+- [x] F-02-02-01 TC 작성
 
 ## 24-01-23
 ### feature/patch-api-spots-id-star

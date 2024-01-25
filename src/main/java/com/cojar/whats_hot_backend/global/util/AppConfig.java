@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.security.SecureRandom;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -211,5 +212,15 @@ public class AppConfig {
 
     public static String getDomainFilePath(FileDomain fileDomain) {
         return getBaseFilePath() + File.separator + fileDomain.getDomain();
+    }
+
+    public static boolean isValidateRegion(String region) {
+
+        List<String> regions = List.of("", "강원", "경기", "경남", "경북", "광주",
+                "대구", "대전", "부산", "서울", "세종",
+                "울산", "인천", "전남", "전북", "제주",
+                "충남", "충북");
+
+        return regions.contains(region);
     }
 }

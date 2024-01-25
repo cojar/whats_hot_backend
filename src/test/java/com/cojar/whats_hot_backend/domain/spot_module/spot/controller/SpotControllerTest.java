@@ -878,6 +878,66 @@ class SpotControllerTest extends BaseControllerTest {
         }
     }
 
+    private static Stream<Arguments> argsFor_getSpots_OK() {
+
+        Integer[] pages = {null, 1};
+        Integer[] sizes = {null, 5, 10, 20};
+        String[] regions = {" ", "강원", "경기", "경남", "경북", "광주",
+                "대구", "대전", "부산", "서울", "세종",
+                "울산", "인천", "전남", "전북", "제주",
+                "충남", "충북"};
+        Long[] categories = {null, 1L, 2L, 9L, 25L, 26L, 37L, 38L};
+        String[] sorts = {" ", "averageScore", "reviewCount", "starred"};
+        String[] kws = {" ", "대전", "혼밥", "족발"};
+        String[] targets = {" ", "all", "hashtag", "name"};
+
+        Stream.Builder<Arguments> argumentsBuilder = Stream.builder();
+
+        for (Integer page : pages)
+            for (Integer size : sizes)
+                for (String region : regions)
+                    for (Long category : categories)
+                        for (String sort : sorts)
+                            for (String kw : kws)
+                                for (String target : targets)
+                                    argumentsBuilder.add(Arguments.of(page, size, region, category, sort, kw, target));
+
+        return argumentsBuilder.build();
+    }
+
+    @Test
+    @DisplayName("get:/api/spots - bad request region not valid, F-02-02-01")
+    public void getSpots_BadRequest_RegionNotValid() throws Exception {
+
+        // given
+        String region = "뉴욕";
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("region", region);
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/spots?%s".formatted(AppConfig.getQueryString(params)))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-02-02-01"))
+                .andExpect(jsonPath("message").value(ResCode.F_02_02_01.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(region))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
     @Test
     @DisplayName("get:api/Spots/{id} - ok, S-02-03")
     void getSpot_OK() throws Exception {
@@ -938,33 +998,6 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
                 .andExpect(jsonPath("data[0].rejectedValue[0]").value(id.toString()))
                 .andExpect(jsonPath("_links.index").exists());
-    }
-
-    private static Stream<Arguments> argsFor_getSpots_OK() {
-
-        Integer[] pages = {null, 1};
-        Integer[] sizes = {null, 5, 10, 20};
-        String[] regions = {" ", "강원", "경기", "경남", "경북", "광주",
-                "대구", "대전", "부산", "서울", "세종",
-                "울산", "인천", "전남", "전북", "제주",
-                "충남", "충북"};
-        Long[] categories = {null, 1L, 2L, 9L, 25L, 26L, 37L, 38L};
-        String[] sorts = {" ", "averageScore", "reviewCount", "starred"};
-        String[] kws = {" ", "대전", "혼밥", "족발"};
-        String[] targets = {" ", "all", "hashtag", "name"};
-
-        Stream.Builder<Arguments> argumentsBuilder = Stream.builder();
-
-        for (Integer page : pages)
-            for (Integer size : sizes)
-                for (String region : regions)
-                    for (Long category : categories)
-                        for (String sort : sorts)
-                            for (String kw : kws)
-                                for (String target : targets)
-                                    argumentsBuilder.add(Arguments.of(page, size, region, category, sort, kw, target));
-
-        return argumentsBuilder.build();
     }
 
     @Transactional
