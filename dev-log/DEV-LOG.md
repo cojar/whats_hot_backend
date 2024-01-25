@@ -6,6 +6,7 @@
 - [x] F-02-02-01 TC 작성
 - [x] F-02-02-02 TC 작성
 - [x] F-02-02-03 TC 작성
+- [x] F-02-02-04 TC 작성
 
 ## 24-01-23
 ### feature/patch-api-spots-id-star

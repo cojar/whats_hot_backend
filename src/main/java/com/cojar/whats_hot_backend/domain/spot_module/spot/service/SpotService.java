@@ -210,13 +210,25 @@ public class SpotService {
             );
         }
 
-        if (!target.equals("all") || !target.equals("hashtag") || !target.equals("name")) {
+        if (!target.equals("all") && !target.equals("hashtag") && !target.equals("name")) {
 
             errors.reject("not allowed", new Object[]{target}, "target is not allowed");
 
             throw new ApiResponseException(
                     ResData.of(
                             ResCode.F_02_02_03,
+                            errors
+                    )
+            );
+        }
+
+        if (size != 5 && size != 10 && size != 20) {
+
+            errors.reject("not allowed", new Object[]{size}, "size is not allowed");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_02_04,
                             errors
                     )
             );
