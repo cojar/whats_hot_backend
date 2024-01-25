@@ -84,6 +84,7 @@ public enum ResCode {
     F_02_01_04(HttpStatus.BAD_REQUEST, "F-02-01-04", "같은 이름과 주소를 가진 장소가 이미 존재합니다"),
 
     F_02_02_01(HttpStatus.BAD_REQUEST, "F-02-02-01", "허용되지 않는 지역 분류 입니다"),
+    F_02_02_02(HttpStatus.BAD_REQUEST, "F-02-02-02", "존재하지 않는 카테고리입니다"),
 
     F_02_04_01(HttpStatus.BAD_REQUEST, "F-02-04-01", "해당 아이디를 가진 장소가 존재하지 않습니다"),
     F_02_04_02(HttpStatus.BAD_REQUEST, "F-02-04-02", "요청 값이 올바르지 않습니다"),

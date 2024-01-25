@@ -198,6 +198,18 @@ public class SpotService {
             );
         }
 
+        if (categoryId != -1 && !this.categoryRepository.existsById(categoryId)) {
+
+            errors.reject("not exist", new Object[]{categoryId}, "category that has id does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_02_02,
+                            errors
+                    )
+            );
+        }
+
     }
 
     public Spot getSpotById(Long id) {
