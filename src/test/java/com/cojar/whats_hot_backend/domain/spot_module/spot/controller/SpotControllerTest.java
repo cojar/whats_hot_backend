@@ -1037,6 +1037,39 @@ class SpotControllerTest extends BaseControllerTest {
     }
 
     @Test
+    @DisplayName("get:/api/spots - bad request page not allowed, F-02-02-05")
+    public void getSpots_BadRequest_PageNotAllowed() throws Exception {
+
+        // given
+        Integer page = -1;
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("page", page.toString());
+
+        // when
+        ResultActions resultActions = this.mockMvc
+                .perform(get("/api/spots?%s".formatted(AppConfig.getQueryString(params)))
+                        .contentType(MediaType.ALL)
+                        .accept(MediaTypes.HAL_JSON)
+                )
+                .andDo(print());
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("success").value("false"))
+                .andExpect(jsonPath("code").value("F-02-02-05"))
+                .andExpect(jsonPath("message").value(ResCode.F_02_02_05.getMessage()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].rejectedValue[0]").value(page.toString()))
+                .andExpect(jsonPath("_links.index").exists())
+        ;
+    }
+
+    @Test
     @DisplayName("get:api/Spots/{id} - ok, S-02-03")
     void getSpot_OK() throws Exception {
 

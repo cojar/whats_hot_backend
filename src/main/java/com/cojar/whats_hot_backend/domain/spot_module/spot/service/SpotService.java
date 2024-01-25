@@ -234,6 +234,18 @@ public class SpotService {
             );
         }
 
+        if (page < 1) {
+
+            errors.reject("not allowed", new Object[]{page}, "page is not allowed");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_02_05,
+                            errors
+                    )
+            );
+        }
+
     }
 
     public Spot getSpotById(Long id) {
