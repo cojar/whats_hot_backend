@@ -1,5 +1,9 @@
 # What's Hot Dev-Log
 
+## 24-01-27
+### feature/get-api-spots-id
+- [x] 로직 정리 및 TC 수정
+
 ## 24-01-26
 ### feature/get-api-spots
 - [x] F-02-02-05 TC 작성

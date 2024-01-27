@@ -937,6 +937,7 @@ class SpotControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("_links.index").exists())
         ;
     }
+
     @Test
     @DisplayName("get:/api/spots - bad request category not exist, F-02-02-02")
     public void getSpots_BadRequest_CategoryNotExist() throws Exception {
@@ -1163,22 +1164,31 @@ class SpotControllerTest extends BaseControllerTest {
         // Then
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResCode.S_02_03.getStatus().name()))
+                .andExpect(jsonPath("status").value("OK"))
                 .andExpect(jsonPath("success").value("true"))
-                .andExpect(jsonPath("code").value(ResCode.S_02_03.getCode()))
+                .andExpect(jsonPath("code").value("S-02-03"))
                 .andExpect(jsonPath("message").value(ResCode.S_02_03.getMessage()))
-                .andExpect(jsonPath("data.id").value(1))
-                .andExpect(jsonPath("data.name").exists())
+                .andExpect(jsonPath("data.id").exists())
                 .andExpect(jsonPath("data.category").exists())
+                .andExpect(jsonPath("data.name").exists())
                 .andExpect(jsonPath("data.address").exists())
                 .andExpect(jsonPath("data.contact").exists())
                 .andExpect(jsonPath("data.averageScore").exists())
-                .andExpect(jsonPath("data.hashtags").exists())
-                .andExpect(jsonPath("data.reviews").exists());
+                .andExpect(jsonPath("data.starred").exists())
+                .andExpect(jsonPath("data.star").exists())
+                .andExpect(jsonPath("data.reviews.page").value(1))
+                .andExpect(jsonPath("data.reviews.size").value(5))
+                .andExpect(jsonPath("data.reviews.sort[0].property").value("liked"))
+                .andExpect(jsonPath("data.reviews.sort[0].direction").value("desc"))
+                .andExpect(jsonPath("data.reviews.sort[1].property").value("createDate"))
+                .andExpect(jsonPath("data.reviews.sort[1].direction").value("asc"))
+                .andExpect(jsonPath("_links.self.href").value(AppConfig.getBaseURL() + ":8080/api/spots/%s".formatted(id)))
+                .andExpect(jsonPath("_links.profile").exists())
+        ;
     }
 
     @Test
-    @DisplayName("get:api/spots/{id} - bad request not exist, F-02-04-01")
+    @DisplayName("get:api/spots/{id} - bad request not exist, F-02-03-01")
     void getSpot_BadRequest_NotExist() throws Exception {
 
         // given
@@ -1196,10 +1206,10 @@ class SpotControllerTest extends BaseControllerTest {
         // then
         resultActions
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResCode.F_02_04_01.getStatus().name()))
+                .andExpect(jsonPath("status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("success").value("false"))
-                .andExpect(jsonPath("code").value(ResCode.F_02_04_01.getCode()))
-                .andExpect(jsonPath("message").value(ResCode.F_02_04_01.getMessage()))
+                .andExpect(jsonPath("code").value("F-02-03-01"))
+                .andExpect(jsonPath("message").value(ResCode.F_02_03_01.getMessage()))
                 .andExpect(jsonPath("data[0].objectName").exists())
                 .andExpect(jsonPath("data[0].code").exists())
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
