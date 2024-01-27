@@ -95,21 +95,19 @@ public class SpotController {
 
     @SpotApiResponse.Detail
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity detail(@PathVariable(value = "id") Long id,
-                                 @AuthenticationPrincipal User user) {
-
-        this.spotService.getSpotValidate(id);
+    public ResponseEntity getSpot(@PathVariable(value = "id") Long id,
+                                  @AuthenticationPrincipal User user) {
 
         Member member = user != null ? this.memberService.getUserByUsername(user.getUsername()) : null;
         Spot spot = this.spotService.getSpotById(id);
-        Page<DataModel> reviewPages = this.reviewService.getReviewPagesWithoutValidate(1, 20, "like", spot.getId(), false, member);
+        Page<DataModel> reviewPages = this.reviewService.getReviewPagesWithoutValidate(1, 5, "like", spot.getId(), false, member);
 
         ResData resData = ResData.of(
                 ResCode.S_02_03,
                 SpotDto.of(spot, member, PagedDataModel.of(reviewPages)),
                 linkTo(this.getClass()).slash(spot.getId())
         );
-        resData.add(Link.of(AppConfig.getBaseURL() + "/swagger-ui/index.html#/Spot/detail").withRel("profile"));
+        resData.add(Link.of(AppConfig.getBaseURL() + "/api/swagger-ui/index.html#/Spot/getSpot").withRel("profile"));
 
         return ResponseEntity.ok()
                 .body(resData);

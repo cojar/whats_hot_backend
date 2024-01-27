@@ -272,8 +272,28 @@ public class SpotService {
     }
 
     public Spot getSpotById(Long id) {
+
+        this.getSpotByIdValidate(id);
+
         return this.spotRepository.findById(id)
                 .orElse(null);
+    }
+
+    private void getSpotByIdValidate(Long id) {
+
+        Errors errors = AppConfig.getMockErrors("spot");
+
+        if (!this.spotRepository.existsById(id)) {
+
+            errors.reject("not exist", new Object[]{id}, "spot that has id does not exist");
+
+            throw new ApiResponseException(
+                    ResData.of(
+                            ResCode.F_02_03_01,
+                            errors
+                    )
+            );
+        }
     }
 
     @Transactional
@@ -445,22 +465,6 @@ public class SpotService {
                 .build();
 
         this.spotRepository.save(spot);
-    }
-
-    public ResData getSpotValidate(Long spotid) {
-        Errors errors = AppConfig.getMockErrors("spot");
-
-        errors.reject("not exist", new Object[]{spotid}, "Spot that has id does not exist");
-        if (!this.spotRepository.existsById(spotid)) {
-
-            throw new ApiResponseException(
-                    ResData.of(
-                            ResCode.F_02_04_01,
-                            errors
-                    )
-            );
-        }
-        return null;
     }
 
     @Transactional
